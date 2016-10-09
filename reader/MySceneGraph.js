@@ -217,30 +217,46 @@ MySceneGraph.prototype.parseTransformation = function(rootElement){
 	}
 	for(var i = 0;i < ntransforms;i++){
 		var curr_trans = elems[0].children[i];
-		this.textures[curr_trans.id] = new Transformation(curr_trans);
+		this.textures[curr_trans.id] = new Transformations(curr_trans);
 		if(!this.addId(curr_trans.id)){
 			return "Bad Id found: " + curr_trans.id;
 		}
 	}
 }
 
-function Transformation(trans){
+function Transformations(trans){
 	this.id = trans.id;
+	
 
-	this.translate = trans.getElementsByTagName('translate');
-	this.rotate = trans.getElementsByTagName('rotate');
-	this.scale = trans.getElementsByTagName('scale');
+	var nchanges = trans.children.length;
 
-	this.xtrans = this.translate[0].attributes.getNamedItem("x").value;
-	this.ytrans = this.translate[0].attributes.getNamedItem("y").value;
-	this.ztrans = this.translate[0].attributes.getNamedItem("z").value;
+	this.changes = [];
+	
+	for(var i = 0 ;i < nchanges;i++){
+		var curr_change = trans.children[i];
+		this.changes[i] = new Change(curr_change);
+	}
+}
 
-	this.axis = this.rotate[0].attributes.getNamedItem("axis").value;
-	this.angle = this.rotate[0].attributes.getNamedItem("angle").value;
+//Represents a single scale, translate or rotate
+function Change(chng){
 
-	this.scalex = this.scale[0].attributes.getNamedItem("x").value;
-	this.scaley = this.scale[0].attributes.getNamedItem("y").value;
-	this.scalez = this.scale[0].attributes.getNamedItem("z").value;
+	this.type = chng.tagName;
+
+	if(this.type == 'scale'){
+		this.scalex = chng.attributes.getNamedItem("x").value;
+		this.scaley = chng.attributes.getNamedItem("y").value;
+		this.scalez = chng.attributes.getNamedItem("z").value;
+	}
+	if(this.type == 'rotate'){
+		this.axis = chng.attributes.getNamedItem("axis").value;
+		this.angle = chng.attributes.getNamedItem("angle").value;
+	}
+	if(this.type == 'translate'){
+		this.xtrans = chng.attributes.getNamedItem("x").value;
+		this.ytrans = chng.attributes.getNamedItem("y").value;
+		this.ztrans = chng.attributes.getNamedItem("z").value;
+	}
 
 }
 
@@ -307,7 +323,7 @@ function Primitive(prim){
 
 	if(prim.children.length != 1){
 		console.log("So pode haver 1 forma dentro de primitive, no entanto há " + prim.children.length);
-		return 0;
+		return "erro a ler primitivas";
 	}
 
 	this.name = prim.children[0].tagName;
@@ -318,7 +334,7 @@ function Primitive(prim){
 		this.y1 = prim.children[0].attributes.getNamedItem("y1").value;
 		this.y2 = prim.children[0].attributes.getNamedItem("y2").value;
 		if(this.x1 != null && this.x2 != null && this.y1 != null && this.y2 != null)
-		    return 1;
+		    return null;
 	}
 	if(this.name == "triangle"){
 		this.x1 = prim.children[0].attributes.getNamedItem("x1").value;
@@ -331,7 +347,7 @@ function Primitive(prim){
 		this.z2 = prim.children[0].attributes.getNamedItem("z2").value;
 		this.z3 = prim.children[0].attributes.getNamedItem("z3").value;
 		if(this.x1 != null && this.x2 != null && this.x3 != null && this.y1 != null && this.y2 != null && this.y3 != null && this.z1 != null && this.z2 != null && this.z3 != null) 
-		    return 1;
+		    return null;
 	}
 	if(this.name == "cylinder"){
 		this.base = prim.children[0].attributes.getNamedItem("base").value;
@@ -340,27 +356,96 @@ function Primitive(prim){
 		this.slices = prim.children[0].attributes.getNamedItem("slices").value;
 		this.stacks = prim.children[0].attributes.getNamedItem("stacks").value;
 		if(this.top != null && this.height != null && this.slices != null && this.stacks != null)
-		    return 1;
+		    return null;
 	}
 	if(this.name == "sphere"){
 		this.radius = prim.children[0].attributes.getNamedItem("radius").value;
 		this.slices = prim.children[0].attributes.getNamedItem("slices").value;
 		this.stacks = prim.children[0].attributes.getNamedItem("stacks").value;
 		if(this.radius != null && this.slices != null && this.stacks != null)
-		    return 1;
+		    return null;
 	}
-	if(this.name == torus){
+	if(this.name == "torus"){
 		this.inner = prim.children[0].attributes.getNamedItem("inner").value;
 		this.outer = prim.children[0].attributes.getNamedItem("outer").value;
 		this.slices = prim.children[0].attributes.getNamedItem("slices").value;
 		this.loops = prim.children[0].attributes.getNamedItem("loops").value;
 		if(this.loops != null && this.inner != null && this.outer != null && this.slices != null)
-			return 1;
+			return null;
 	}
-	return 0;
+	return "Erro a ler primitivas";
 
 }
+MySceneGraph.prototype.parseComponents = function(rootElement){
+	var elems = rootElement.getElementsByTagName('components');
 
+	this.components = [];
+
+	if(elems.length != 1){
+    	return "No components tag, or too many.";
+    }
+
+    var ncomponents = elems[0].children.length;
+
+    if(ncomponents < 1){
+    	return "not enough components";
+    }
+
+    for(var i = 0 ; i < nprimitives ; i++){
+    	var curr_component = elems[0].children[i];
+    	this.components[i] = new Component(curr_component);
+    	if(!this.addId(curr_component.id)){
+			return "Bad Id found: " + curr_primitive.id;
+		}
+    }
+}
+function Component(comp){
+	this.id = comp.id;
+	this.transformationref = null;
+	this.materials = [];
+	this.texture = null;
+	this.componentrefs = [];
+	this.primitiverefs = [];
+
+	//read transformation
+	var transf = comp.getElementsByTagName('transformation');
+	
+	var tref = transf.getElementsByTagName('transformationref');
+	//para caso de referencia a transformaçao ja existente
+	if(tref != null){
+		this.transformationref = tref;
+		var found = false;
+		for(var i = 0;i < thistransformations.length;i++){
+			if(this.transformations[i].id == this.transformationref){
+			    found = true;
+			    break;
+			}
+		}
+		if(found == false)
+			return "id do componente nao atribuido";
+	}else
+	//para nova transformaçao
+	{
+		//tenta descobrir um novo id para a transformaçao, sendo este no formato tempN
+		for(var i = 0;i >= 0;i++){
+			var newtransID = "temp";
+			var n = i.toString();
+			var newid = newtransID.concat(n);
+			if(this.addId(newid)){
+				transf.id = newid;
+				break;
+			}
+
+		}
+		MySceneGraph.transformations[MySceneGraph.transformations.length] = new Transformations(transf);
+		this.transformationref = tref;
+	}
+	//read
+
+
+
+
+}
 
 MySceneGraph.prototype.dsxParser=function (rootElement) {
 
