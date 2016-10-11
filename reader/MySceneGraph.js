@@ -69,11 +69,12 @@ MySceneGraph.prototype.addId = function(id){
 MySceneGraph.prototype.parseScene = function(rootElement){
 	var elems = rootElement.getElementsByTagName('scene');
 
-	if(elems == 'null'){
-		return "scene is missing";
+	if(elems[0] == null){
+		return "no scene tag";
 	}
+	
 	if(elems.length != 1){
-		return "too many scenes";
+		return "too many scene tags";
 	}
 
 	var scenes = elems[0];
@@ -92,12 +93,12 @@ MySceneGraph.prototype.parseScene = function(rootElement){
 MySceneGraph.prototype.parsePerspective = function(rootElement){
 	var elems = rootElement.getElementsByTagName('views');
 	
-	if(elems == 'null'){
-		return "view missing";
+	if(elems[0] == null){
+		return "no views tag";
 	}
 	
 	if(elems.length != 1){
-		return "too many views";
+		return "too many views tags";
 	}
 
     this.listviews = [];
@@ -162,8 +163,114 @@ Perspective.prototype.printPerspective = function(){
 			"to: x = " + this.to_x + ", y = " + this.to_y + ", z = " + this.to_z + "\n";
 }
 
+MySceneGraph.prototype.parseMaterials = function(rootElement){
+	var elems = rootElement.getElementsByTagName('materials');
+
+	if(elems[0] == null){
+		return "no materials tag";
+	}
+	
+	if(elems.length != 1){
+		return "too many materials tags";
+	}
+
+	this.materials = [];
+
+	var nmaterials = elems[0].children.length;
+
+	if(nmaterials < 1){
+		return "not enough materials";
+	}
+
+	for (var i = 0; i < nmaterials; i++){
+
+		// get current texture
+		var curr_mat = elems[0].children[i];
+		
+		// process it
+		this.textures[i] = new Texture(curr_mat);
+
+		if(!this.addId(curr_mat.id)){
+			return "Bad Id found: " + curr_tex.id;
+		}
+	}
+
+
+}
+
+function Material(material){
+	this.id = material.id;
+	//emission
+	var emission = material.getElementsByTagName('emission');
+	if(emission[0] == null){
+		return "no emissions tag in materials";
+	}
+	if(emission.length != 1){
+		return "too many emissions tags in materials";
+	}
+	this.emission_r = emission.attributes.getNamedItem("r").value;
+	this.emission_g = emission.attributes.getNamedItem("g").value;
+	this.emission_b = emission.attributes.getNamedItem("b").value;
+	this.emission_a = emission.attributes.getNamedItem("a").value;
+	//ambient
+	var ambient = material.getElementsByTagName('ambient');
+	if(ambient[0] == null){
+		return "no ambient tag in materials";
+	}
+	if(ambient.length != 1){
+		return "too many ambient tags in materials";
+	}
+	this.ambient_r = ambient.attributes.getNamedItem("r").value;
+	this.ambient_g = ambient.attributes.getNamedItem("g").value;
+	this.ambient_b = ambient.attributes.getNamedItem("b").value;
+	this.ambient_a = ambient.attributes.getNamedItem("a").value;
+	//difuse
+	var diffuse = material.getElementsByTagName('diffuse');
+	if(diffuse[0] == null){
+		return "no diffuse tag in materials";
+	}
+	if(diffuse.length != 1){
+		return "too many diffuse tags in materials";
+	}
+	this.diffuse_r = diffuse.attributes.getNamedItem("r").value;
+	this.diffuse_g = diffuse.attributes.getNamedItem("g").value;
+	this.diffuse_b = diffuse.attributes.getNamedItem("b").value;
+	this.diffuse_a = diffuse.attributes.getNamedItem("a").value;
+	//specular
+	var specular = material.getElementsByTagName('specular');
+	if(specular[0] == null){
+		return "no specular tag in materials";
+	}
+	if(specular.length != 1){
+		return "too many specular tags in materials";
+	}
+	this.specular_r = specular.attributes.getNamedItem("r").value;
+	this.specular_g = specular.attributes.getNamedItem("g").value;
+	this.specular_b = specular.attributes.getNamedItem("b").value;
+	this.specular_a = specular.attributes.getNamedItem("a").value;
+	//shininess
+	var shininess = material.getElementsByTagName('shininess');
+	if(shininess[0] == null){
+		return "no shininess tag in materials";
+	}
+	if(shininess.length != 1){
+		return "too many shininess tags in materials";
+	}
+	this.shininess = shininess.attributes.getNamedItem("value").value;
+
+
+}
+
 MySceneGraph.prototype.parseTexture = function(rootElement){
 	var elems = rootElement.getElementsByTagName('textures');
+
+	if(elems[0] == null){
+		return "no textures tag";
+	}
+	
+	if(elems.length != 1){
+		return "too many textures tags";
+	}
 	
 	this.textures = [];
 	
@@ -207,6 +314,14 @@ Texture.prototype.printTexture = function(){
 
 MySceneGraph.prototype.parseTransformation = function(rootElement){
 	elems = rootElement.getElementsByTagName('transformations');
+
+	if(elems[0] == null){
+		return "no transformations tag";
+	}
+	
+	if(elems.length != 1){
+		return "too many transformations tags";
+	}
 
 	this.transformations = [];
 
@@ -264,12 +379,12 @@ function Change(chng){
 MySceneGraph.prototype.parseIllumination=function(rootElement){
 	var elems = rootElement.getElementsByTagName('illumination');
 
-	if(elems == 'null'){
-		return "illumination missing";
+	if(elems[0] == null){
+		return "no illumination tag";
 	}
 	
 	if(elems.length != 1){
-		return "too many instances of illumination";
+		return "too many illumination tags";
 	}
 
 	var illumination = elems[0];
@@ -298,6 +413,14 @@ MySceneGraph.prototype.parseIllumination=function(rootElement){
 
 MySceneGraph.prototype.parsePrimitives = function(rootElement){
 	var elems = rootElement.getElementsByTagName('primitives');
+
+	if(elems[0] == null){
+		return "no primitives tag";
+	}
+	
+	if(elems.length != 1){
+		return "too many primitives tags";
+	}
 
     this.primitives = [];
 
@@ -378,6 +501,14 @@ function Primitive(prim){
 }
 MySceneGraph.prototype.parseComponents = function(rootElement){
 	var elems = rootElement.getElementsByTagName('components');
+
+	if(elems[0] == null){
+		return "no components tag";
+	}
+	
+	if(elems.length != 1){
+		return "too many components tags";
+	}
 
 	this.components = [];
 
@@ -465,6 +596,12 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 	// read illumination
 
 	this.errMsg = this.parseIllumination(rootElement);
+	
+	if (this.errMsg != null) return this.errMsg;
+
+	// read materials
+
+	this.errMsg = this.parseMaterials(rootElement);
 	
 	if (this.errMsg != null) return this.errMsg;
 
