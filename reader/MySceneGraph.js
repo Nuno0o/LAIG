@@ -132,24 +132,24 @@ function Perspective(perspective){
 
 	//console.log("near: " + this.near + ", far: " + this.far + ", angle: " + this.angle);
 
-	this.from = perspective.children[0];
-	this.to = perspective.children[1];
+	var from = perspective.getElementsByTagName('from');
+	var to = perspective.getElementsByTagName('to');
 
 	//deteção de erros...
-	if (this.from == null || this.to == null){
+	if (from == null || to == null){
 		console.log("no from or to found in a perspective!");
 		return null;
 	}
 
-	this.from_x = this.from.attributes.getNamedItem("x").value;
-	this.from_y = this.from.attributes.getNamedItem("y").value;
-	this.from_z = this.from.attributes.getNamedItem("z").value;
+	this.from_x = from[0].attributes.getNamedItem("x").value;
+	this.from_y = from[0].attributes.getNamedItem("y").value;
+	this.from_z = from[0].attributes.getNamedItem("z").value;
 
 	//console.log("FROM: x: " + this.from_x + ", y: " + this.from_y + ", z: " + this.from_z);
 
-	this.to_x = this.to.attributes.getNamedItem("x").value;
-	this.to_y = this.to.attributes.getNamedItem("y").value;
-	this.to_z = this.to.attributes.getNamedItem("z").value;
+	this.to_x = to[0].attributes.getNamedItem("x").value;
+	this.to_y = to[0].attributes.getNamedItem("y").value;
+	this.to_z = to[0].attributes.getNamedItem("z").value;
 
 	//console.log("TO: x: " + this.to_x + ", y: " + this.to_y + ", z: " + this.to_z);
 }
@@ -188,7 +188,7 @@ MySceneGraph.prototype.parseMaterials = function(rootElement){
 		var curr_mat = elems[0].children[i];
 		
 		// process it
-		this.textures[i] = new Texture(curr_mat);
+		this.materials[i] = new Material(curr_mat);
 
 		if(!this.addId(curr_mat.id)){
 			return "Bad Id found: " + curr_tex.id;
@@ -208,10 +208,10 @@ function Material(material){
 	if(emission.length != 1){
 		return "too many emissions tags in materials";
 	}
-	this.emission_r = emission.attributes.getNamedItem("r").value;
-	this.emission_g = emission.attributes.getNamedItem("g").value;
-	this.emission_b = emission.attributes.getNamedItem("b").value;
-	this.emission_a = emission.attributes.getNamedItem("a").value;
+	this.emission_r = emission[0].attributes.getNamedItem("r").value;
+	this.emission_g = emission[0].attributes.getNamedItem("g").value;
+	this.emission_b = emission[0].attributes.getNamedItem("b").value;
+	this.emission_a = emission[0].attributes.getNamedItem("a").value;
 	//ambient
 	var ambient = material.getElementsByTagName('ambient');
 	if(ambient[0] == null){
@@ -220,10 +220,10 @@ function Material(material){
 	if(ambient.length != 1){
 		return "too many ambient tags in materials";
 	}
-	this.ambient_r = ambient.attributes.getNamedItem("r").value;
-	this.ambient_g = ambient.attributes.getNamedItem("g").value;
-	this.ambient_b = ambient.attributes.getNamedItem("b").value;
-	this.ambient_a = ambient.attributes.getNamedItem("a").value;
+	this.ambient_r = ambient[0].attributes.getNamedItem("r").value;
+	this.ambient_g = ambient[0].attributes.getNamedItem("g").value;
+	this.ambient_b = ambient[0].attributes.getNamedItem("b").value;
+	this.ambient_a = ambient[0].attributes.getNamedItem("a").value;
 	//difuse
 	var diffuse = material.getElementsByTagName('diffuse');
 	if(diffuse[0] == null){
@@ -232,10 +232,10 @@ function Material(material){
 	if(diffuse.length != 1){
 		return "too many diffuse tags in materials";
 	}
-	this.diffuse_r = diffuse.attributes.getNamedItem("r").value;
-	this.diffuse_g = diffuse.attributes.getNamedItem("g").value;
-	this.diffuse_b = diffuse.attributes.getNamedItem("b").value;
-	this.diffuse_a = diffuse.attributes.getNamedItem("a").value;
+	this.diffuse_r = diffuse[0].attributes.getNamedItem("r").value;
+	this.diffuse_g = diffuse[0].attributes.getNamedItem("g").value;
+	this.diffuse_b = diffuse[0].attributes.getNamedItem("b").value;
+	this.diffuse_a = diffuse[0].attributes.getNamedItem("a").value;
 	//specular
 	var specular = material.getElementsByTagName('specular');
 	if(specular[0] == null){
@@ -244,10 +244,10 @@ function Material(material){
 	if(specular.length != 1){
 		return "too many specular tags in materials";
 	}
-	this.specular_r = specular.attributes.getNamedItem("r").value;
-	this.specular_g = specular.attributes.getNamedItem("g").value;
-	this.specular_b = specular.attributes.getNamedItem("b").value;
-	this.specular_a = specular.attributes.getNamedItem("a").value;
+	this.specular_r = specular[0].attributes.getNamedItem("r").value;
+	this.specular_g = specular[0].attributes.getNamedItem("g").value;
+	this.specular_b = specular[0].attributes.getNamedItem("b").value;
+	this.specular_a = specular[0].attributes.getNamedItem("a").value;
 	//shininess
 	var shininess = material.getElementsByTagName('shininess');
 	if(shininess[0] == null){
@@ -256,7 +256,7 @@ function Material(material){
 	if(shininess.length != 1){
 		return "too many shininess tags in materials";
 	}
-	this.shininess = shininess.attributes.getNamedItem("value").value;
+	this.shininess = shininess[0].attributes.getNamedItem("value").value;
 
 
 }
@@ -298,6 +298,7 @@ MySceneGraph.prototype.parseTexture = function(rootElement){
 function Texture(texture){
 
 	this.id = texture.id;
+	console.log("id is" + this.id);
 	this.file = texture.attributes.getNamedItem("file").value;
 	this.length_s = texture.attributes.getNamedItem("length_s").value;
 	this.length_t = texture.attributes.getNamedItem("length_t").value;
