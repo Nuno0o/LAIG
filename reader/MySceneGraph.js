@@ -397,9 +397,6 @@ MySceneGraph.prototype.parseIllumination=function(rootElement){
 	this.ambient = [];
 	this.background =[];
 
-	this.ambient = [];
-	this.background = [];
-
 	this.ambient[0] = illumination.children[0].attributes.getNamedItem("r").value;
 	this.ambient[1] = illumination.children[0].attributes.getNamedItem("g").value;
 	this.ambient[2] = illumination.children[0].attributes.getNamedItem("b").value;
@@ -572,10 +569,44 @@ function Component(comp){
 		MySceneGraph.transformations[MySceneGraph.transformations.length] = new Transformations(transf);
 		this.transformationref = tref;
 	}
-	//read
+	//read children
+	var child = comp.getElementsByTagName('children');
+	if(child[0] == null){
+		return "no children tag in a component";
+	}
+	
+	if(child.length != 1){
+		return "too many children tags in a component";
+	}
+	for(var i = 0;i < child[0].children.length;i++){
+		var compref = child[0].getElementsByTagName('componentref');
+		var primref = child[0].getElementsByTagName('primitiveref');
+		for(var j = 0;j < primref.children.length;j++){
+			primitiverefs[j] = primref.children[j].id;
+		}
+		for(var j = 0;j < compref.children.length;j++){
+			componentrefs[j] = compref.children[j].id;
+		}
+	}
 
 
+	//read material
+	var mater = comp.getElementsByTagName('materials');
+	if(mater[0] == null){
+		return "no materials tag in a component";
+	}
+	
+	if(mater.length != 1){
+		return "too many materials tags in a component";
+	}
+	for(var i = 0; i < mater.children.length;i++){
+		var curr_mat = mater.children[i];
+		this.materials[i] = mater.children[i].id;
+	}
+}
 
+MySceneGraph.prototype.verifyComponents = function(){
+	
 
 }
 
@@ -583,8 +614,6 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 
 	console.log("XML Loading finished.");
 	this.parseScene(rootElement);
-
-	//console.log("Values read: root: " + this.root + ", axis_length: " + this.axis_length);
 
 	// read views and perspectives
 	
@@ -621,6 +650,10 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
     //read primitives
 
 	this.errMsg = this.parsePrimitives(rootElement);
+
+	if (this.errMsg != null) return this.errMsg;
+
+	this.errMsg = this.verifyComponents();
 
 	if (this.errMsg != null) return this.errMsg;
 	
