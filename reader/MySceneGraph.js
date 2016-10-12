@@ -65,7 +65,14 @@ MySceneGraph.prototype.addId = function(id){
 	return true;
 
 }
-
+function getDirectChildrenByTagName(rootElement,tagName){
+	var retvalue = [];
+	for(var i = 0;i < rootElement.children.length;i++){
+		if(rootElement.children[i].tagName == tagName)
+		retvalue.push(rootElement.children[i]);
+	}
+	return retvalue;
+}
 MySceneGraph.prototype.parseScene = function(rootElement){
 	var elems = rootElement.getElementsByTagName('scene');
 
@@ -111,7 +118,7 @@ MySceneGraph.prototype.parsePerspective = function(rootElement){
 		var curr_per = elems[0].children[i];
 
 		//process it
-		this.listviews[curr_per.id] = new Perspective(curr_per);
+		this.listviews[i] = new Perspective(curr_per);
 
 		if(!this.addId(curr_per.id)){
 			return "Bad Id found: " + curr_per.id;
@@ -120,15 +127,16 @@ MySceneGraph.prototype.parsePerspective = function(rootElement){
 		//console.log("This Perspective: " + this.listviews[curr_per.id].printPerspective());
 		
 	}
+
 }
 // A simple class in which we store a perspective's attributes
 function Perspective(perspective){
 
 	this.id = perspective.id;
 
-	this.near = perspective.attributes.getNamedItem("near").value;
-	this.far = perspective.attributes.getNamedItem("far").value;
-	this.angle = perspective.attributes.getNamedItem("angle").value;
+	this.near = parseFloat(perspective.attributes.getNamedItem("near").value);
+	this.far = parseFloat(perspective.attributes.getNamedItem("far").value);
+	this.angle = parseFloat(perspective.attributes.getNamedItem("angle").value);
 
 	//console.log("near: " + this.near + ", far: " + this.far + ", angle: " + this.angle);
 
@@ -141,15 +149,15 @@ function Perspective(perspective){
 		return null;
 	}
 
-	this.from_x = from[0].attributes.getNamedItem("x").value;
-	this.from_y = from[0].attributes.getNamedItem("y").value;
-	this.from_z = from[0].attributes.getNamedItem("z").value;
+	this.from_x = parseFloat(from[0].attributes.getNamedItem("x").value);
+	this.from_y = parseFloat(from[0].attributes.getNamedItem("y").value);
+	this.from_z = parseFloat(from[0].attributes.getNamedItem("z").value);
 
 	//console.log("FROM: x: " + this.from_x + ", y: " + this.from_y + ", z: " + this.from_z);
 
-	this.to_x = to[0].attributes.getNamedItem("x").value;
-	this.to_y = to[0].attributes.getNamedItem("y").value;
-	this.to_z = to[0].attributes.getNamedItem("z").value;
+	this.to_x = parseFloat(to[0].attributes.getNamedItem("x").value);
+	this.to_y = parseFloat(to[0].attributes.getNamedItem("y").value);
+	this.to_z = parseFloat(to[0].attributes.getNamedItem("z").value);
 
 	//console.log("TO: x: " + this.to_x + ", y: " + this.to_y + ", z: " + this.to_z);
 }
@@ -164,7 +172,7 @@ Perspective.prototype.printPerspective = function(){
 }
 
 MySceneGraph.prototype.parseMaterials = function(rootElement){
-	var elems = rootElement.getElementsByTagName('materials');
+	var elems = getDirectChildrenByTagName(rootElement,'materials');
 
 	if(elems[0] == null){
 		return "no materials tag";
@@ -208,10 +216,10 @@ function Material(material){
 	if(emission.length != 1){
 		return "too many emissions tags in materials";
 	}
-	this.emission_r = emission[0].attributes.getNamedItem("r").value;
-	this.emission_g = emission[0].attributes.getNamedItem("g").value;
-	this.emission_b = emission[0].attributes.getNamedItem("b").value;
-	this.emission_a = emission[0].attributes.getNamedItem("a").value;
+	this.emission_r = parseFloat(emission[0].attributes.getNamedItem("r").value);
+	this.emission_g = parseFloat(emission[0].attributes.getNamedItem("g").value);
+	this.emission_b = parseFloat(emission[0].attributes.getNamedItem("b").value);
+	this.emission_a = parseFloat(emission[0].attributes.getNamedItem("a").value);
 	//ambient
 	var ambient = material.getElementsByTagName('ambient');
 	if(ambient[0] == null){
@@ -220,10 +228,10 @@ function Material(material){
 	if(ambient.length != 1){
 		return "too many ambient tags in materials";
 	}
-	this.ambient_r = ambient[0].attributes.getNamedItem("r").value;
-	this.ambient_g = ambient[0].attributes.getNamedItem("g").value;
-	this.ambient_b = ambient[0].attributes.getNamedItem("b").value;
-	this.ambient_a = ambient[0].attributes.getNamedItem("a").value;
+	this.ambient_r = parseFloat(ambient[0].attributes.getNamedItem("r").value);
+	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value);
+	this.ambient_b = parseFloat(ambient[0].attributes.getNamedItem("b").value);
+	this.ambient_a = parseFloat(ambient[0].attributes.getNamedItem("a").value);
 	//difuse
 	var diffuse = material.getElementsByTagName('diffuse');
 	if(diffuse[0] == null){
@@ -232,10 +240,10 @@ function Material(material){
 	if(diffuse.length != 1){
 		return "too many diffuse tags in materials";
 	}
-	this.diffuse_r = diffuse[0].attributes.getNamedItem("r").value;
-	this.diffuse_g = diffuse[0].attributes.getNamedItem("g").value;
-	this.diffuse_b = diffuse[0].attributes.getNamedItem("b").value;
-	this.diffuse_a = diffuse[0].attributes.getNamedItem("a").value;
+	this.diffuse_r = parseFloat(diffuse[0].attributes.getNamedItem("r").value);
+	this.diffuse_g = parseFloat(diffuse[0].attributes.getNamedItem("g").value);
+	this.diffuse_b = parseFloat(diffuse[0].attributes.getNamedItem("b").value);
+	this.diffuse_a = parseFloat(diffuse[0].attributes.getNamedItem("a").value);
 	//specular
 	var specular = material.getElementsByTagName('specular');
 	if(specular[0] == null){
@@ -244,10 +252,10 @@ function Material(material){
 	if(specular.length != 1){
 		return "too many specular tags in materials";
 	}
-	this.specular_r = specular[0].attributes.getNamedItem("r").value;
-	this.specular_g = specular[0].attributes.getNamedItem("g").value;
-	this.specular_b = specular[0].attributes.getNamedItem("b").value;
-	this.specular_a = specular[0].attributes.getNamedItem("a").value;
+	this.specular_r = parseFloat(specular[0].attributes.getNamedItem("r").value);
+	this.specular_g = parseFloat(specular[0].attributes.getNamedItem("g").value);
+	this.specular_b = parseFloat(specular[0].attributes.getNamedItem("b").value);
+	this.specular_a = parseFloat(specular[0].attributes.getNamedItem("a").value);
 	//shininess
 	var shininess = material.getElementsByTagName('shininess');
 	if(shininess[0] == null){
@@ -256,8 +264,7 @@ function Material(material){
 	if(shininess.length != 1){
 		return "too many shininess tags in materials";
 	}
-	this.shininess = shininess[0].attributes.getNamedItem("value").value;
-
+	this.shininess = parseFloat(shininess[0].attributes.getNamedItem("value").value);
 
 }
 

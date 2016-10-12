@@ -6,6 +6,10 @@ function XMLscene() {
 XMLscene.prototype = Object.create(CGFscene.prototype);
 XMLscene.prototype.constructor = XMLscene;
 
+// -----------------------------------------------------------------------------------------------------
+// ------------------------------------------- DEFAULT SCENE -------------------------------------------
+// -----------------------------------------------------------------------------------------------------
+
 XMLscene.prototype.init = function (application) {
     CGFscene.prototype.init.call(this, application);
 
@@ -41,11 +45,116 @@ XMLscene.prototype.setDefaultAppearance = function () {
     this.setShininess(10.0);	
 };
 
+// -----------------------------------------------------------------------------------------------------
+// -------------------------------------- SCENE GRAPH HANDLING -----------------------------------------
+// -----------------------------------------------------------------------------------------------------
+
+// ------------------------ AXIS -----------------------------
+
+XMLscene.prototype.initGraphAxis = function() {
+	this.axis = new CGFaxis(this, this.graph.axis_length);	
+}
+
+// ----------------------- LIGHTING --------------------------
+
+XMLscene.prototype.initGraphGlobalLighting = function(){
+
+	this.gl.clearColor(	this.graph.background[0],
+						this.graph.background[1],
+						this.graph.background[2],
+						this.graph.background[3]);
+
+	this.setGlobalAmbientLight(	this.graph.ambient[0],
+								this.graph.ambient[1],
+								this.graph.ambient[2],
+								this.graph.ambient[3]);
+}
+
+// ----------------------- CAMERA ----------------------------
+
+XMLscene.prototype.setCameraTo = function(selectedCamera){
+	
+	if (selectedCamera == null) return;
+	this.camera.near = selectedCamera.near;
+	this.camera.far = selectedCamera.far;
+	this.camera.fov = selectedCamera.fov;
+
+	this.camera.setPosition(selectedCamera.position);
+	this.camera.setTarget(selectedCamera.target);
+}
+
+
+XMLscene.prototype.initGraphCameras = function() {
+	this.currentCamera = 0;
+	this.listCameras = [];
+	for (var i = 0; i < this.graph.listviews.length ; i++){
+		var near, far, angle, from_x, from_y, from_z, to_x, to_y, to_z;
+
+		fov = this.graph.listviews[i].angle;
+		near = this.graph.listviews[i].near;
+		far = this.graph.listviews[i].far;
+
+		from_x = this.graph.listviews[i].from_x;
+		from_y = this.graph.listviews[i].from_y;
+		from_z = this.graph.listviews[i].from_z;
+
+		to_x = this.graph.listviews[i].to_x;
+		to_y = this.graph.listviews[i].to_y;
+		to_z = this.graph.listviews[i].to_z;
+
+		this.listCameras[i] = new CGFcamera(fov, near, far, [from_x, from_y, from_z], [to_x, to_y, to_z]);
+	}
+	this.setCameraTo(this.listCameras[this.currentCamera]);
+}
+
+XMLscene.prototype.cycleCamera = function() {
+	this.pushMatrix();
+	var nCameras = this.listCameras.length;
+	this.currentCamera++;
+	if (this.currentCamera >= nCameras) this.currentCamera = 0;
+	this.setCameraTo(this.listCameras[this.currentCamera]);
+	this.popMatrix();
+}
+
+// ----------------- MATERIALS ----------------------
+
+XMLscene.prototype.initAppearances = function() {
+	this.listAppearances = [];
+
+	for (var i  = 0; i < this.graph.materials.length; i++){
+		this.listAppearances[i] = new CGFappearance(this);
+		this.listAppearances[i].setEmission(this.graph.materials[i].emission_r,
+											this.graph.materials[i].emission_g,
+											this.graph.materials[i].emission_b,
+											this.graph.materials[i].emission_a);
+		this.listAppearances[i].setAmbient(this.graph.materials[i].ambient_r,
+											this.graph.materials[i].ambient_g,
+											this.graph.materials[i].ambient_b,
+											this.graph.materials[i].ambient_a);
+		this.listAppearances[i].setDiffuse(this.graph.materials[i].diffuse_r,
+											this.graph.materials[i].diffuse_g,
+											this.graph.materials[i].diffuse_b,
+											this.graph.materials[i].diffuse_a);
+		this.listAppearances[i].setSpecular(this.graph.materials[i].specular_r,
+											this.graph.materials[i].specular_g,
+											this.graph.materials[i].specular_b,
+											this.graph.materials[i].specular_a);
+		this.listAppearances[i].setShininess(this.graph.materials[i].shininess);
+	}
+}
+
+// -----------------------------------------------------------------------------------------------------
+// -------------------------------- HANDLER CALLING AND SCENE DISPLAY ----------------------------------
+// -----------------------------------------------------------------------------------------------------
+
 // Handler called when the graph is finally loaded. 
 // As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function () 
 {
-	this.gl.clearColor(this.graph.background[0],this.graph.background[1],this.graph.background[2],this.graph.background[3]);
+	this.currentCamera = 0;
+	this.initGraphGlobalLighting();
+	this.initGraphCameras();
+	this.initAppearances();
 	this.lights[0].setVisible(true);
     this.lights[0].enable();
 };
@@ -78,5 +187,5 @@ XMLscene.prototype.display = function () {
 	{
 		this.lights[0].update();
 	};	
-};
 
+};
