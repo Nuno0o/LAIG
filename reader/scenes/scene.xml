@@ -17,7 +17,7 @@
 
     <!-- deve definir-se um objeto para raiz do grafo , assim -->
     <!-- como o comprimento dos tres eixos (cilindros) -->
-    <scene root="root" axis_length="10.2" />
+    <scene root="root" axis_length="10" />
     
     
     <views default="def_view" >
@@ -28,17 +28,17 @@
         <!-- a vista muda para a proxima da lista; da --> 
         <!-- ultima vista da lista volta 'a primeira -->
         
-        <perspective id="persp" near="0.1" far="500" angle="0.4">
+        <perspective id="persp" near="0.1" far="500" angle="45">
             <from x="15" y="15" z="15" />
             <to x="0" y="0" z="0" />
         </perspective>
 
-        <perspective id="persp2" near="0.1" far="100" angle="0.1">
-            <from x="20" y="5" z="50" />
+        <perspective id="persp2" near="0.1" far="100" angle="90">
+            <from x="10" y="5" z="20" />
             <to x="0" y="0" z="1" />
         </perspective>
 
-        <perspective id="persp3" near="1" far="20" angle="0.3">
+        <perspective id="persp3" near="1" far="20" angle="20">
         	<from x="0" y="0" z="0" />
         	<to x="10" y="15" z="15"/>
        	</perspective>
@@ -52,6 +52,27 @@
         <background r="0" g="0" b="0" a="1" />
         
     </illumination>
+
+	<lights>
+    
+        <!-- Deve existir um ou mais blocos "omni" ou "spot" -->
+        <!-- Os identificadores "id" nao podem ser repetidos -->
+        <omni id="light_omni" enabled="1" >
+            <location x="5" y="5" z="5" w="1" />
+            <ambient r="1" g="1" b="1" a="1" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="1" />
+            <specular r="0.1" g="0.5" b="1" a="1" />
+        </omni>
+        
+        <spot id="light_spot" enabled="1" angle="20" exponent="1">
+            <!-- atencao, "target" e' diferente de "direction" -->
+            <target x="5" y="5" z="5" />
+            <location x="0" y="0" z="0" />
+            <ambient r="1" g="1" b="1" a="1" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="1" />
+            <specular r="0.5" g="1" b="0" a="1" />
+        </spot>
+    </lights>
 
     <textures>
     

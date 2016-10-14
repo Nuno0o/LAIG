@@ -72,25 +72,13 @@ XMLscene.prototype.initGraphGlobalLighting = function(){
 
 // ----------------------- CAMERA ----------------------------
 
-XMLscene.prototype.setCameraTo = function(selectedCamera){
-	
-	if (selectedCamera == null) return;
-	this.camera.near = selectedCamera.near;
-	this.camera.far = selectedCamera.far;
-	this.camera.fov = selectedCamera.fov;
-
-	this.camera.setPosition(selectedCamera.position);
-	this.camera.setTarget(selectedCamera.target);
-}
-
-
 XMLscene.prototype.initGraphCameras = function() {
-	this.currentCamera = 0;
 	this.listCameras = [];
 	for (var i = 0; i < this.graph.listviews.length ; i++){
 		var near, far, angle, from_x, from_y, from_z, to_x, to_y, to_z;
 
-		fov = this.graph.listviews[i].angle;
+		fov = Math.PI * this.graph.listviews[i].angle / 180;
+
 		near = this.graph.listviews[i].near;
 		far = this.graph.listviews[i].far;
 
@@ -104,16 +92,13 @@ XMLscene.prototype.initGraphCameras = function() {
 
 		this.listCameras[i] = new CGFcamera(fov, near, far, [from_x, from_y, from_z], [to_x, to_y, to_z]);
 	}
-	this.setCameraTo(this.listCameras[this.currentCamera]);
 }
 
 XMLscene.prototype.cycleCamera = function() {
-	this.pushMatrix();
 	var nCameras = this.listCameras.length;
 	this.currentCamera++;
 	if (this.currentCamera >= nCameras) this.currentCamera = 0;
-	this.setCameraTo(this.listCameras[this.currentCamera]);
-	this.popMatrix();
+	this.camera = this.listCameras[this.currentCamera];
 }
 
 // ----------------- MATERIALS ----------------------
@@ -147,12 +132,11 @@ XMLscene.prototype.initAppearances = function() {
 // -------------------------------- HANDLER CALLING AND SCENE DISPLAY ----------------------------------
 // -----------------------------------------------------------------------------------------------------
 
-// Handler called when the graph is finally loaded. 
-// As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function () 
 {
 	this.currentCamera = 0;
 	this.initGraphGlobalLighting();
+	this.initGraphAxis();
 	this.initGraphCameras();
 	this.initAppearances();
 	this.lights[0].setVisible(true);
@@ -160,9 +144,6 @@ XMLscene.prototype.onGraphLoaded = function ()
 };
 
 XMLscene.prototype.display = function () {
-	// ---- BEGIN Background, camera and axis setup
-	
-	// Clear image and depth buffer everytime we update the scene
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 

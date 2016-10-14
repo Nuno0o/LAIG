@@ -122,10 +122,7 @@ MySceneGraph.prototype.parsePerspective = function(rootElement){
 
 		if(!this.addId(curr_per.id)){
 			return "Bad Id found: " + curr_per.id;
-		}
-
-		//console.log("This Perspective: " + this.listviews[curr_per.id].printPerspective());
-		
+		}		
 	}
 
 }

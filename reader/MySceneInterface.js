@@ -14,6 +14,6 @@ MySceneInterface.prototype.processKeyDown = function(event) {
     switch (event.keyCode) 
     {
     	// V
-		case (86): this.scene.cycleCamera(); break;
+		case (86): this.scene.cycleCamera(); this.setActiveCamera(this.scene.camera); break;
 	}
 }
