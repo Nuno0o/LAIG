@@ -218,17 +218,17 @@ function LightOmni(light){
 	this.id = light.id;
 	this.enabled = parseInt(light.attributes.getNamedItem('enabled').value);
 
-	var location, ambient, diffuse, specular;
+	var locations, ambient, diffuse, specular;
 
-	location = 	light.attributes.getNamedItem('location');
-	ambient = 	light.attributes.getNamedItem('ambient');
-	diffuse = 	light.attributes.getNamedItem('diffuse');
-	specular = 	light.attributes.getNamedItem('specular');
+	locations = light.getElementsByTagName('location');
+	ambient = 	light.getElementsByTagName('ambient');
+	diffuse = 	light.getElementsByTagName('diffuse');
+	specular = 	light.getElementsByTagName('specular');
 
-	this.location_x = parseFloat(location[0].attributes.getNamedItem("x").value);
-	this.location_y = parseFloat(location[0].attributes.getNamedItem("y").value); 
-	this.location_z = parseFloat(location[0].attributes.getNamedItem("z").value);
-	this.location_w = parseFloat(location[0].attributes.getNamedItem("w").value);
+	this.location_x = parseFloat(locations[0].attributes.getNamedItem("x").value);
+	this.location_y = parseFloat(locations[0].attributes.getNamedItem("y").value); 
+	this.location_z = parseFloat(locations[0].attributes.getNamedItem("z").value);
+	this.location_w = parseFloat(locations[0].attributes.getNamedItem("w").value);
 
 	this.ambient_r = parseFloat(ambient[0].attributes.getNamedItem("r").value);
 	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value); 
@@ -252,22 +252,22 @@ function LightSpot(light){
 	this.angle = parseFloat(light.attributes.getNamedItem("angle").value);
 	this.exponent = parseFloat(light.attributes.getNamedItem("exponent").value);
 
-	var location, ambient, diffuse, specular;
+	var locations, ambient, diffuse, specular;
 	
-	target = 	light.attributes.getNamedItem("target");
-	location = 	light.attributes.getNamedItem("location");
-	ambient = 	light.attributes.getNamedItem("ambient");
-	diffuse = 	light.attributes.getNamedItem("diffuse");
-	specular = 	light.attributes.getNamedItem("specular");
+	target = 	light.getElementsByTagName("target");
+	locations = 	light.getElementsByTagName("location");
+	ambient = 	light.getElementsByTagName("ambient");
+	diffuse = 	light.getElementsByTagName("diffuse");
+	specular = 	light.getElementsByTagName("specular");
 
 	this.target_x = parseFloat(target[0].attributes.getNamedItem("x").value);
 	this.target_y = parseFloat(target[0].attributes.getNamedItem("y").value); 
 	this.target_z = parseFloat(target[0].attributes.getNamedItem("z").value);
 
-	this.location_x = parseFloat(location[0].attributes.getNamedItem("x").value);
-	this.location_y = parseFloat(location[0].attributes.getNamedItem("y").value); 
-	this.location_z = parseFloat(location[0].attributes.getNamedItem("z").value);
-	this.location_w = parseFloat(location[0].attributes.getNamedItem("w").value);
+	this.location_x = parseFloat(locations[0].attributes.getNamedItem("x").value);
+	this.location_y = parseFloat(locations[0].attributes.getNamedItem("y").value); 
+	this.location_z = parseFloat(locations[0].attributes.getNamedItem("z").value);
+	this.location_w = parseFloat(locations[0].attributes.getNamedItem("w").value);
 
 	this.ambient_r = parseFloat(ambient[0].attributes.getNamedItem("r").value);
 	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value); 
