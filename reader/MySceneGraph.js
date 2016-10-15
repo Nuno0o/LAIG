@@ -267,7 +267,6 @@ function LightSpot(light){
 	this.location_x = parseFloat(locations[0].attributes.getNamedItem("x").value);
 	this.location_y = parseFloat(locations[0].attributes.getNamedItem("y").value); 
 	this.location_z = parseFloat(locations[0].attributes.getNamedItem("z").value);
-	this.location_w = parseFloat(locations[0].attributes.getNamedItem("w").value);
 
 	this.ambient_r = parseFloat(ambient[0].attributes.getNamedItem("r").value);
 	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value); 
