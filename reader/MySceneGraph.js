@@ -622,7 +622,10 @@ function Component(comp){
 	this.primitiverefs = [];
 
 	var transf = comp.getElementsByTagName('transformation');
-	var tref = transf.getElementsByTagName('transformationref');
+	if(transf.length != null){
+		return "too many transformation tags in a component";
+	}
+	var tref = transf[0].getElementsByTagName('transformationref');
 
 	//para caso de referencia a transformaçao ja existente
 	if(tref != null){
@@ -713,7 +716,7 @@ MySceneGraph.prototype.parseComponents = function(rootElement){
     	return "not enough components";
     }
 
-    for(var i = 0 ; i < nprimitives ; i++){
+    for(var i = 0 ; i < ncomponents ; i++){
     	var curr_component = elems[0].children[i];
     	this.components[i] = new Component(curr_component);
     	if(!this.addId(curr_component.id)){
@@ -775,7 +778,7 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 
 	//read components
 
-	this.errMsg = this.verifyComponents();
+	this.errMsg = this.parseComponents(rootElement);
 	if (this.errMsg != null) return this.errMsg;
 	
 }
