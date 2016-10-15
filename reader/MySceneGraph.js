@@ -65,6 +65,7 @@ MySceneGraph.prototype.addId = function(id){
 	return true;
 
 }
+
 function getDirectChildrenByTagName(rootElement,tagName){
 	var retvalue = [];
 	for(var i = 0;i < rootElement.children.length;i++){
@@ -73,6 +74,15 @@ function getDirectChildrenByTagName(rootElement,tagName){
 	}
 	return retvalue;
 }
+
+// ------------------------------------------------------------------------------------------
+// --------------------------------- SCENE ELEMENTS PARSING ---------------------------------
+// ------------------------------------------------------------------------------------------
+
+// -------------------------------------------------------
+// --------------------- ROOT AND AXIS -------------------
+// -------------------------------------------------------
+
 MySceneGraph.prototype.parseScene = function(rootElement){
 	var elems = rootElement.getElementsByTagName('scene');
 
@@ -96,7 +106,45 @@ MySceneGraph.prototype.parseScene = function(rootElement){
 	this.axis_length = this.reader.getFloat(scenes,'axis_length');
 }
 
-//Parse perspectives
+// --------------------------------------------------------------------------
+// ----------------------------- PERSPECTIVE PARSING ------------------------
+// --------------------------------------------------------------------------
+
+function Perspective(perspective){
+
+	this.id = perspective.id;
+
+	this.near = parseFloat(perspective.attributes.getNamedItem("near").value);
+	this.far = parseFloat(perspective.attributes.getNamedItem("far").value);
+	this.angle = parseFloat(perspective.attributes.getNamedItem("angle").value);
+
+	var from = perspective.getElementsByTagName('from');
+	var to = perspective.getElementsByTagName('to');
+
+	//deteção de erros...
+	if (from == null || to == null){
+		console.log("no from or to found in a perspective!");
+		return null;
+	}
+
+	this.from_x = parseFloat(from[0].attributes.getNamedItem("x").value);
+	this.from_y = parseFloat(from[0].attributes.getNamedItem("y").value);
+	this.from_z = parseFloat(from[0].attributes.getNamedItem("z").value);
+
+	this.to_x = parseFloat(to[0].attributes.getNamedItem("x").value);
+	this.to_y = parseFloat(to[0].attributes.getNamedItem("y").value);
+	this.to_z = parseFloat(to[0].attributes.getNamedItem("z").value);
+}
+
+Perspective.prototype.printPerspective = function(){
+	return 	"id: " + this.id + "\n" +
+			"near= " + this.near + "\n" +
+			"far= " + this.far + "\n" +
+			"angle= " + this.angle + "\n" + 
+			"from: x = " + this.from_x + ", y = " + this.from_y + ", z = " + this.from_z + "\n" +
+			"to: x = " + this.to_x + ", y = " + this.to_y + ", z = " + this.to_z + "\n";
+}
+
 MySceneGraph.prototype.parsePerspective = function(rootElement){
 	var elems = rootElement.getElementsByTagName('views');
 	
@@ -124,263 +172,12 @@ MySceneGraph.prototype.parsePerspective = function(rootElement){
 			return "Bad Id found: " + curr_per.id;
 		}		
 	}
-
-}
-// A simple class in which we store a perspective's attributes
-function Perspective(perspective){
-
-	this.id = perspective.id;
-
-	this.near = parseFloat(perspective.attributes.getNamedItem("near").value);
-	this.far = parseFloat(perspective.attributes.getNamedItem("far").value);
-	this.angle = parseFloat(perspective.attributes.getNamedItem("angle").value);
-
-	//console.log("near: " + this.near + ", far: " + this.far + ", angle: " + this.angle);
-
-	var from = perspective.getElementsByTagName('from');
-	var to = perspective.getElementsByTagName('to');
-
-	//deteção de erros...
-	if (from == null || to == null){
-		console.log("no from or to found in a perspective!");
-		return null;
-	}
-
-	this.from_x = parseFloat(from[0].attributes.getNamedItem("x").value);
-	this.from_y = parseFloat(from[0].attributes.getNamedItem("y").value);
-	this.from_z = parseFloat(from[0].attributes.getNamedItem("z").value);
-
-	//console.log("FROM: x: " + this.from_x + ", y: " + this.from_y + ", z: " + this.from_z);
-
-	this.to_x = parseFloat(to[0].attributes.getNamedItem("x").value);
-	this.to_y = parseFloat(to[0].attributes.getNamedItem("y").value);
-	this.to_z = parseFloat(to[0].attributes.getNamedItem("z").value);
-
-	//console.log("TO: x: " + this.to_x + ", y: " + this.to_y + ", z: " + this.to_z);
-}
-// Print a perspective's attributes to the console
-Perspective.prototype.printPerspective = function(){
-	return 	"id: " + this.id + "\n" +
-			"near= " + this.near + "\n" +
-			"far= " + this.far + "\n" +
-			"angle= " + this.angle + "\n" + 
-			"from: x = " + this.from_x + ", y = " + this.from_y + ", z = " + this.from_z + "\n" +
-			"to: x = " + this.to_x + ", y = " + this.to_y + ", z = " + this.to_z + "\n";
 }
 
-MySceneGraph.prototype.parseMaterials = function(rootElement){
-	var elems = getDirectChildrenByTagName(rootElement,'materials');
+// --------------------------------------------------------------------------
+// --------------------------- ILLUMINATION PARSING -------------------------
+// --------------------------------------------------------------------------
 
-	if(elems[0] == null){
-		return "no materials tag";
-	}
-	
-	if(elems.length != 1){
-		return "too many materials tags";
-	}
-
-	this.materials = [];
-
-	var nmaterials = elems[0].children.length;
-
-	if(nmaterials < 1){
-		return "not enough materials";
-	}
-
-	for (var i = 0; i < nmaterials; i++){
-
-		// get current texture
-		var curr_mat = elems[0].children[i];
-		
-		// process it
-		this.materials[i] = new Material(curr_mat);
-
-		if(!this.addId(curr_mat.id)){
-			return "Bad Id found: " + curr_tex.id;
-		}
-	}
-
-
-}
-
-function Material(material){
-	this.id = material.id;
-	//emission
-	var emission = material.getElementsByTagName('emission');
-	if(emission[0] == null){
-		return "no emissions tag in materials";
-	}
-	if(emission.length != 1){
-		return "too many emissions tags in materials";
-	}
-	this.emission_r = parseFloat(emission[0].attributes.getNamedItem("r").value);
-	this.emission_g = parseFloat(emission[0].attributes.getNamedItem("g").value);
-	this.emission_b = parseFloat(emission[0].attributes.getNamedItem("b").value);
-	this.emission_a = parseFloat(emission[0].attributes.getNamedItem("a").value);
-	//ambient
-	var ambient = material.getElementsByTagName('ambient');
-	if(ambient[0] == null){
-		return "no ambient tag in materials";
-	}
-	if(ambient.length != 1){
-		return "too many ambient tags in materials";
-	}
-	this.ambient_r = parseFloat(ambient[0].attributes.getNamedItem("r").value);
-	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value);
-	this.ambient_b = parseFloat(ambient[0].attributes.getNamedItem("b").value);
-	this.ambient_a = parseFloat(ambient[0].attributes.getNamedItem("a").value);
-	//difuse
-	var diffuse = material.getElementsByTagName('diffuse');
-	if(diffuse[0] == null){
-		return "no diffuse tag in materials";
-	}
-	if(diffuse.length != 1){
-		return "too many diffuse tags in materials";
-	}
-	this.diffuse_r = parseFloat(diffuse[0].attributes.getNamedItem("r").value);
-	this.diffuse_g = parseFloat(diffuse[0].attributes.getNamedItem("g").value);
-	this.diffuse_b = parseFloat(diffuse[0].attributes.getNamedItem("b").value);
-	this.diffuse_a = parseFloat(diffuse[0].attributes.getNamedItem("a").value);
-	//specular
-	var specular = material.getElementsByTagName('specular');
-	if(specular[0] == null){
-		return "no specular tag in materials";
-	}
-	if(specular.length != 1){
-		return "too many specular tags in materials";
-	}
-	this.specular_r = parseFloat(specular[0].attributes.getNamedItem("r").value);
-	this.specular_g = parseFloat(specular[0].attributes.getNamedItem("g").value);
-	this.specular_b = parseFloat(specular[0].attributes.getNamedItem("b").value);
-	this.specular_a = parseFloat(specular[0].attributes.getNamedItem("a").value);
-	//shininess
-	var shininess = material.getElementsByTagName('shininess');
-	if(shininess[0] == null){
-		return "no shininess tag in materials";
-	}
-	if(shininess.length != 1){
-		return "too many shininess tags in materials";
-	}
-	this.shininess = parseFloat(shininess[0].attributes.getNamedItem("value").value);
-
-}
-
-MySceneGraph.prototype.parseTexture = function(rootElement){
-	var elems = rootElement.getElementsByTagName('textures');
-
-	if(elems[0] == null){
-		return "no textures tag";
-	}
-	
-	if(elems.length != 1){
-		return "too many textures tags";
-	}
-	
-	this.textures = [];
-	
-	var ntextures = elems[0].children.length;
-	
-	if (ntextures < 1){
-		return "not enough textures!";
-	}
-
-	for (var i = 0; i < ntextures; i++){
-
-		// get current texture
-		var curr_tex = elems[0].children[i];
-		
-		// process it
-		this.textures[i] = new Texture(curr_tex);
-
-		if(!this.addId(curr_tex.id)){
-			return "Bad Id found: " + curr_tex.id;
-		}
-	}
-}
-
-
-function Texture(texture){
-
-	this.id = texture.id;
-	console.log("id is" + this.id);
-	this.file = texture.attributes.getNamedItem("file").value;
-	this.length_s = texture.attributes.getNamedItem("length_s").value;
-	this.length_t = texture.attributes.getNamedItem("length_t").value;
-
-	// verificar valores invalidos...
-}
-
-Texture.prototype.printTexture = function(){
-	return 	"id: " + this.id + "\n" +
-			"file: " + this.file + "\n" +
-			"length_s: " + this.length_s + "\n" + 
-			"length_t: " + this.length_t + "\n";
-}
-
-MySceneGraph.prototype.parseTransformation = function(rootElement){
-	elems = rootElement.getElementsByTagName('transformations');
-
-	if(elems[0] == null){
-		return "no transformations tag";
-	}
-	
-	if(elems.length != 1){
-		return "too many transformations tags";
-	}
-
-	this.transformations = [];
-
-	var ntransforms = elems[0].children.length;
-
-	if(ntransforms <1){
-		return "not enough transformations!";
-	}
-	for(var i = 0;i < ntransforms;i++){
-		var curr_trans = elems[0].children[i];
-		this.textures[curr_trans.id] = new Transformations(curr_trans);
-		if(!this.addId(curr_trans.id)){
-			return "Bad Id found: " + curr_trans.id;
-		}
-	}
-}
-
-function Transformations(trans){
-	this.id = trans.id;
-	
-
-	var nchanges = trans.children.length;
-
-	this.changes = [];
-	
-	for(var i = 0 ;i < nchanges;i++){
-		var curr_change = trans.children[i];
-		this.changes[i] = new Change(curr_change);
-	}
-}
-
-//Represents a single scale, translate or rotate
-function Change(chng){
-
-	this.type = chng.tagName;
-
-	if(this.type == 'scale'){
-		this.scalex = chng.attributes.getNamedItem("x").value;
-		this.scaley = chng.attributes.getNamedItem("y").value;
-		this.scalez = chng.attributes.getNamedItem("z").value;
-	}
-	if(this.type == 'rotate'){
-		this.axis = chng.attributes.getNamedItem("axis").value;
-		this.angle = chng.attributes.getNamedItem("angle").value;
-	}
-	if(this.type == 'translate'){
-		this.xtrans = chng.attributes.getNamedItem("x").value;
-		this.ytrans = chng.attributes.getNamedItem("y").value;
-		this.ztrans = chng.attributes.getNamedItem("z").value;
-	}
-
-}
-
-// A function to read .dsx Illumination without cluttering the main function
 MySceneGraph.prototype.parseIllumination=function(rootElement){
 	var elems = rootElement.getElementsByTagName('illumination');
 
@@ -410,38 +207,320 @@ MySceneGraph.prototype.parseIllumination=function(rootElement){
 	this.background[1] = illumination.children[1].attributes.getNamedItem("g").value;
 	this.background[2] = illumination.children[1].attributes.getNamedItem("b").value;
 	this.background[3] = illumination.children[1].attributes.getNamedItem("a").value;
-		
 }
 
-MySceneGraph.prototype.parsePrimitives = function(rootElement){
-	var elems = rootElement.getElementsByTagName('primitives');
+// -------------------------------------------------------------------------
+// ------------------------------- LIGHT PARSING ---------------------------
+// -------------------------------------------------------------------------
+
+function LightOmni(light){
+
+	this.id = light.id;
+	this.enabled = parseInt(light.attributes.getNamedItem('enabled').value);
+
+	var location, ambient, diffuse, specular;
+
+	location = 	light.attributes.getNamedItem('location');
+	ambient = 	light.attributes.getNamedItem('ambient');
+	diffuse = 	light.attributes.getNamedItem('diffuse');
+	specular = 	light.attributes.getNamedItem('specular');
+
+	this.location_x = parseFloat(location[0].attributes.getNamedItem("x").value);
+	this.location_y = parseFloat(location[0].attributes.getNamedItem("y").value); 
+	this.location_z = parseFloat(location[0].attributes.getNamedItem("z").value);
+	this.location_w = parseFloat(location[0].attributes.getNamedItem("w").value);
+
+	this.ambient_r = parseFloat(ambient[0].attributes.getNamedItem("r").value);
+	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value); 
+	this.ambient_b = parseFloat(ambient[0].attributes.getNamedItem("b").value);
+	this.ambient_a = parseFloat(ambient[0].attributes.getNamedItem("a").value);
+
+	this.diffuse_r = parseFloat(diffuse[0].attributes.getNamedItem("r").value);
+	this.diffuse_g = parseFloat(diffuse[0].attributes.getNamedItem("g").value); 
+	this.diffuse_b = parseFloat(diffuse[0].attributes.getNamedItem("b").value);
+	this.diffuse_a = parseFloat(diffuse[0].attributes.getNamedItem("a").value);
+
+	this.specular_r = parseFloat(specular[0].attributes.getNamedItem("r").value);
+	this.specular_g = parseFloat(specular[0].attributes.getNamedItem("g").value); 
+	this.specular_b = parseFloat(specular[0].attributes.getNamedItem("b").value);
+	this.specular_a = parseFloat(specular[0].attributes.getNamedItem("a").value);
+}
+
+function LightSpot(light){
+	this.id = light.id;
+	this.enabled = parseInt(light.attributes.getNamedItem("enabled").value);
+	this.angle = parseFloat(light.attributes.getNamedItem("angle").value);
+	this.exponent = parseFloat(light.attributes.getNamedItem("exponent").value);
+
+	var location, ambient, diffuse, specular;
+	
+	target = 	light.attributes.getNamedItem("target");
+	location = 	light.attributes.getNamedItem("location");
+	ambient = 	light.attributes.getNamedItem("ambient");
+	diffuse = 	light.attributes.getNamedItem("diffuse");
+	specular = 	light.attributes.getNamedItem("specular");
+
+	this.target_x = parseFloat(target[0].attributes.getNamedItem("x").value);
+	this.target_y = parseFloat(target[0].attributes.getNamedItem("y").value); 
+	this.target_z = parseFloat(target[0].attributes.getNamedItem("z").value);
+
+	this.location_x = parseFloat(location[0].attributes.getNamedItem("x").value);
+	this.location_y = parseFloat(location[0].attributes.getNamedItem("y").value); 
+	this.location_z = parseFloat(location[0].attributes.getNamedItem("z").value);
+	this.location_w = parseFloat(location[0].attributes.getNamedItem("w").value);
+
+	this.ambient_r = parseFloat(ambient[0].attributes.getNamedItem("r").value);
+	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value); 
+	this.ambient_b = parseFloat(ambient[0].attributes.getNamedItem("b").value);
+	this.ambient_a = parseFloat(ambient[0].attributes.getNamedItem("a").value);
+
+	this.diffuse_r = parseFloat(diffuse[0].attributes.getNamedItem("r").value);
+	this.diffuse_g = parseFloat(diffuse[0].attributes.getNamedItem("g").value); 
+	this.diffuse_b = parseFloat(diffuse[0].attributes.getNamedItem("b").value);
+	this.diffuse_a = parseFloat(diffuse[0].attributes.getNamedItem("a").value);
+
+	this.specular_r = parseFloat(specular[0].attributes.getNamedItem("r").value);
+	this.specular_g = parseFloat(specular[0].attributes.getNamedItem("g").value); 
+	this.specular_b = parseFloat(specular[0].attributes.getNamedItem("b").value);
+	this.specular_a = parseFloat(specular[0].attributes.getNamedItem("a").value);
+}
+
+MySceneGraph.prototype.parseLights = function(rootElement){
+	var elems = rootElement.getElementsByTagName('lights');
+
+	if (elems[0] == null) {
+		return "no lights tag";
+	}
+
+	if (elems.length != 1){
+		return "too many lighs tags";
+	}
+
+	this.lightsOmni = elems[0].getElementsByTagName('omni');
+	this.lightsSpot = elems[0].getElementsByTagName('spot');
+
+	this.listOmni = [];
+	this.listSpot = [];
+
+	for (var i = 0; i < this.lightsOmni.length; i++){
+		this.listOmni[i] = new LightOmni(this.lightsOmni[i]);
+	}
+
+	for (var i = 0; i < this.lightsSpot.length; i++){
+		this.listSpot[i] = new LightSpot(this.lightsSpot[i]);
+	}
+}
+
+// --------------------------------------------------------------------
+// --------------------------- TEXTURE PARSNG -------------------------
+// --------------------------------------------------------------------
+
+function Texture(texture){
+	this.id = texture.id;
+	this.file = texture.attributes.getNamedItem("file").value;
+	this.length_s = parseFloat(texture.attributes.getNamedItem("length_s").value);
+	this.length_t = parseFloat(texture.attributes.getNamedItem("length_t").value);
+}
+
+Texture.prototype.printTexture = function(){
+	return 	"id: " + this.id + "\n" +
+			"file: " + this.file + "\n" +
+			"length_s: " + this.length_s + "\n" + 
+			"length_t: " + this.length_t + "\n";
+}
+
+MySceneGraph.prototype.parseTexture = function(rootElement){
+	var elems = rootElement.getElementsByTagName('textures');
 
 	if(elems[0] == null){
-		return "no primitives tag";
+		return "no textures tag";
 	}
 	
 	if(elems.length != 1){
-		return "too many primitives tags";
+		return "too many textures tags";
+	}
+	
+	this.textures = [];
+	
+	var ntextures = elems[0].children.length;
+	
+	if (ntextures < 1){
+		return "not enough textures!";
 	}
 
-    this.primitives = [];
-
-    if(elems.length != 1){
-    	return "no primitives tag";
-    }
-    var nprimitives = elems[0].children.length;
-
-    if(nprimitives< 1){
-    	return "not enough primitives";
-    }
-    for(var i = 0;i < nprimitives;i++){
-    	var curr_primitive = elems[0].children[i];
-    	this.primitives[i] = new Primitive(curr_primitive);
-    	if(!this.addId(curr_primitive.id)){
-			return "Bad Id found: " + curr_primitive.id;
+	for (var i = 0; i < ntextures; i++){
+		var curr_tex = elems[0].children[i];
+		this.textures[i] = new Texture(curr_tex);
+		if(!this.addId(curr_tex.id)){
+			return "Bad Id found: " + curr_tex.id;
 		}
-    }
+	}
 }
+
+// -------------------------------------------------------------------------
+// ------------------------------ MATERIAL PARSING -------------------------
+// -------------------------------------------------------------------------
+
+function Material(material){
+	this.id = material.id;
+	
+	//emission
+	var emission = material.getElementsByTagName('emission');
+	if(emission[0] == null){
+		return "no emissions tag in materials";
+	}
+	if(emission.length != 1){
+		return "too many emissions tags in materials";
+	}
+	this.emission_r = parseFloat(emission[0].attributes.getNamedItem("r").value);
+	this.emission_g = parseFloat(emission[0].attributes.getNamedItem("g").value);
+	this.emission_b = parseFloat(emission[0].attributes.getNamedItem("b").value);
+	this.emission_a = parseFloat(emission[0].attributes.getNamedItem("a").value);
+	
+	//ambient
+	var ambient = material.getElementsByTagName('ambient');
+	if(ambient[0] == null){
+		return "no ambient tag in materials";
+	}
+	if(ambient.length != 1){
+		return "too many ambient tags in materials";
+	}
+	this.ambient_r = parseFloat(ambient[0].attributes.getNamedItem("r").value);
+	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value);
+	this.ambient_b = parseFloat(ambient[0].attributes.getNamedItem("b").value);
+	this.ambient_a = parseFloat(ambient[0].attributes.getNamedItem("a").value);
+	
+	//difuse
+	var diffuse = material.getElementsByTagName('diffuse');
+	if(diffuse[0] == null){
+		return "no diffuse tag in materials";
+	}
+	if(diffuse.length != 1){
+		return "too many diffuse tags in materials";
+	}
+	this.diffuse_r = parseFloat(diffuse[0].attributes.getNamedItem("r").value);
+	this.diffuse_g = parseFloat(diffuse[0].attributes.getNamedItem("g").value);
+	this.diffuse_b = parseFloat(diffuse[0].attributes.getNamedItem("b").value);
+	this.diffuse_a = parseFloat(diffuse[0].attributes.getNamedItem("a").value);
+	
+	//specular
+	var specular = material.getElementsByTagName('specular');
+	if(specular[0] == null){
+		return "no specular tag in materials";
+	}
+	if(specular.length != 1){
+		return "too many specular tags in materials";
+	}
+	this.specular_r = parseFloat(specular[0].attributes.getNamedItem("r").value);
+	this.specular_g = parseFloat(specular[0].attributes.getNamedItem("g").value);
+	this.specular_b = parseFloat(specular[0].attributes.getNamedItem("b").value);
+	this.specular_a = parseFloat(specular[0].attributes.getNamedItem("a").value);
+	
+	//shininess
+	var shininess = material.getElementsByTagName('shininess');
+	if(shininess[0] == null){
+		return "no shininess tag in materials";
+	}
+	if(shininess.length != 1){
+		return "too many shininess tags in materials";
+	}
+	this.shininess = parseFloat(shininess[0].attributes.getNamedItem("value").value);
+
+}
+
+MySceneGraph.prototype.parseMaterials = function(rootElement){
+	var elems = getDirectChildrenByTagName(rootElement,'materials');
+
+	if(elems[0] == null){
+		return "no materials tag";
+	}
+	
+	if(elems.length != 1){
+		return "too many materials tags";
+	}
+
+	this.materials = [];
+
+	var nmaterials = elems[0].children.length;
+
+	if(nmaterials < 1){
+		return "not enough materials";
+	}
+
+	for (var i = 0; i < nmaterials; i++){
+
+		var curr_mat = elems[0].children[i];
+		
+		this.materials[i] = new Material(curr_mat);
+
+		if(!this.addId(curr_mat.id)){
+			return "Bad Id found: " + curr_tex.id;
+		}
+	}
+}
+
+// ---------------------------------------------------------------------
+// ------------------------- TRANSFORMATION PARSING --------------------
+// ---------------------------------------------------------------------
+
+function Change(chng){
+	this.type = chng.tagName;
+	if(this.type == 'scale'){
+		this.scalex = chng.attributes.getNamedItem("x").value;
+		this.scaley = chng.attributes.getNamedItem("y").value;
+		this.scalez = chng.attributes.getNamedItem("z").value;
+	}
+	if(this.type == 'rotate'){
+		this.axis = chng.attributes.getNamedItem("axis").value;
+		this.angle = chng.attributes.getNamedItem("angle").value;
+	}
+	if(this.type == 'translate'){
+		this.xtrans = chng.attributes.getNamedItem("x").value;
+		this.ytrans = chng.attributes.getNamedItem("y").value;
+		this.ztrans = chng.attributes.getNamedItem("z").value;
+	}
+}
+
+function Transformations(trans){
+	this.id = trans.id;
+	var nchanges = trans.children.length;
+	this.changes = [];
+	for(var i = 0 ;i < nchanges;i++){
+		var curr_change = trans.children[i];
+		this.changes[i] = new Change(curr_change);
+	}
+}
+
+MySceneGraph.prototype.parseTransformation = function(rootElement){
+	elems = rootElement.getElementsByTagName('transformations');
+
+	if(elems[0] == null){
+		return "no transformations tag";
+	}
+	
+	if(elems.length != 1){
+		return "too many transformations tags";
+	}
+
+	this.transformations = [];
+
+	var ntransforms = elems[0].children.length;
+
+	if(ntransforms <1){
+		return "not enough transformations!";
+	}
+	for(var i = 0;i < ntransforms;i++){
+		var curr_trans = elems[0].children[i];
+		this.textures[curr_trans.id] = new Transformations(curr_trans);
+		if(!this.addId(curr_trans.id)){
+			return "Bad Id found: " + curr_trans.id;
+		}
+	}
+}
+
+// ----------------------------------------------------------------------------
+// ------------------------------ PRIMITIVE PARSING ---------------------------
+// ----------------------------------------------------------------------------
 
 function Primitive(prim){
 	this.id = prim.id;
@@ -498,9 +577,120 @@ function Primitive(prim){
 		if(this.loops != null && this.inner != null && this.outer != null && this.slices != null)
 			return null;
 	}
-	return "Erro a ler primitivas";
-
+	return "Error parsing primitives";
 }
+
+MySceneGraph.prototype.parsePrimitives = function(rootElement){
+	var elems = rootElement.getElementsByTagName('primitives');
+
+	if(elems[0] == null){
+		return "no primitives tag";
+	}
+	
+	if(elems.length != 1){
+		return "too many primitives tags";
+	}
+
+    this.primitives = [];
+
+    if(elems.length != 1){
+    	return "no primitives tag";
+    }
+    var nprimitives = elems[0].children.length;
+
+    if(nprimitives< 1){
+    	return "not enough primitives";
+    }
+    for(var i = 0;i < nprimitives;i++){
+    	var curr_primitive = elems[0].children[i];
+    	this.primitives[i] = new Primitive(curr_primitive);
+    	if(!this.addId(curr_primitive.id)){
+			return "Bad Id found: " + curr_primitive.id;
+		}
+    }
+}
+
+// -----------------------------------------------------------------------
+// ------------------------- COMPONENT PARSING ---------------------------
+// -----------------------------------------------------------------------
+
+function Component(comp){
+	this.id = comp.id;
+	this.transformationref = null;
+	this.materials = [];
+	this.texture = null;
+	this.componentrefs = [];
+	this.primitiverefs = [];
+
+	var transf = comp.getElementsByTagName('transformation');
+	var tref = transf.getElementsByTagName('transformationref');
+
+	//para caso de referencia a transformaçao ja existente
+	if(tref != null){
+		this.transformationref = tref;
+		var found = false;
+		for(var i = 0;i < thistransformations.length;i++){
+			if(this.transformations[i].id == this.transformationref){
+			    found = true;
+			    break;
+			}
+		}
+		if(found == false)
+			return "id do componente nao atribuido";
+	}else
+
+	//para nova transformaçao
+	{
+		//tenta descobrir um novo id para a transformaçao, sendo este no formato tempN
+		for(var i = 0;i >= 0;i++){
+			var newtransID = "temp";
+			var n = i.toString();
+			var newid = newtransID.concat(n);
+			if(this.addId(newid)){
+				transf.id = newid;
+				break;
+			}
+
+		}
+		MySceneGraph.transformations[MySceneGraph.transformations.length] = new Transformations(transf);
+		this.transformationref = tref;
+	}
+
+	//read children
+	var child = comp.getElementsByTagName('children');
+	if(child[0] == null){
+		return "no children tag in a component";
+	}
+	
+	if(child.length != 1){
+		return "too many children tags in a component";
+	}
+	for(var i = 0;i < child[0].children.length;i++){
+		var compref = child[0].getElementsByTagName('componentref');
+		var primref = child[0].getElementsByTagName('primitiveref');
+		for(var j = 0;j < primref.children.length;j++){
+			primitiverefs[j] = primref.children[j].id;
+		}
+		for(var j = 0;j < compref.children.length;j++){
+			componentrefs[j] = compref.children[j].id;
+		}
+	}
+	
+	//read material
+	var mater = comp.getElementsByTagName('materials');
+	if(mater[0] == null){
+		return "no materials tag in a component";
+	}
+	
+	if(mater.length != 1){
+		return "too many materials tags in a component";
+	}
+	for(var i = 0; i < mater.children.length;i++){
+		var curr_mat = mater.children[i];
+		this.materials[i] = mater.children[i].id;
+	}
+}
+
 MySceneGraph.prototype.parseComponents = function(rootElement){
 	var elems = rootElement.getElementsByTagName('components');
 
@@ -532,87 +722,16 @@ MySceneGraph.prototype.parseComponents = function(rootElement){
 		}
     }
 }
-function Component(comp){
-	this.id = comp.id;
-	this.transformationref = null;
-	this.materials = [];
-	this.texture = null;
-	this.componentrefs = [];
-	this.primitiverefs = [];
 
-	//read transformation
-	var transf = comp.getElementsByTagName('transformation');
-	
-	var tref = transf.getElementsByTagName('transformationref');
-	//para caso de referencia a transformaçao ja existente
-	if(tref != null){
-		this.transformationref = tref;
-		var found = false;
-		for(var i = 0;i < thistransformations.length;i++){
-			if(this.transformations[i].id == this.transformationref){
-			    found = true;
-			    break;
-			}
-		}
-		if(found == false)
-			return "id do componente nao atribuido";
-	}else
-	//para nova transformaçao
-	{
-		//tenta descobrir um novo id para a transformaçao, sendo este no formato tempN
-		for(var i = 0;i >= 0;i++){
-			var newtransID = "temp";
-			var n = i.toString();
-			var newid = newtransID.concat(n);
-			if(this.addId(newid)){
-				transf.id = newid;
-				break;
-			}
-
-		}
-		MySceneGraph.transformations[MySceneGraph.transformations.length] = new Transformations(transf);
-		this.transformationref = tref;
-	}
-	//read children
-	var child = comp.getElementsByTagName('children');
-	if(child[0] == null){
-		return "no children tag in a component";
-	}
-	
-	if(child.length != 1){
-		return "too many children tags in a component";
-	}
-	for(var i = 0;i < child[0].children.length;i++){
-		var compref = child[0].getElementsByTagName('componentref');
-		var primref = child[0].getElementsByTagName('primitiveref');
-		for(var j = 0;j < primref.children.length;j++){
-			primitiverefs[j] = primref.children[j].id;
-		}
-		for(var j = 0;j < compref.children.length;j++){
-			componentrefs[j] = compref.children[j].id;
-		}
-	}
-
-
-	//read material
-	var mater = comp.getElementsByTagName('materials');
-	if(mater[0] == null){
-		return "no materials tag in a component";
-	}
-	
-	if(mater.length != 1){
-		return "too many materials tags in a component";
-	}
-	for(var i = 0; i < mater.children.length;i++){
-		var curr_mat = mater.children[i];
-		this.materials[i] = mater.children[i].id;
-	}
-}
 
 MySceneGraph.prototype.verifyComponents = function(){
 	
 
 }
+
+// -------------------------------------------------------------------------------------------
+// ----------------------------------------- MAIN PARSER ------------------------------------
+// ------------------------------------------------------------------------------------------
 
 MySceneGraph.prototype.dsxParser=function (rootElement) {
 
@@ -621,44 +740,43 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 
 	// read views and perspectives
 	
-	this.errMsg = "";
-
+	this.errMsg = ""; 
 	this.errMsg = this.parsePerspective(rootElement);
-
 	if (this.errMsg != null) return this.errMsg;
 	
 	// read illumination
 
 	this.errMsg = this.parseIllumination(rootElement);
-	
+	if (this.errMsg != null) return this.errMsg;
+
+	// read lights
+
+	this.errMsg = this.parseLights(rootElement);
 	if (this.errMsg != null) return this.errMsg;
 
 	// read materials
 
 	this.errMsg = this.parseMaterials(rootElement);
-	
 	if (this.errMsg != null) return this.errMsg;
 
 	// read Textures
 
 	this.errMsg = this.parseTexture(rootElement);
-
 	if (this.errMsg != null) return this.errMsg;
 
 	//read Transformations
 
 	this.errMsg = this.parseTransformation(rootElement);
-
 	if (this.errMsg != null) return this.errMsg;
 
     //read primitives
 
 	this.errMsg = this.parsePrimitives(rootElement);
-
 	if (this.errMsg != null) return this.errMsg;
 
-	this.errMsg = this.verifyComponents();
+	//read components
 
+	this.errMsg = this.verifyComponents();
 	if (this.errMsg != null) return this.errMsg;
 	
 }

@@ -101,6 +101,12 @@ XMLscene.prototype.cycleCamera = function() {
 	this.camera = this.listCameras[this.currentCamera];
 }
 
+// ------------------ LIGHTS ------------------------
+XMLscene.prototype.initGraphLights = function(){
+	this.listLights = [];
+	
+}
+
 // ----------------- MATERIALS ----------------------
 
 XMLscene.prototype.initAppearances = function() {
