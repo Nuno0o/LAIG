@@ -103,9 +103,64 @@ XMLscene.prototype.cycleCamera = function() {
 }
 
 // ------------------ LIGHTS ------------------------
+
 XMLscene.prototype.initGraphLights = function(){
-	this.listLights = [];
-	
+	for (var i = 0; i < this.graph.listOmni.length; i++){
+		this.lights[i].setPosition(	this.graph.listOmni[i].location_x,
+									this.graph.listOmni[i].location_y,
+									this.graph.listOmni[i].location_z,
+									this.graph.listOmni[i].location_w);
+		this.lights[i].setAmbient(	this.graph.listOmni[i].ambient_r,
+									this.graph.listOmni[i].ambient_g,
+									this.graph.listOmni[i].ambient_b,
+									this.graph.listOmni[i].ambient_a);
+		this.lights[i].setDiffuse(	this.graph.listOmni[i].diffuse_r,
+									this.graph.listOmni[i].diffuse_g,
+									this.graph.listOmni[i].diffuse_b,
+									this.graph.listOmni[i].diffuse_a);
+		this.lights[i].setSpecular(	this.graph.listOmni[i].specular_r,
+									this.graph.listOmni[i].specular_g,
+									this.graph.listOmni[i].specular_b,
+									this.graph.listOmni[i].specular_a);
+		
+		if (this.graph.listOmni[i].enabled) 
+			this.lights[i].enable();
+		else this.lights[i].disable();
+
+		this.lights[i].setVisible(true);
+
+	}
+	for (var i = 0; i < this.graph.listSpot.length ; i++){
+		var j = i + this.graph.listOmni.length;
+		
+		this.lights[j].setPosition(	this.graph.listSpot[i].location_x,
+									this.graph.listSpot[i].location_y,
+									this.graph.listSpot[i].location_z, 1);
+		this.lights[j].setAmbient(	this.graph.listSpot[i].ambient_r,
+									this.graph.listSpot[i].ambient_g,
+									this.graph.listSpot[i].ambient_b,
+									this.graph.listSpot[i].ambient_a);
+		this.lights[j].setDiffuse(	this.graph.listSpot[i].diffuse_r,
+									this.graph.listSpot[i].diffuse_g,
+									this.graph.listSpot[i].diffuse_b,
+									this.graph.listSpot[i].diffuse_a);
+		this.lights[j].setSpecular(	this.graph.listSpot[i].specular_r,
+									this.graph.listSpot[i].specular_g,
+									this.graph.listSpot[i].specular_b,
+									this.graph.listSpot[i].specular_a);
+		this.lights[j].setSpotDirection(this.graph.listSpot[i].target_x,
+										this.graph.listSpot[i].target_y,
+										this.graph.listSpot[i].target_z);
+		this.lights[j].setSpotExponent(this.graph.listSpot[i].exponent);
+
+		this.lights[j].setSpotCutOff(Math.PI * this.graph.listSpot[i].angle / 180);
+		
+		if (this.graph.listSpot[i].enabled) 
+			this.lights[j].enable();
+		else this.lights[j].disable();
+		
+		this.lights[j].setVisible(true);
+	}
 }
 
 // ----------------- MATERIALS ----------------------
@@ -146,8 +201,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.initGraphAxis();
 	this.initGraphCameras();
 	this.initAppearances();
-	this.lights[0].setVisible(true);
-    this.lights[0].enable();
+	this.initGraphLights();
 };
 
 XMLscene.prototype.display = function () {
@@ -173,7 +227,9 @@ XMLscene.prototype.display = function () {
 	// This is one possible way to do it
 	if (this.graph.loadedOk)
 	{
-		this.lights[0].update();
+		for (var i = 0; i < this.lights.length; i++){
+			this.lights[i].update();
+		}
 	};	
 	this.prim1.display();
 

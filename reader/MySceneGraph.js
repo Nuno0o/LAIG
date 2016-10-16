@@ -780,5 +780,5 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 
 	this.errMsg = this.parseComponents(rootElement);
 	if (this.errMsg != null) return this.errMsg;
-	
+
 }
