@@ -510,7 +510,7 @@ MySceneGraph.prototype.parseTransformation = function(rootElement){
 	}
 	for(var i = 0;i < ntransforms;i++){
 		var curr_trans = elems[0].children[i];
-		this.textures[curr_trans.id] = new Transformations(curr_trans);
+		this.transformations[i] = new Transformations(curr_trans);
 		if(!this.addId(curr_trans.id)){
 			return "Bad Id found: " + curr_trans.id;
 		}
@@ -613,7 +613,7 @@ MySceneGraph.prototype.parsePrimitives = function(rootElement){
 // ------------------------- COMPONENT PARSING ---------------------------
 // -----------------------------------------------------------------------
 
-function Component(comp){
+function Component(graph,comp){
 	this.id = comp.id;
 	this.transformationref = null;
 	this.materials = [];
@@ -621,24 +621,24 @@ function Component(comp){
 	this.componentrefs = [];
 	this.primitiverefs = [];
 
+	//transformation
 	var transf = comp.getElementsByTagName('transformation');
-	if(transf.length != null){
+	if(transf.length != 1){
 		return "too many transformation tags in a component";
 	}
 	var tref = transf[0].getElementsByTagName('transformationref');
-
 	//para caso de referencia a transformaçao ja existente
-	if(tref != null){
-		this.transformationref = tref;
+	if(tref.length >0){
 		var found = false;
-		for(var i = 0;i < thistransformations.length;i++){
-			if(this.transformations[i].id == this.transformationref){
+		for(var i = 0;i < graph.transformations.length;i++){
+			if(graph.transformations[i].id == tref[0].id){
 			    found = true;
 			    break;
 			}
 		}
 		if(found == false)
 			return "id do componente nao atribuido";
+		this.transformationref = tref[0].id;
 	}else
 
 	//para nova transformaçao
@@ -648,36 +648,42 @@ function Component(comp){
 			var newtransID = "temp";
 			var n = i.toString();
 			var newid = newtransID.concat(n);
-			if(this.addId(newid)){
-				transf.id = newid;
+			if(graph.addId(newid)){
+				transf[0].id = newid;
 				break;
 			}
 
 		}
-		MySceneGraph.transformations[MySceneGraph.transformations.length] = new Transformations(transf);
-		this.transformationref = tref;
+		graph.transformations[graph.transformations.length] = new Transformations(transf[0]);
+		this.transformationref = transf.id;
 	}
-
+	
 	//read children
 	var child = comp.getElementsByTagName('children');
 	if(child[0] == null){
 		return "no children tag in a component";
 	}
-	
 	if(child.length != 1){
 		return "too many children tags in a component";
 	}
-	for(var i = 0;i < child[0].children.length;i++){
-		var compref = child[0].getElementsByTagName('componentref');
-		var primref = child[0].getElementsByTagName('primitiveref');
-		for(var j = 0;j < primref.children.length;j++){
-			primitiverefs[j] = primref.children[j].id;
-		}
-		for(var j = 0;j < compref.children.length;j++){
-			componentrefs[j] = compref.children[j].id;
-		}
+	var compref = child[0].getElementsByTagName('componentref');
+	var primref = child[0].getElementsByTagName('primitiveref');
+	
+	for(var j = 0;j < primref.length;j++){
+		var found = false;
+		for(var k = 0;k < graph.primitives.length;k++){
+			if(primref[j].id == graph.primitives[k].id)
+				found = true;
+			}
+		if(found == false)
+			return "id da primitiva de um componente nao atribuida";
+		this.primitiverefs[j] = primref[j].id;
 	}
 	
+
+	for(var j = 0;j < compref.length;j++){
+		this.componentrefs[j] = compref[j].id;
+	}
 	//read material
 	var mater = comp.getElementsByTagName('materials');
 	if(mater[0] == null){
@@ -687,9 +693,19 @@ function Component(comp){
 	if(mater.length != 1){
 		return "too many materials tags in a component";
 	}
-	for(var i = 0; i < mater.children.length;i++){
-		var curr_mat = mater.children[i];
-		this.materials[i] = mater.children[i].id;
+	for(var i = 0; i < mater[0].children.length;i++){
+		var curr_mat = mater[0].children[i];
+		var curr_id = curr_mat.id;
+		var found = false;
+		for(var j = 0;j < graph.materials.length;j++){
+			if(graph.materials[j].id == curr_id){
+			    found = true;
+			    break;
+			}
+		}
+		if(found == false)
+			return "id do material de um componente nao atribuido";
+		this.materials[i] = mater[0].children[i].id;
 	}
 }
 
@@ -718,7 +734,7 @@ MySceneGraph.prototype.parseComponents = function(rootElement){
 
     for(var i = 0 ; i < ncomponents ; i++){
     	var curr_component = elems[0].children[i];
-    	this.components[i] = new Component(curr_component);
+    	this.components[i] = new Component(this,curr_component);
     	if(!this.addId(curr_component.id)){
 			return "Bad Id found: " + curr_primitive.id;
 		}
@@ -727,7 +743,18 @@ MySceneGraph.prototype.parseComponents = function(rootElement){
 
 
 MySceneGraph.prototype.verifyComponents = function(){
-	
+	for(var i = 0;i < this.components.length;i++){
+		for(var j = 0;j < this.components[i].componentrefs.length;j++){
+			var exists = false;
+			for(var k = 0;k < this.components.length;k++){
+				if(this.components[k].id == this.components[i].componentrefs[j])
+					exists = true;
+			}
+			if(exists == false){
+				return "a componente com id "+this.components[i].componentrefs[j]+ " nao existe";
+			}
+		}
+	}
 
 }
 
@@ -780,5 +807,12 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 
 	this.errMsg = this.parseComponents(rootElement);
 	if (this.errMsg != null) return this.errMsg;
+	
+	//verify if components exist
+	
+	this.errMsg = this.verifyComponents(rootElement);
+	if (this.errMsg != null) return this.errMsg;
+
+
 
 }

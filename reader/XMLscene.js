@@ -190,6 +190,30 @@ XMLscene.prototype.initAppearances = function() {
 	}
 }
 
+// ----------------- PRIMITIVES ----------------------
+
+XMLscene.prototype.initPrimitives = function(){
+	this.listPrimitives = [];
+	for(var i = 0;i < this.graph.primitives.length;i++){
+		var pri = this.graph.primitives[i];
+		if(pri.name == 'rectangle'){
+			this.listPrimitives[pri.id] = new MyPrimRect(this,pri.x1,pri.y1,pri.x2,pri.y2);
+		}
+		if(pri.name == 'triangle'){
+			this.listPrimitives[pri.id] = new MyPrimTriang(this,pri.x1,pri.y1,pri.z1,pri.x2,pri.y2,pri.z2,pri.x3,pri.y3,pri.z3);
+		}
+		if(pri.name == 'cylinder'){
+			this.listPrimitives[pri.id] = new MyCylinder(this, pri.slices, pri.stacks,pri.height,pri.base,pri.top);
+		}
+		
+	}
+}
+
+// ----------------- COMPONENTS ----------------------
+
+XMLscene.prototype.initComponents = function(){
+
+}
 // -----------------------------------------------------------------------------------------------------
 // -------------------------------- HANDLER CALLING AND SCENE DISPLAY ----------------------------------
 // -----------------------------------------------------------------------------------------------------
@@ -202,6 +226,8 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.initGraphCameras();
 	this.initAppearances();
 	this.initGraphLights();
+	this.initPrimitives();
+	this.initComponents();
 };
 
 XMLscene.prototype.display = function () {
