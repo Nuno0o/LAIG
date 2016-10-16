@@ -25,6 +25,7 @@ XMLscene.prototype.init = function (application) {
     this.gl.depthFunc(this.gl.LEQUAL);
 
 	this.axis=new CGFaxis(this);
+	this.prim1 = new MyCylinder(this, 50, 1,10,1,0);
 };
 
 XMLscene.prototype.initLights = function () {
@@ -174,5 +175,6 @@ XMLscene.prototype.display = function () {
 	{
 		this.lights[0].update();
 	};	
+	this.prim1.display();
 
 };

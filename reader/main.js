@@ -11,7 +11,7 @@ function getUrlVars() {
     return vars;
 }	 
 
-serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MySceneInterface.js',
+serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MySceneInterface.js', 'MyPrimRect.js','MyPrimTriang.js','MyPrimCylinder.js',
 
 main=function()
 {

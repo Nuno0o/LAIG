@@ -1,102 +1,47 @@
-<!-- Os comentarios devem ter espacos no inicio e no fim, a -->
-<!-- separar dos hifens -->
-<!-- Nao devem ser usados caracteres especiais (p.ex. acentos) -->
-<!-- Todas as tags e atributos sao obrigatorios, exceto onde for -->
-<!-- referido o contrario -->
-
-<!-- Na descricao abaixo, os simbolos utilizados tem o seguinte significado: -->
-    <!-- ii: integer value -->
-    <!-- ff: float value -->
-    <!-- ss: string value -->
-    <!-- cc: character "x" or "y" or "z" -->
-    <!-- tt: "0" or "1" with Boolean significance -->
-
-    
 <dsx>
-
-
-    <!-- deve definir-se um objeto para raiz do grafo , assim -->
-    <!-- como o comprimento dos tres eixos (cilindros) -->
     <scene root="root" axis_length="3" />
-    
-    
+ 
     <views default="def_view" >
-    
-        <!-- declaracao obrigatoria de pelo menos uma vista; -->
-        <!-- se varias vistas declaradas, o default e' a -->
-        <!-- primeira vista; de cada vez que se pressione a tecla v/V, -->
-        <!-- a vista muda para a proxima da lista; da --> 
-        <!-- ultima vista da lista volta 'a primeira -->
-        
         <perspective id="persp" near="0.1" far="500" angle="45">
             <from x="15" y="15" z="15" />
             <to x="0" y="0" z="0" />
         </perspective>
-
         <perspective id="persp2" near="0.1" far="100" angle="90">
             <from x="10" y="5" z="20" />
             <to x="0" y="0" z="1" />
         </perspective>
-
         <perspective id="persp3" near="1" far="20" angle="20">
-        	<from x="0" y="0" z="0" />
-        	<to x="10" y="15" z="15"/>
-       	</perspective>
-
-       
+            <from x="0" y="0" z="0" />
+            <to x="10" y="15" z="15"/>
+        </perspective>  
     </views>
-
+ 
     <illumination doublesided="0" local="0" >
-    
         <ambient r="0" g="0" b="0" a="1" />
         <background r="0" g="0" b="0" a="1" />
-        
     </illumination>
-
-	<lights>
-    
-        <!-- Deve existir um ou mais blocos "omni" ou "spot" -->
-        <!-- Os identificadores "id" nao podem ser repetidos -->
+ 
+    <lights>
         <omni id="light_omni" enabled="1" >
             <location x="9" y="9" z="9" w="1" />
             <ambient r="0" g="0" b="0" a="1" />
             <diffuse r="1" g="1" b="1" a="1" />
             <specular r="1" g="1" b="1" a="1" />
         </omni>
-        
         <spot id="light_spot" enabled="1" angle="20" exponent="2">
-            <!-- atencao, "target" e' diferente de "direction" -->
             <target x="0" y="0" z="0" />
-            <location x="9" y="9" z="0"/>
+            <location x="9" y="9" z="0" />
             <ambient r="0" g="0" b="0" a="1" />
             <diffuse r="1" g="1" b="1" a="1" />
             <specular r="1" g="0" b="1" a="1" />
         </spot>
     </lights>
-
+ 
     <textures>
-    
-        <!-- Deve existir um ou mais blocos "texture" -->
-        <!-- Os identificadores "id" nao podem ser repetidos -->
-        <!-- length_s e length_t sao fatores de escala de textura:-->
-        <!-- Exemplo length_s=3.0: uma ocorrencia da textura, em -->
-        <!-- comprimento, deve cobrir um comprimento igual -->
-        <!-- a 3 unidades;  -->
-        <!-- Exemplo length_t=0.4, uma ocorrencia da textura, em -->
-        <!-- largura, deve cobrir uma largura igual a 0.4 unidades.  -->
-        <!-- Transf. Geometr. do tipo escalamento sobre os -->
-        <!-- objetos respetivos podem a violar esta regra.         -->
-        <!-- Nao necessario aplicar fatores de escala em  -->
-        <!-- quadricas (esfera, ciclindro...) -->
-
-        <texture id="wood" file="wood.png" length_s="1" length_t="1" /> 
-        
+        <texture id="wood" file="../resources/images/wood.png" length_s="0.2" length_t="0.3" />
     </textures>
-	
-	<materials>
-    
-        <!-- Deve existir um ou mais blocos "material" -->
-        <!-- Os identificadores "id" nao podem ser repetidos -->
+   
+    <materials>
         <material id="matDefault" >
             <emission r="0.2" g="0.4" b="0.8" a="1" />
             <ambient r="0.2" g="0.4" b="0.8" a="1" />
@@ -104,133 +49,231 @@
             <specular r="0.2" g="0.4" b="0.8" a="1" />
             <shininess value="10" />
         </material>
-        
+       
         <material id="matCube" >
-        	<emission r="1" g="1" b="1" a="1" />
-        	<ambient r="0.3" g="0.3" b="0.3" a="1" />
-        	<diffuse r="0.8" g="0.4" b="0.4" a="1" />
+            <emission r="1" g="1" b="1" a="1" />
+            <ambient r="0.3" g="0.3" b="0.3" a="1" />
+            <diffuse r="0.8" g="0.4" b="0.4" a="1" />
             <specular r="0" g="0.2" b="0.8" a="1" />
             <shininess value="10" />
         </material>
     </materials>
-	
-	<transformations>
-    
-        <!-- Deve existir um ou mais blocos "transformation" -->
-        <!-- Os identificadores "id" nao podem ser repetidos -->
+   
+    <transformations>
         <transformation id="transWallX">
-           <!-- instrucoes a usar sem limite nem ordem -->
-           <!-- deve existir pelo menos uma transformacao -->
-           	<translate x="4.5" y="3" z="0" />
-           	<scale x="9" y="6" z="1" />
+            <translate x="0.5" y="0.5" z="0" />
         </transformation>
         <transformation id="transWallZ">
-        	<translate x="0" y="3" z="4.5" /> 
-        	<scale x="1" y="6" z="9" />
-           	<rotate axis="y" angle="90" />
+            <translate x="0" y="0.5" z="0.5" />
+            <rotate axis="y" angle="90" />
         </transformation>
         <transformation id="transToOctant">
-        	<translate x="4.5" y="0" z="4.5" />
+            <translate x="4.5" y="0" z="4.5" />
         </transformation>
         <transformation id="transFloor">
-        	<scale x="9" y="1" z="9" />
-           	<rotate axis="x" angle="-90" />
+            <scale x="9" y="1" z="9" />
+            <rotate axis="x" angle="-90" />
         </transformation>
         <transformation id="transC1">
-        	<translate x="0" y="1.5" z="0" /> 
-        	<scale x="3" y="3" z="3" />
+            <translate x="0" y="1.5" z="0" />
+            <scale x="3" y="3" z="3" />
         </transformation>
         <transformation id="transC2">
-        	<translate x="0" y="3.5" z="0" />
+            <translate x="0" y="3.5" z="0" />
         </transformation>
     </transformations>
-	
-	<primitives>
-    
-        <!-- Deve existir um ou mais blocos "primitive" -->
-        <!-- Os identificadores "id" nao podem ser repetidos -->
+   
+    <primitives>
         <primitive id="rect">
-           
-            <!-- apenas pode existir UMA das seguintes tags: -->
-            <!--     rectangle, triangle, cylinder, sphere, torus -->
-            <!-- os parametros devem ser interpretados, genericamente como-->
-            <!-- em OpenGL/GLUT; o cilindro deve adicionalmente ter tampas -->
             <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="-0.5" />
         </primitive>
     </primitives>
-
-	<components>
-	
-		<component id="primRect">
-			<transformation>
-			</transformation>
-			<materials>
-				<material id="matDefault" />
-			</materials>
-			<texture id="none" />
-			<children>
-				<primitiveref id="rect" />
-			</children>
-		</component>
-
-		<component id="WallX">
-			<transformation>
-				<transformationref id="transWallX" />
-			</transformation>
-			<materials>
-				<material id="inherit" />
-			</materials>
-			<texture id="none" />
-			
-
-		<component id="1627">
-
-			<!-- bloco "transformation" obrigatorio -->
-			<transformation>
-
-				<!-- deve conter uma referencia a uma das "transformation" -->
-				<!-- declaradas anteriormente -->
-				<transformationref id="trans1" />
-
-				<!-- ou, ALTERNATIVAMENTE, transformacoes explicitas, -->
-				<!-- usando zero ou mais das instrucoes seguintes, sem -->
-				<!-- limite nem ordem -->
-				<!-- ex: bloco transformation pode ficar sem conteudo -->
-				<translate x="ff" y="ff" z="ff" />
-				<rotate axis="cc" angle="ff" />
-				<scale x="ff" y="ff" z="ff" />
-			</transformation>
-
-			<!-- declaracao obrigatoria de pelo menos um material; -->
-			<!-- o material id="inherit", mantem (herda) material do "pai" -->
-			<!-- se varios materiais declarados, o default e' o -->
-			<!-- primeiro material; de cada vez que se pressione a tecla m/M, -->
-			<!-- o material muda para o proximo material da lista; do --> 
-			<!-- ultimo material da lista volta ao primeiro -->
-			<materials>
-				<material id="mat1" />
-			</materials>
-
-			<!-- declaracao obrigatoria de texture -->
-			<!-- id="inherit" mantem (herda) a textura do objecto "pai" -->
-			<!-- id="none" remove a textura recebida do pai -->
-			<!-- a textura declarada sobrepoe a textura recebida do -->
-			<!-- objecto "pai" -->
-			<texture id="tex" />
-
-			<!-- bloco "children" obrigatorio num "component" -->
-			<children>
-
-				<!-- deve existir uma ou mais tags "componentref" e/ou -->
-				<!-- "primitiveref", identificando outros -->
-				<!-- componentes ou primitivas -->
-				<componentref id="ss" />
-				<primitiveref id="ss" />
-
-			</children>
-
-		</component>
-
-	</components>
-
+ 
+    <components>
+        <component id="primRect">
+            <transformation>
+            </transformation>
+            <materials>
+                <material id="matDefault" />
+            </materials>
+            <texture id="none" />
+            <children>
+                <primitiveref id="rect" />
+            </children>
+        </component>
+       
+        <component id="Wall">
+            <transformation>
+                <scale x="9" y="6" z="9" />
+            </transformation>
+            <materials>
+                <material id="matDefault" />
+            </materials>
+            <texture id="none" />
+            <children>
+                <componentref id="primRect" />
+            </children>
+        </component>
+       
+        <component id="WallX">
+            <transformation>
+                <transformationref id="transWallX" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" />
+            <children>
+                <componentref id="Wall" />
+            </children>
+        </component>
+ 
+        <component id="WallZ">
+            <transformation>
+                <transformationref id="transWallZ" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" />
+            <children>
+                <componentref id="Wall" />
+            </children>
+        </component>
+ 
+        <component id="Floor">
+            <transformation>
+                <transformationref id="transFloor" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="wood" />
+            <children>
+                <componentref id="primRect" />
+            </children>
+        </component>
+       
+        <component id="CubeWall1">
+            <transformation>
+                <translate x="0" y="0" z="0.5" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" />
+            <children>
+                <componentref id="primRect" />
+            </children>
+        </component>
+        <component id="CubeWall2">
+            <transformation>
+                <rotate axis="y" angle="90"/>
+                <translate x="0" y="0" z="0.5" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" />
+            <children>
+                <componentref id="primRect" />
+            </children>
+        </component>
+        <component id="CubeWall3">
+            <transformation>
+                <rotate axis="y" angle="180"/>
+                <translate x="0" y="0" z="0.5" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" />
+            <children>
+                <componentref id="primRect" />
+            </children>
+        </component>
+        <component id="CubeWall4">
+            <transformation>
+                <rotate axis="y" angle="240"/>
+                <translate x="0" y="0" z="0.5" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" />
+            <children>
+                <componentref id="primRect" />
+            </children>
+        </component>
+        <component id="CubeWall5">
+            <transformation>
+                <rotate axis="x" angle="90"/>
+                <translate x="0" y="0" z="0.5" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" />
+            <children>
+                <componentref id="primRect" />
+            </children>
+        </component>
+        <component id="CubeWall6">
+            <transformation>
+                <rotate axis="x" angle="180"/>
+                <translate x="0" y="0" z="0.5" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" />
+            <children>
+                <componentref id="primRect" />
+            </children>
+        </component>
+ 
+        <component id="Cube">
+            <transformation>
+            </transformation>
+            <materials>
+                <material id="matCube" />
+            </materials>
+            <texture id="none" />
+            <children>
+                <componentref id="CubeWall1" />
+                <componentref id="CubeWall2" />
+                <componentref id="CubeWall3" />
+                <componentref id="CubeWall4" />
+                <componentref id="CubeWall5" />
+                <componentref id="CubeWall6" />
+            </children>
+        </component>
+ 
+        <component id="C1">
+            <transformation>
+                <transformationref id="transC1" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" />
+            <children>
+                <componentref id="Cube" />
+            </children>
+        </component>
+ 
+        <component id="C2">
+            <transformation>
+                <transformationref id="transC2" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" />
+            <children>
+                <componentref id="Cube" />
+            </children>
+        </component>
+    </components>
+ 
 </dsx>
