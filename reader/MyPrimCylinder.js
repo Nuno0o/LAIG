@@ -151,21 +151,29 @@
 	
 	for(var i=0; i < this.slices ; i++){
 		if(i != this.slices-1)
-		   this.indices.push(i,i+1,this.slices*2);
-		else this.indices.push(i,0,this.slices*2);
+		   this.indices.push(i,this.slices*2,i+1);
+		else this.indices.push(i,this.slices*2,0);
 	}
 
 	for(var i=this.slices; i < this.slices *2; i++){
 		if(i != this.slices*2-1)
-		   this.indices.push(i,i+1,this.slices*2);
-		else this.indices.push(i,0,this.slices*2);
+		   this.indices.push(i,i+1,this.slices*2+1);
+		else this.indices.push(i,this.slices,this.slices*2+1);
 	}
-	
-	
- 	
-
- 	
 
  	this.primitiveType = this.scene.gl.TRIANGLES;
  	this.initGLBuffers();
  };
+
+ function MyPrimCylinder(scene, slices, stacks,height,base,top){
+ 	this.cylinder = new MyCylinder(scene,slices,stacks,height,base,top);
+ 	this.base = new MyCylinderBase(scene,slices,height,base,top);
+ };
+ MyPrimCylinder.prototype = Object.create(CGFobject.prototype);
+ MyPrimCylinder.prototype.constructor = MyPrimCylinder;
+
+ MyPrimCylinder.prototype.display = function(){
+ 	this.cylinder.display();
+ 	this.base.display();
+ }
+
