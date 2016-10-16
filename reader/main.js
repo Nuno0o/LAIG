@@ -6,7 +6,7 @@ function getUrlVars() {
     var vars = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
     function(m,key,value) {
-      vars[decodeURIComponent(key)] = decodeURIComponent(value);
+      vars[decodeURIComponent(key)] = decodeURIComponent(value); 
     });
     return vars;
 }	 
