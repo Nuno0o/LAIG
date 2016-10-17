@@ -98,10 +98,6 @@ MySceneGraph.prototype.parseScene = function(rootElement){
 	/* Elementos da scene*/
 	
 	this.root = this.reader.getString(scenes,'root');
-
-	if(!this.addId(this.root)){
-		return "Bad Id found " + this.root;
-	}
 	
 	this.axis_length = this.reader.getFloat(scenes,'axis_length');
 }
@@ -465,18 +461,18 @@ MySceneGraph.prototype.parseMaterials = function(rootElement){
 function Change(chng){
 	this.type = chng.tagName;
 	if(this.type == 'scale'){
-		this.scalex = chng.attributes.getNamedItem("x").value;
-		this.scaley = chng.attributes.getNamedItem("y").value;
-		this.scalez = chng.attributes.getNamedItem("z").value;
+		this.scalex = parseFloat(chng.attributes.getNamedItem("x").value);
+		this.scaley = parseFloat(chng.attributes.getNamedItem("y").value);
+		this.scalez = parseFloat(chng.attributes.getNamedItem("z").value);
 	}
 	if(this.type == 'rotate'){
 		this.axis = chng.attributes.getNamedItem("axis").value;
-		this.angle = chng.attributes.getNamedItem("angle").value;
+		this.angle = parseFloat(chng.attributes.getNamedItem("angle").value);
 	}
 	if(this.type == 'translate'){
-		this.xtrans = chng.attributes.getNamedItem("x").value;
-		this.ytrans = chng.attributes.getNamedItem("y").value;
-		this.ztrans = chng.attributes.getNamedItem("z").value;
+		this.xtrans = parseFloat(chng.attributes.getNamedItem("x").value);
+		this.ytrans = parseFloat(chng.attributes.getNamedItem("y").value);
+		this.ztrans = parseFloat(chng.attributes.getNamedItem("z").value);
 	}
 }
 
@@ -532,23 +528,23 @@ function Primitive(prim){
 	this.name = prim.children[0].tagName;
 
 	if(this.name == "rectangle"){
-		this.x1 = prim.children[0].attributes.getNamedItem("x1").value;
-		this.x2 = prim.children[0].attributes.getNamedItem("x2").value;
-		this.y1 = prim.children[0].attributes.getNamedItem("y1").value;
-		this.y2 = prim.children[0].attributes.getNamedItem("y2").value;
+		this.x1 = parseFloat(prim.children[0].attributes.getNamedItem("x1").value);
+		this.x2 = parseFloat(prim.children[0].attributes.getNamedItem("x2").value);
+		this.y1 = parseFloat(prim.children[0].attributes.getNamedItem("y1").value);
+		this.y2 = parseFloat(prim.children[0].attributes.getNamedItem("y2").value);
 		if(this.x1 != null && this.x2 != null && this.y1 != null && this.y2 != null)
 		    return null;
 	}
 	if(this.name == "triangle"){
-		this.x1 = prim.children[0].attributes.getNamedItem("x1").value;
-		this.x2 = prim.children[0].attributes.getNamedItem("x2").value;
-		this.x3 = prim.children[0].attributes.getNamedItem("x3").value;
-		this.y1 = prim.children[0].attributes.getNamedItem("y1").value;
-		this.y2 = prim.children[0].attributes.getNamedItem("y2").value;
-		this.y3 = prim.children[0].attributes.getNamedItem("y3").value;
-		this.z1 = prim.children[0].attributes.getNamedItem("z1").value;
-		this.z2 = prim.children[0].attributes.getNamedItem("z2").value;
-		this.z3 = prim.children[0].attributes.getNamedItem("z3").value;
+		this.x1 = parseFloat(prim.children[0].attributes.getNamedItem("x1").value);
+		this.x2 = parseFloat(prim.children[0].attributes.getNamedItem("x2").value);
+		this.x3 = parseFloat(prim.children[0].attributes.getNamedItem("x3").value);
+		this.y1 = parseFloat(prim.children[0].attributes.getNamedItem("y1").value);
+		this.y2 = parseFloat(prim.children[0].attributes.getNamedItem("y2").value);
+		this.y3 = parseFloat(prim.children[0].attributes.getNamedItem("y3").value);
+		this.z1 = parseFloat(prim.children[0].attributes.getNamedItem("z1").value);
+		this.z2 = parseFloat(prim.children[0].attributes.getNamedItem("z2").value);
+		this.z3 = parseFloat(prim.children[0].attributes.getNamedItem("z3").value);
 		if(this.x1 != null && this.x2 != null && this.x3 != null && this.y1 != null && this.y2 != null && this.y3 != null && this.z1 != null && this.z2 != null && this.z3 != null) 
 		    return null;
 	}
@@ -643,10 +639,10 @@ function Component(graph,comp){
 
 	//para nova transformaçao
 	{
-		//tenta descobrir um novo id para a transformaçao, sendo este no formato tempN
+		//tenta descobrir um novo id para a transformaçao, sendo este no formato transID
 		for(var i = 0;i >= 0;i++){
-			var newtransID = "temp";
-			var n = i.toString();
+			var newtransID = "trans";
+			var n = this.id;
 			var newid = newtransID.concat(n);
 			if(graph.addId(newid)){
 				transf[0].id = newid;
@@ -655,7 +651,7 @@ function Component(graph,comp){
 
 		}
 		graph.transformations[graph.transformations.length] = new Transformations(transf[0]);
-		this.transformationref = transf.id;
+		this.transformationref = transf[0].id;
 	}
 	
 	//read children
@@ -734,10 +730,10 @@ MySceneGraph.prototype.parseComponents = function(rootElement){
 
     for(var i = 0 ; i < ncomponents ; i++){
     	var curr_component = elems[0].children[i];
-    	this.components[i] = new Component(this,curr_component);
     	if(!this.addId(curr_component.id)){
-			return "Bad Id found: " + curr_primitive.id;
-		}
+			return "Bad Id found: " + curr_component.id;
+    	}
+    	this.components[curr_component.id] = new Component(this,curr_component);
     }
 }
 

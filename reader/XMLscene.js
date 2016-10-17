@@ -25,7 +25,7 @@ XMLscene.prototype.init = function (application) {
     this.gl.depthFunc(this.gl.LEQUAL);
 
 	this.axis=new CGFaxis(this);
-	this.prim1 = new MyPrimCylinder(this, 20, 2,3,1,2);
+	
 };
 
 XMLscene.prototype.initLights = function () {
@@ -169,27 +169,64 @@ XMLscene.prototype.initAppearances = function() {
 	this.listAppearances = [];
 
 	for (var i  = 0; i < this.graph.materials.length; i++){
-		this.listAppearances[i] = new CGFappearance(this);
-		this.listAppearances[i].setEmission(this.graph.materials[i].emission_r,
+		this.listAppearances[this.graph.materials[i].id] = new CGFappearance(this);
+		this.listAppearances[this.graph.materials[i].id].setEmission(this.graph.materials[i].emission_r,
 											this.graph.materials[i].emission_g,
 											this.graph.materials[i].emission_b,
 											this.graph.materials[i].emission_a);
-		this.listAppearances[i].setAmbient(this.graph.materials[i].ambient_r,
+		this.listAppearances[this.graph.materials[i].id].setAmbient(this.graph.materials[i].ambient_r,
 											this.graph.materials[i].ambient_g,
 											this.graph.materials[i].ambient_b,
 											this.graph.materials[i].ambient_a);
-		this.listAppearances[i].setDiffuse(this.graph.materials[i].diffuse_r,
+		this.listAppearances[this.graph.materials[i].id].setDiffuse(this.graph.materials[i].diffuse_r,
 											this.graph.materials[i].diffuse_g,
 											this.graph.materials[i].diffuse_b,
 											this.graph.materials[i].diffuse_a);
-		this.listAppearances[i].setSpecular(this.graph.materials[i].specular_r,
+		this.listAppearances[this.graph.materials[i].id].setSpecular(this.graph.materials[i].specular_r,
 											this.graph.materials[i].specular_g,
 											this.graph.materials[i].specular_b,
 											this.graph.materials[i].specular_a);
-		this.listAppearances[i].setShininess(this.graph.materials[i].shininess);
+		this.listAppearances[this.graph.materials[i].id].setShininess(this.graph.materials[i].shininess);
+	}
+}
+// ---------------- TRANSFORMATIONS ------------------
+XMLscene.prototype.getTransformations = function(){
+	this.listTransformations = [];
+
+	for (i in this.graph.transformations){
+		this.matrix = mat4.create();
+		
+		for (var j in this.graph.transformations[i].changes){
+			if (this.graph.transformations[i].changes[j].type == 'translate'){
+				mat4.translate(this.matrix,this.matrix,[this.graph.transformations[i].changes[j].xtrans,
+														this.graph.transformations[i].changes[j].ytrans,
+														this.graph.transformations[i].changes[j].ztrans]);
+			}
+			else if (this.graph.transformations[i].changes[j].type == "scale"){
+				mat4.scale(this.matrix,this.matrix,[	this.graph.transformations[i].changes[j].scalex,
+														this.graph.transformations[i].changes[j].scaley,
+														this.graph.transformations[i].changes[j].scalez]);
+			}
+			else{
+				if (this.graph.transformations[i].changes[j].axis == 'x'){
+					mat4.rotate(this.matrix,this.matrix,Math.PI * this.graph.transformations[i].changes[j].angle / 180, [1,0,0]);
+				}
+				else if(this.graph.transformations[i].changes[j].axis == 'y'){
+					mat4.rotate(this.matrix,this.matrix,Math.PI * this.graph.transformations[i].changes[j].angle / 180, [0,1,0]);
+				}
+				else{
+					mat4.rotate(this.matrix,this.matrix,Math.PI * this.graph.transformations[i].changes[j].angle / 180, [0,0,1]);
+				}
+			}
+		}
+		this.listTransformations[this.graph.transformations[i].id] = this.matrix;
 	}
 }
 
+// ------------------ TEXTURES -----------------------
+XMLscene.prototype.initTextures = function() {
+
+}
 // ----------------- PRIMITIVES ----------------------
 
 XMLscene.prototype.initPrimitives = function(){
@@ -211,21 +248,61 @@ XMLscene.prototype.initPrimitives = function(){
 
 // ----------------- COMPONENTS ----------------------
 
-XMLscene.prototype.initComponents = function(){
+XMLscene.prototype.calcMatrix = function(oldMatrix, transf){
+	var newMatrix = mat4.create();
+	mat4.multiply(newMatrix, oldMatrix, transf);
+	return newMatrix;
+}
+
+XMLscene.prototype.displayPrim = function(primitive, currMatrix, mats, tex){
+	this.listReadyToDisplay.push([primitive, currMatrix, mats, tex]);
+	console.log(currMatrix);
+}
+
+XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, tex){
+
+	// se tiver primitivas como filho, display.
+	for (var i in graphNode.primitiverefs){
+		this.displayPrim(this.listPrimitives[graphNode.primitiverefs[i]], currMatrix, mats, tex);
+	}
+
+	for (var i in graphNode.componentrefs){
+
+		var newMatrix;
+		if (graphNode.transformationref != null) {
+			newMatrix = this.calcMatrix(currMatrix, this.listTransformations[graphNode.transformationref]);
+		}
+		else newMatrix = currMatrix;
+		// mats
+		// tex
+		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], newMatrix, mats, tex);
+	}
 
 }
+
+XMLscene.prototype.initComponents = function(){
+	this.root = this.graph.components[this.graph.root];
+	this.initialMatrix = this.listTransformations[this.root.transformationref];
+	this.defMats = this.root.materials;
+	this.defTex = this.root.texture;
+	this.calcAndDisplayGraph(this.root, this.initialMatrix, this.defMats, this.defTex);
+}
+
+
 // -----------------------------------------------------------------------------------------------------
 // -------------------------------- HANDLER CALLING AND SCENE DISPLAY ----------------------------------
 // -----------------------------------------------------------------------------------------------------
 
 XMLscene.prototype.onGraphLoaded = function () 
 {
+	this.listReadyToDisplay = [];
 	this.currentCamera = 0;
 	this.initGraphGlobalLighting();
 	this.initGraphAxis();
 	this.initGraphCameras();
 	this.initAppearances();
 	this.initGraphLights();
+	this.getTransformations();
 	this.initPrimitives();
 	this.initComponents();
 };
@@ -256,7 +333,13 @@ XMLscene.prototype.display = function () {
 		for (var i = 0; i < this.lights.length; i++){
 			this.lights[i].update();
 		}
-	};	
-	this.prim1.display();
 
+		for (var i in this.listReadyToDisplay){
+			this.pushMatrix();
+				this.listAppearances[this.listReadyToDisplay[i][2][0]].apply();
+				this.multMatrix(this.listReadyToDisplay[i][1]);
+				this.listReadyToDisplay[i][0].display();
+			this.popMatrix();
+		}
+	};	
 };

@@ -54,10 +54,10 @@
 	
 	<materials>
         <material id="matDefault" >
-            <emission r="0.2" g="0.4" b="0.8" a="1" />
-            <ambient r="0.2" g="0.4" b="0.8" a="1" />
-            <diffuse r="0.2" g="0.4" b="0.8" a="1" />
-            <specular r="0.2" g="0.4" b="0.8" a="1" />
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="1" g="1" b="1" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
             <shininess value="10" />
         </material>
         
@@ -80,13 +80,14 @@
 	
 	<transformations>
         <transformation id="transWallX">
-           	<translate x="0.5" y="0.5" z="0" />
+           	<translate x="4.5" y="3" z="0" />
         </transformation>
         <transformation id="transWallZ">
-        	<translate x="0" y="0.5" z="0.5" /> 
+        	<translate x="0" y="3" z="4.5" /> 
            	<rotate axis="y" angle="90" />
         </transformation>
         <transformation id="transFloor">
+        	<translate x="4.5" y="0" z="4.5" />
         	<scale x="9" y="1" z="9" />
            	<rotate axis="x" angle="-90" />
         </transformation>
@@ -115,14 +116,33 @@
 	
 	<primitives>
         <primitive id="rect">
-            <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="-0.5" />
+            <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
         </primitive>
         <primitive id="cylinder">
-        	<cylinder base="1" top="1" height="1" slices="8" stacks="20" />
+        	<cylinder base="1" top="1" height="1" slices="20" stacks="20" />
         </primitive>
     </primitives>
 
 	<components>
+		
+		<component id="root" >
+            <transformation>
+                <translate x="0" y="0" z="0" />
+            </transformation>
+            <materials>
+                <material id="matDefault" />
+            </materials>
+            <texture id="none" />
+            <children>
+            	<componentref id= "WallX" />
+            	<componentref id= "WallZ" />
+            	<componentref id= "Table" />
+            	<componentref id= "Lamp"  />
+            	<componentref id= "Sofa"  />
+            	<componentref id= "Floor" />
+            </children>
+        </component>
+
 		<component id="primRect">
 			<transformation>
 			</transformation>
@@ -239,7 +259,7 @@
 		</component>
 		<component id="CubeWall4">
 			<transformation>
-				<rotate axis="y" angle="240"/>
+				<rotate axis="y" angle="270"/>
 				<translate x="0" y="0" z="0.5" />
 			</transformation>
 			<materials>
@@ -252,7 +272,7 @@
 		</component>
 		<component id="CubeWall5">
 			<transformation>
-				<rotate axis="x" angle="90"/>
+				<rotate axis="x" angle="-90"/>
 				<translate x="0" y="0" z="0.5" />
 			</transformation>
 			<materials>
@@ -265,7 +285,7 @@
 		</component>
 		<component id="CubeWall6">
 			<transformation>
-				<rotate axis="x" angle="180"/>
+				<rotate axis="x" angle="90"/>
 				<translate x="0" y="0" z="0.5" />
 			</transformation>
 			<materials>
@@ -440,9 +460,7 @@
 		
 		<component id="SofaLeg">
 			<transformation>
-				<translate x="0" y="-0.75" z="0" />
-				<scale x="0.05" y="0.1" z="0.05" />
-				<rotate axis="x" angle="90" />
+				
 			</transformation>
 			<materials>
 				<material id="sofaLegMat"/>
@@ -455,6 +473,9 @@
 		
 		<component id="SofaLeg1">
 			<transformation>
+				<translate x="0" y="-0.75" z="0" />
+				<scale x="0.05" y="0.1" z="0.05" />
+				<rotate axis="x" angle="90" />
 				<translate x="18" y="8" z="0" />
 			</transformation>
 			<materials>
@@ -468,6 +489,9 @@
 		
 		<component id="SofaLeg2">
 			<transformation>
+				<translate x="0" y="-0.75" z="0" />
+				<scale x="0.05" y="0.1" z="0.05" />
+				<rotate axis="x" angle="90" />
 				<translate x="-2" y="8" z="0" />
 			</transformation>
 			<materials>
@@ -481,6 +505,9 @@
 		
 		<component id="SofaLeg3">
 			<transformation>
+				<translate x="0" y="-0.75" z="0" />
+				<scale x="0.05" y="0.1" z="0.05" />
+				<rotate axis="x" angle="90" />
 				<translate x="18" y="-48" z="0" />
 			</transformation>
 			<materials>
@@ -494,6 +521,9 @@
 		
 		<component id="SofaLeg4">
 			<transformation>
+				<translate x="0" y="-0.75" z="0" />
+				<scale x="0.05" y="0.1" z="0.05" />
+				<rotate axis="x" angle="90" />
 				<translate x="-2" y="-48" z="0" />
 			</transformation>
 			<materials>
@@ -543,7 +573,6 @@
 		
 		<component id="TableLeg">
 			<transformation>
-				<scale x="0.1" y="0.5" z="0.1" />
 			</transformation>
 			<materials>
 				<material id="sofaLegMat" />
@@ -556,6 +585,7 @@
 		
 		<component id="TableLeg1">
 			<transformation>
+				<scale x="0.1" y="0.5" z="0.1" />
 				<translate x="3.5" y="-0.5" z="10"/>
 			</transformation>
 			<materials>
@@ -569,6 +599,7 @@
 		
 		<component id="TableLeg2">
 			<transformation>
+				<scale x="0.1" y="0.5" z="0.1" />
 				<translate x="-3.5" y="-0.5" z="10"/>
 			</transformation>
 			<materials>
@@ -582,6 +613,7 @@
 		
 		<component id="TableLeg3">
 			<transformation>
+				<scale x="0.1" y="0.5" z="0.1" />
 				<translate x="3.5" y="-0.5" z="-10"/>
 			</transformation>
 			<materials>
@@ -595,6 +627,7 @@
 		
 		<component id="TableLeg4">
 			<transformation>
+				<scale x="0.1" y="0.5" z="0.1" />
 				<translate x="-3.5" y="-0.5" z="-10"/>
 			</transformation>
 			<materials>
@@ -641,7 +674,7 @@
 		<component id="LampRod">
 			<transformation>
 				<scale x="0.06" y="2.5" z="0.06" />
-				<rotate axis="x" angle="90" />
+				<rotate axis="x" angle="-90" />
 			</transformation>
 			<materials>
 				<material id="matDefault" />
