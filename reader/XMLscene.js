@@ -223,9 +223,25 @@ XMLscene.prototype.getTransformations = function(){
 }
 
 // ------------------ TEXTURES -----------------------
-XMLscene.prototype.initTextures = function() {
 
+XMLscene.prototype.initTextures = function() {
+	this.listTextures = [];
+
+	for(var i = 0;i < this.graph.textures.length;i++){
+		this.listTextures[this.graph.textures[i].id] = new CGFappearance(this);
+		this.listTextures[this.graph.textures[i].id].loadTexture(this.graph.textures[i].file);
+		this.listTextures[this.graph.textures[i].id].length_s = this.graph.textures[i].length_s;
+		this.listTextures[this.graph.textures[i].id].length_t = this.graph.textures[i].length_t;
+	}
 }
+
+XMLscene.prototype.mergeMaterialToTex = function(texID,matID){
+	this.listTextures[texID].setDiffuse(this.listAppearances[matID].diffuse);
+	this.listAmbient[texID].setDiffuse(this.listAppearances[matID].ambient);
+	this.listEmission[texID].setDiffuse(this.listAppearances[matID].emission);
+	this.listTextures[texID].setShininess(this.listAppearances[matID].shininess);
+}
+
 // ----------------- PRIMITIVES ----------------------
 
 XMLscene.prototype.initPrimitives = function(){
@@ -247,38 +263,82 @@ XMLscene.prototype.initPrimitives = function(){
 
 // ----------------- COMPONENTS ----------------------
 
+function ToDisplay(primitive, currMatrix, mats, tex){
+	this.primitive = primitive;
+	this.currMatrix = currMatrix;
+	this.mats = mats;
+	this.tex = tex;
+	this.activeMat = 0;
+}
+
+ToDisplay.prototype.incrementActiveMat = function(){
+	var length = this.mats.length;
+	this.activeMat++;
+	if (this.activeMat >= length) this.activeMat = 0;
+	console.log("length = " + length + ", ac: " + this.activeMat);
+}
+
+XMLscene.prototype.displayPrim = function(toDisplayPrim){
+	this.pushMatrix();
+		this.listAppearances[toDisplayPrim.mats[toDisplayPrim.activeMat]].apply();
+		this.multMatrix(toDisplayPrim.currMatrix);
+		this.listPrimitives[toDisplayPrim.primitive].display();
+	this.popMatrix();
+}
+
 XMLscene.prototype.calcMatrix = function(oldMatrix, transf){
 	var newMatrix = mat4.create();
 	mat4.multiply(newMatrix, oldMatrix, transf);
 	return newMatrix;
 }
 
-XMLscene.prototype.appendMats = function(graphNode, oldMats){
-	/*var matsToReturn = [];
-	var matsNotInOld = [];
-	for (var i in oldMats){
-		var exists = false;
-		for (var j in mats){
-			if (mats[j] )
-		}
-	}*/
+XMLscene.prototype.push_back = function(mats, mat){
+	var newMats = [];
+	newMats[0] = mat;
+	for (var i = 0; i < mats.length; i++){
+		var j = 1 + i;
+		newMats[j] = mats[i];
+	}
+	return newMats;
 }
 
-XMLscene.prototype.displayPrim = function(primitive, currMatrix, mats, tex){
-	console.log(primitive);
-	this.listReadyToDisplay.push([primitive, currMatrix, mats, tex]);
+XMLscene.prototype.appendMats = function(graphNode, oldMats){
+	var newMats = oldMats;
+	for (var i in graphNode.materials){
+		if (graphNode.materials[i] == "inherit") continue;
+		var exists = false;
+		for (var j in oldMats){
+			if (oldMats[j] == graphNode.materials[i]) exists = true;
+		}
+		if (!exists) newMats = this.push_back(newMats, graphNode.materials[i]);
+	}
+	return newMats;
+}
+
+XMLscene.prototype.hasInherit = function(mats){
+	for (var i in mats){
+		if (mats[i] == "inherit") return true;
+	}
+	return false;
+}
+
+XMLscene.prototype.getMats = function(graphNode, mats){
+	if (this.hasInherit(graphNode.materials)){
+		return this.appendMats(graphNode, mats);
+	}
+	else {
+		return this.appendMats(graphNode, []);}
 }
 
 XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, tex){
 	var newMatrix;
 	newMatrix = this.calcMatrix(currMatrix, this.listTransformations[graphNode.transformationref]);
-
 	for (var i in graphNode.primitiverefs){
-		this.displayPrim(this.listPrimitives[graphNode.primitiverefs[i]], newMatrix, mats, tex);
+		this.listReadyToDisplay.push(new ToDisplay(graphNode.primitiverefs[i], newMatrix, mats, tex));
 	}
 
 	for (var i in graphNode.componentrefs){
-		console.log(mats);
+		mats = this.getMats(graphNode, mats);
 		// tex
 		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], newMatrix, mats, tex);
 	}
@@ -298,8 +358,15 @@ XMLscene.prototype.initComponents = function(){
 // -------------------------------- HANDLER CALLING AND SCENE DISPLAY ----------------------------------
 // -----------------------------------------------------------------------------------------------------
 
+XMLscene.prototype.cycleMaterials = function(){
+	for (var i in this.listReadyToDisplay){
+		this.listReadyToDisplay[i].incrementActiveMat();
+	}
+}
+
 XMLscene.prototype.onGraphLoaded = function () 
 {
+	this.activeMat = 0;
 	this.listReadyToDisplay = [];
 	this.currentCamera = 0;
 	this.initGraphGlobalLighting();
@@ -340,11 +407,7 @@ XMLscene.prototype.display = function () {
 		}
 
 		for (var i in this.listReadyToDisplay){
-			this.pushMatrix();
-				this.listAppearances[this.listReadyToDisplay[i][2][0]].apply();
-				this.multMatrix(this.listReadyToDisplay[i][1]);
-				this.listReadyToDisplay[i][0].display();
-			this.popMatrix();
+			this.displayPrim(this.listReadyToDisplay[i]);
 		}
 	};	
 };

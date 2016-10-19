@@ -51,17 +51,19 @@ MySceneGraph.prototype.onXMLError=function (message) {
 };
 
 
-MySceneGraph.prototype.addId = function(id){
+MySceneGraph.prototype.addId = function(id, type){
 
 	if (id == null) return false;
+	
+	var pair = [id, type];
 
 	for ( var i in this.idList ){
-		if (this.idList[i] == id){
+		if (this.idList[i][0] == id && this.idList[i][1] == type){
 			return false;
 		}
 	}
 
-	this.idList[this.idList.length] = id;
+	this.idList[this.idList.length] = [id, type];
 	return true;
 
 }
@@ -164,7 +166,7 @@ MySceneGraph.prototype.parsePerspective = function(rootElement){
 		//process it
 		this.listviews[i] = new Perspective(curr_per);
 
-		if(!this.addId(curr_per.id)){
+		if(!this.addId(curr_per.id, "view")){
 			return "Bad Id found: " + curr_per.id;
 		}		
 	}
@@ -299,10 +301,16 @@ MySceneGraph.prototype.parseLights = function(rootElement){
 
 	for (var i = 0; i < this.lightsOmni.length; i++){
 		this.listOmni[i] = new LightOmni(this.lightsOmni[i]);
+		if(!this.addId(this.listOmni[i].id, "light")){
+			return "Bad Id found: " + this.listOmni[i].id;
+		}	
 	}
 
 	for (var i = 0; i < this.lightsSpot.length; i++){
 		this.listSpot[i] = new LightSpot(this.lightsSpot[i]);
+		if(!this.addId(this.listSpot[i].id, "light")){
+			return "Bad Id found: " + this.listSpot[i].id;
+		}	
 	}
 }
 
@@ -346,7 +354,7 @@ MySceneGraph.prototype.parseTexture = function(rootElement){
 	for (var i = 0; i < ntextures; i++){
 		var curr_tex = elems[0].children[i];
 		this.textures[i] = new Texture(curr_tex);
-		if(!this.addId(curr_tex.id)){
+		if(!this.addId(curr_tex.id, "texture")){
 			return "Bad Id found: " + curr_tex.id;
 		}
 	}
@@ -448,7 +456,7 @@ MySceneGraph.prototype.parseMaterials = function(rootElement){
 		
 		this.materials[i] = new Material(curr_mat);
 
-		if(!this.addId(curr_mat.id)){
+		if(!this.addId(curr_mat.id, "material")){
 			return "Bad Id found: " + curr_tex.id;
 		}
 	}
@@ -507,7 +515,7 @@ MySceneGraph.prototype.parseTransformation = function(rootElement){
 	for(var i = 0;i < ntransforms;i++){
 		var curr_trans = elems[0].children[i];
 		this.transformations[i] = new Transformations(curr_trans);
-		if(!this.addId(curr_trans.id)){
+		if(!this.addId(curr_trans.id, "transformation")){
 			return "Bad Id found: " + curr_trans.id;
 		}
 	}
@@ -599,7 +607,7 @@ MySceneGraph.prototype.parsePrimitives = function(rootElement){
     for(var i = 0;i < nprimitives;i++){
     	var curr_primitive = elems[0].children[i];
     	this.primitives[i] = new Primitive(curr_primitive);
-    	if(!this.addId(curr_primitive.id)){
+    	if(!this.addId(curr_primitive.id, "primitive")){
 			return "Bad Id found: " + curr_primitive.id;
 		}
     }
@@ -644,7 +652,7 @@ function Component(graph,comp){
 			var newtransID = "trans";
 			var n = this.id;
 			var newid = newtransID.concat(n);
-			if(graph.addId(newid)){
+			if(graph.addId(newid,"transformation")){
 				transf[0].id = newid;
 				break;
 			}
@@ -692,16 +700,22 @@ function Component(graph,comp){
 	for(var i = 0; i < mater[0].children.length;i++){
 		var curr_mat = mater[0].children[i];
 		var curr_id = curr_mat.id;
-		var found = false;
-		for(var j = 0;j < graph.materials.length;j++){
-			if(graph.materials[j].id == curr_id){
-			    found = true;
-			    break;
-			}
+
+		if (curr_mat.id == "inherit"){
+			this.materials[i] = "inherit";
 		}
-		if(found == false)
-			return "id do material de um componente nao atribuido";
-		this.materials[i] = mater[0].children[i].id;
+		else{
+			var found = false;
+			for(var j = 0;j < graph.materials.length;j++){
+				if(graph.materials[j].id == curr_id){
+					found = true;
+					break;
+				}
+			}
+			if(found == false)
+				return "id do material de um componente nao atribuido";
+			this.materials[i] = mater[0].children[i].id;
+		}
 	}
 }
 
@@ -730,7 +744,7 @@ MySceneGraph.prototype.parseComponents = function(rootElement){
 
     for(var i = 0 ; i < ncomponents ; i++){
     	var curr_component = elems[0].children[i];
-    	if(!this.addId(curr_component.id)){
+    	if(!this.addId(curr_component.id, "component")){
 			return "Bad Id found: " + curr_component.id;
     	}
     	this.components[curr_component.id] = new Component(this,curr_component);
@@ -809,6 +823,6 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 	this.errMsg = this.verifyComponents(rootElement);
 	if (this.errMsg != null) return this.errMsg;
 
-
+	console.log(this.idList);
 
 }

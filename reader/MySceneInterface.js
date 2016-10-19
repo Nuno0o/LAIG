@@ -15,5 +15,7 @@ MySceneInterface.prototype.processKeyDown = function(event) {
     {
     	// V
 		case (86): this.scene.cycleCamera(); this.setActiveCamera(this.scene.camera); break;
+		// M	
+		case (77): this.scene.cycleMaterials(); break;
 	}
 }
