@@ -549,26 +549,26 @@ function Primitive(prim){
 		    return null;
 	}
 	if(this.name == "cylinder"){
-		this.base = prim.children[0].attributes.getNamedItem("base").value;
-		this.top = prim.children[0].attributes.getNamedItem("top").value;
-		this.height = prim.children[0].attributes.getNamedItem("height").value;
-		this.slices = prim.children[0].attributes.getNamedItem("slices").value;
-		this.stacks = prim.children[0].attributes.getNamedItem("stacks").value;
+		this.base = parseFloat(prim.children[0].attributes.getNamedItem("base").value);
+		this.top = parseFloat(prim.children[0].attributes.getNamedItem("top").value);
+		this.height = parseFloat(prim.children[0].attributes.getNamedItem("height").value);
+		this.slices = parseFloat(prim.children[0].attributes.getNamedItem("slices").value);
+		this.stacks = parseFloat(prim.children[0].attributes.getNamedItem("stacks").value);
 		if(this.top != null && this.height != null && this.slices != null && this.stacks != null)
 		    return null;
 	}
 	if(this.name == "sphere"){
-		this.radius = prim.children[0].attributes.getNamedItem("radius").value;
-		this.slices = prim.children[0].attributes.getNamedItem("slices").value;
-		this.stacks = prim.children[0].attributes.getNamedItem("stacks").value;
+		this.radius = parseFloat(prim.children[0].attributes.getNamedItem("radius").value);
+		this.slices = parseFloat(prim.children[0].attributes.getNamedItem("slices").value);
+		this.stacks = parseFloat(prim.children[0].attributes.getNamedItem("stacks").value);
 		if(this.radius != null && this.slices != null && this.stacks != null)
 		    return null;
 	}
 	if(this.name == "torus"){
-		this.inner = prim.children[0].attributes.getNamedItem("inner").value;
-		this.outer = prim.children[0].attributes.getNamedItem("outer").value;
-		this.slices = prim.children[0].attributes.getNamedItem("slices").value;
-		this.loops = prim.children[0].attributes.getNamedItem("loops").value;
+		this.inner = parseFloat(prim.children[0].attributes.getNamedItem("inner").value);
+		this.outer = parseFloat(prim.children[0].attributes.getNamedItem("outer").value);
+		this.slices = parseFloat(prim.children[0].attributes.getNamedItem("slices").value);
+		this.loops = parseFloat(prim.children[0].attributes.getNamedItem("loops").value);
 		if(this.loops != null && this.inner != null && this.outer != null && this.slices != null)
 			return null;
 	}

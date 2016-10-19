@@ -195,7 +195,6 @@ XMLscene.prototype.getTransformations = function(){
 
 	for (i in this.graph.transformations){
 		this.matrix = mat4.create();
-		
 		for (var j in this.graph.transformations[i].changes){
 			if (this.graph.transformations[i].changes[j].type == 'translate'){
 				mat4.translate(this.matrix,this.matrix,[this.graph.transformations[i].changes[j].xtrans,
@@ -240,7 +239,7 @@ XMLscene.prototype.initPrimitives = function(){
 			this.listPrimitives[pri.id] = new MyPrimTriang(this,pri.x1,pri.y1,pri.z1,pri.x2,pri.y2,pri.z2,pri.x3,pri.y3,pri.z3);
 		}
 		if(pri.name == 'cylinder'){
-			this.listPrimitives[pri.id] = new MyCylinder(this, pri.slices, pri.stacks,pri.height,pri.base,pri.top);
+			this.listPrimitives[pri.id] = new MyPrimCylinder(this, pri.slices, pri.stacks,pri.height,pri.base,pri.top);
 		}
 		
 	}
@@ -254,26 +253,32 @@ XMLscene.prototype.calcMatrix = function(oldMatrix, transf){
 	return newMatrix;
 }
 
+XMLscene.prototype.appendMats = function(graphNode, oldMats){
+	/*var matsToReturn = [];
+	var matsNotInOld = [];
+	for (var i in oldMats){
+		var exists = false;
+		for (var j in mats){
+			if (mats[j] )
+		}
+	}*/
+}
+
 XMLscene.prototype.displayPrim = function(primitive, currMatrix, mats, tex){
+	console.log(primitive);
 	this.listReadyToDisplay.push([primitive, currMatrix, mats, tex]);
-	console.log(currMatrix);
 }
 
 XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, tex){
+	var newMatrix;
+	newMatrix = this.calcMatrix(currMatrix, this.listTransformations[graphNode.transformationref]);
 
-	// se tiver primitivas como filho, display.
 	for (var i in graphNode.primitiverefs){
-		this.displayPrim(this.listPrimitives[graphNode.primitiverefs[i]], currMatrix, mats, tex);
+		this.displayPrim(this.listPrimitives[graphNode.primitiverefs[i]], newMatrix, mats, tex);
 	}
 
 	for (var i in graphNode.componentrefs){
-
-		var newMatrix;
-		if (graphNode.transformationref != null) {
-			newMatrix = this.calcMatrix(currMatrix, this.listTransformations[graphNode.transformationref]);
-		}
-		else newMatrix = currMatrix;
-		// mats
+		console.log(mats);
 		// tex
 		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], newMatrix, mats, tex);
 	}
