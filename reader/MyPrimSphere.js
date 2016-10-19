@@ -17,13 +17,7 @@
  MyPrimSphere.prototype.constructor = MyPrimSphere;
 
  MyPrimSphere.prototype.initBuffers = function() {
- 	/*
- 	* TODO:
- 	* Replace the following lines in order to build a prism with a **single mesh**.
- 	*
- 	* How can the vertices, indices and normals arrays be defined to
- 	* build a prism with varying number of slices and stacks?
- 	*/
+ 	
  	var degree2rad= Math.PI/180.0;
  	var incAngle=(360/this.slices)*degree2rad;
 	var angle=0;
