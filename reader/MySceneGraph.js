@@ -717,6 +717,9 @@ function Component(graph,comp){
 			this.materials[i] = mater[0].children[i].id;
 		}
 	}
+	//read texture
+	var tex = comp.getElementsByTagName('texture');
+	this.texture = new Texture(tex[0]);
 }
 
 MySceneGraph.prototype.parseComponents = function(rootElement){
@@ -822,7 +825,5 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 	
 	this.errMsg = this.verifyComponents(rootElement);
 	if (this.errMsg != null) return this.errMsg;
-
-	console.log(this.idList);
 
 }

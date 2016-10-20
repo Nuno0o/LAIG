@@ -236,10 +236,12 @@ XMLscene.prototype.initTextures = function() {
 }
 
 XMLscene.prototype.mergeMaterialToTex = function(texID,matID){
-	this.listTextures[texID].setDiffuse(this.listAppearances[matID].diffuse);
-	this.listAmbient[texID].setDiffuse(this.listAppearances[matID].ambient);
-	this.listEmission[texID].setDiffuse(this.listAppearances[matID].emission);
-	this.listTextures[texID].setShininess(this.listAppearances[matID].shininess);
+		this.listTextures[texID].setDiffuse(this.listAppearances[matID].diffuse);
+		this.listTextures[texID].setAmbient(this.listAppearances[matID].ambient);
+		this.listTextures[texID].setEmission(this.listAppearances[matID].emission);
+		this.listTextures[texID].setSpecular(this.listAppearances[matID].specular);
+		this.listTextures[texID].setShininess(this.listAppearances[matID].shininess);
+		//this.listTextures[texID].loadTexture();
 }
 
 // ----------------- PRIMITIVES ----------------------
@@ -275,12 +277,15 @@ ToDisplay.prototype.incrementActiveMat = function(){
 	var length = this.mats.length;
 	this.activeMat++;
 	if (this.activeMat >= length) this.activeMat = 0;
-	console.log("length = " + length + ", ac: " + this.activeMat);
 }
 
 XMLscene.prototype.displayPrim = function(toDisplayPrim){
 	this.pushMatrix();
-		this.listAppearances[toDisplayPrim.mats[toDisplayPrim.activeMat]].apply();
+		if (toDisplayPrim.tex != null) {
+			this.mergeMaterialToTex(toDisplayPrim.tex, toDisplayPrim.mats[toDisplayPrim.activeMat]);
+			this.listTextures[toDisplayPrim.tex].apply();
+		}
+		else this.listAppearances[toDisplayPrim.mats[toDisplayPrim.activeMat]].apply();
 		this.multMatrix(toDisplayPrim.currMatrix);
 		this.listPrimitives[toDisplayPrim.primitive].display();
 	this.popMatrix();
@@ -315,19 +320,35 @@ XMLscene.prototype.appendMats = function(graphNode, oldMats){
 	return newMats;
 }
 
-XMLscene.prototype.hasInherit = function(mats){
+XMLscene.prototype.matsHasInherit = function(mats){
 	for (var i in mats){
 		if (mats[i] == "inherit") return true;
 	}
 	return false;
 }
 
+XMLscene.prototype.texHasInherit = function(texID){
+	if (texID == "inherit") return true;
+	return false;
+}
+
+XMLscene.prototype.texHasNone = function(texID){
+	if (texID == "none") return true;
+	return false;
+}
+
 XMLscene.prototype.getMats = function(graphNode, mats){
-	if (this.hasInherit(graphNode.materials)){
+	if (this.matsHasInherit(graphNode.materials)){
 		return this.appendMats(graphNode, mats);
 	}
 	else {
 		return this.appendMats(graphNode, []);}
+}
+
+XMLscene.prototype.getComponentTex = function(graphNode, currTexID){
+	if (this.texHasNone(graphNode.texture.id)) return null;
+	else if (this.texHasInherit(graphNode.texture.id)) return currTexID;
+	else return graphNode.texture.id;
 }
 
 XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, tex){
@@ -339,10 +360,9 @@ XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, t
 
 	for (var i in graphNode.componentrefs){
 		mats = this.getMats(graphNode, mats);
-		// tex
+		tex = this.getComponentTex(graphNode, tex.id);
 		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], newMatrix, mats, tex);
 	}
-
 }
 
 XMLscene.prototype.initComponents = function(){
@@ -366,6 +386,7 @@ XMLscene.prototype.cycleMaterials = function(){
 
 XMLscene.prototype.onGraphLoaded = function () 
 {
+	this.enableTextures(true);
 	this.activeMat = 0;
 	this.listReadyToDisplay = [];
 	this.currentCamera = 0;
@@ -373,6 +394,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.initGraphAxis();
 	this.initGraphCameras();
 	this.initAppearances();
+	this.initTextures();
 	this.initGraphLights();
 	this.getTransformations();
 	this.initPrimitives();
