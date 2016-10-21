@@ -44,12 +44,13 @@
     </lights>
 
     <textures>
-    	<texture id="wood" file="./resources/images/floor.png" length_s="0.2" length_t="0.3" /> 
+    	<texture id="wood" file="./resources/images/floor.png" length_s="1" length_t="1" /> 
 		<texture id="sofaCushionTex" file="./resources/images/cushion.jpg" length_s="1" length_t="1" />
 		<texture id="sofaBaseTex" file="./resources/images/sofaBase.jpg" length_s="1" length_t="1" />
 		<texture id="gift1Tex" file="./resources/images/gift1.jpg" length_s="1" length_t="1" />
 		<texture id="gift2Tex" file="./resources/images/gift2.jpg" length_s="1" length_t="1" />
 		<texture id="lampTex" file="./resources/images/lamp.jpg" length_s="1" length_t="1" />
+		<texture id="discoBallTex" file ="./resources/images/disco.jpg" length_s="1" length_t="1"/>
 	</textures>
 	
 	<materials>
@@ -135,14 +136,23 @@
 			<translate x="0.6" y="2.1" z="0" /> 
         	<scale x="1" y="0.5" z="1.9" />
         </transformation>
-		<transformation id="transSofa">
+		<transformation id="transSofa1">
 			<translate x="2" y="0.85" z="7" />
+		</transformation>
+		<transformation id="transSofa2">
+			<rotate axis="y" angle="180" />
+			<translate x="-6" y="0.85" z="-5" />
 		</transformation>
 		<transformation id="transTable">
 			<translate x="4" y="0.5" z="6" />
 		</transformation>
 		<transformation id="transLamp">
 			<translate x="2.5" y="0.05" z="3.5" />
+		</transformation>
+		<transformation id="transDiscoBall">
+			<rotate axis="x" angle="90" />
+			<translate x="4" y="6" z="-5" />
+			<scale x="2" y="2" z="2" />
 		</transformation>
     </transformations>
 	
@@ -153,6 +163,9 @@
         <primitive id="cylinder">
         	<cylinder base="1" top="1" height="1" slices="20" stacks="20" />
         </primitive>
+        <primitive id="sphere">
+			<sphere radius="0.5" slices="50" stacks="50" />
+		</primitive>
     </primitives>
 
 	<components>
@@ -170,10 +183,12 @@
             	<componentref id= "WallZ" />
             	<componentref id= "Table" />
             	<componentref id= "Lamp"  />
-            	<componentref id= "Sofa"  />
+            	<componentref id= "Sofa1"  />
+            	<componentref id= "Sofa2" />
             	<componentref id= "Floor" />
             	<componentref id= "C1" />
             	<componentref id= "C2" />
+            	<componentref id= "DiscoBall" />
             </children>
         </component>
 
@@ -201,6 +216,18 @@
 			</children>
 		</component>
 		
+		<component id="primSphere">
+			<transformation>
+			</transformation>
+			<materials>
+				<material id="matDefault" />
+			</materials>
+			<texture id="none" />
+			<children>
+				<primitiveref id="sphere"/>
+			</children>
+		</component>
+
 		<component id="Wall">
 			<transformation>
 				<scale x="9" y="6" z="9" />
@@ -337,7 +364,7 @@
 			<materials>
 				<material id="inherit" />
 			</materials>
-			<texture id="none" />
+			<texture id="inherit" />
 			<children>
 				<componentref id="CubeWall1" />
 				<componentref id="CubeWall2" />
@@ -560,9 +587,9 @@
 			</children>
 		</component>
 		
-		<component id="Sofa">
+		<component id="Sofa1">
 			<transformation>
-				<transformationref id="transSofa" />
+				<transformationref id="transSofa1" />
 			</transformation>
 			<materials>
 				<material id="inherit" />
@@ -583,6 +610,29 @@
 			</children>
 		</component>
 		
+		<component id="Sofa2">
+			<transformation>
+				<transformationref id="transSofa2" />
+			</transformation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="inherit" />
+			<children>
+				<componentref id="SofaTopCushion1" />
+				<componentref id="SofaTopCushion2" />
+				<componentref id="SofaTopCushion3" />
+				<componentref id="SofaSeat1" />
+				<componentref id="SofaSeat2" />
+				<componentref id="SofaSeat3" />
+				<componentref id="SofaBase" />
+				<componentref id="SofaLeg1" />
+				<componentref id="SofaLeg2" />
+				<componentref id="SofaLeg3" />
+				<componentref id="SofaLeg4" />
+			</children>
+		</component>
+
 		<component id="TableTop">
 			<transformation>
 				<scale x="1" y="0.2" z="2.5" />
@@ -736,6 +786,19 @@
 				<componentref id="LampTop" />
 				<componentref id="LampRod" />
 				<componentref id="LampBase" />
+			</children>
+		</component>
+
+		<component id= "DiscoBall">
+			<transformation>
+				<transformationref id="transDiscoBall" />
+			</transformation>
+			<materials>
+				<material id="matDefault" />
+			</materials>
+			<texture id="discoBallTex" />
+			<children>
+				<componentref id="primSphere" />
 			</children>
 		</component>
 

@@ -719,7 +719,7 @@ function Component(graph,comp){
 	}
 	//read texture
 	var tex = comp.getElementsByTagName('texture');
-	this.texture = new Texture(tex[0]);
+	this.texture = tex[0].id;
 }
 
 MySceneGraph.prototype.parseComponents = function(rootElement){
