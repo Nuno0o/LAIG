@@ -274,6 +274,9 @@ XMLscene.prototype.initPrimitives = function(){
 		if(pri.name == 'sphere'){
 			this.listPrimitives[pri.id] = new MyPrimSphere(this, pri.radius, pri.slices, pri.stacks);
 		}
+		if(pri.name == 'torus'){
+			this.listPrimitives[pri.id] = new MyPrimTorus(this, pri.inner, pri.outer,pri.slices,pri.loops);
+		}
 	}
 }
 
@@ -296,6 +299,9 @@ ToDisplay.prototype.incrementActiveMat = function(){
 XMLscene.prototype.displayPrim = function(toDisplayPrim){
 	this.pushMatrix();
 		if (toDisplayPrim.tex != null) {
+			if(this.listPrimitives[toDisplayPrim.primitive].constructor.name == 'MyPrimRect' || this.listPrimitives[toDisplayPrim.primitive].constructor.name == 'MyPrimTriang'){
+				this.listPrimitives[toDisplayPrim.primitive].setTex(this.listTextures[toDisplayPrim.tex].length_s,this.listTextures[toDisplayPrim.tex].length_t);
+			}
 			this.mergeMaterialToTex(toDisplayPrim.tex, toDisplayPrim.mats[toDisplayPrim.activeMat]);
 			this.listTextures[toDisplayPrim.tex].apply();
 		}

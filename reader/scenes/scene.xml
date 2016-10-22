@@ -44,7 +44,7 @@
     </lights>
 
     <textures>
-    	<texture id="wood" file="./resources/images/floor.png" length_s="1" length_t="1" /> 
+    	<texture id="wood" file="./resources/images/floor.png" length_s="0.2" length_t="0.2" /> 
 		<texture id="sofaCushionTex" file="./resources/images/cushion.jpg" length_s="1" length_t="1" />
 		<texture id="sofaBaseTex" file="./resources/images/sofaBase.jpg" length_s="1" length_t="1" />
 		<texture id="gift1Tex" file="./resources/images/gift1.jpg" length_s="1" length_t="1" />

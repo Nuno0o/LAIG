@@ -17,6 +17,10 @@ function MyPrimTriang(scene,x1,y1,z1,x2,y2,z2,x3,y3,z3) {
 MyPrimTriang.prototype = Object.create(CGFobject.prototype);
 MyPrimTriang.prototype.constructor=MyPrimTriang;
 
+MyPrimTriang.prototype.setTex = function(length_s,length_t){
+	
+}
+
 MyPrimTriang.prototype.initBuffers = function () {
 	this.vertices = [
             this.x1, this.y1, this.z1,

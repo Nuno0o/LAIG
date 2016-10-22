@@ -15,6 +15,15 @@ function MyPrimRect(scene,x1,y1,x2,y2) {
 MyPrimRect.prototype = Object.create(CGFobject.prototype);
 MyPrimRect.prototype.constructor=MyPrimRect;
 
+MyPrimRect.prototype.setTex = function(length_s,length_t){
+	this.texCoords = [
+    	this.smin*1/length_s,this.tmax*1/length_t,
+    	this.smax*1/length_s,this.tmax*1/length_t,
+    	this.smin*1/length_s,this.tmin*1/length_t,
+    	this.smax*1/length_s,this.tmin*1/length_t
+    ];
+	this.updateTexCoordsGLBuffers();
+}
 MyPrimRect.prototype.initBuffers = function () {
 	this.vertices = [
             this.x1, this.y1, 0.0,
