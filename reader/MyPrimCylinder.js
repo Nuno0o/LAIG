@@ -54,7 +54,7 @@
 		this.normals.push(Math.cos(angle));
 		this.normals.push(Math.sin(angle));
 		this.normals.push(-(this.top-this.base)/this.height);
-		this.texCoords.push(i/this.stacks,1-j/this.slices);
+		this.texCoords.push(j/this.slices,1-i/this.stacks);
 		}
 	}
 

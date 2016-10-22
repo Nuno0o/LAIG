@@ -35,7 +35,7 @@
 		this.normals.push(Math.cos(angle)*Math.sin((i)/(this.stacks)*Math.PI));
 		this.normals.push(Math.sin(angle)*Math.sin((i)/(this.stacks)*Math.PI));
 		this.normals.push(Math.sin( i/(this.stacks)*Math.PI-0.5*Math.PI));
-		this.texCoords.push(1-j/this.slices,i/this.stacks);
+		this.texCoords.push(j/this.slices,1-i/this.stacks);
 		}
 	}
 
