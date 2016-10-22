@@ -306,7 +306,6 @@ XMLscene.prototype.displayPrim = function(toDisplayPrim){
 			this.listTextures[toDisplayPrim.tex].apply();
 		}
 		else {
-
 			this.listAppearances[toDisplayPrim.mats[toDisplayPrim.activeMat]].apply();
 		}
 		this.multMatrix(toDisplayPrim.currMatrix);
@@ -378,6 +377,7 @@ XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, t
 	var newMatrix;
 	newMatrix = this.calcMatrix(currMatrix, this.listTransformations[graphNode.transformationref]);
 	for (var i in graphNode.primitiverefs){
+		tex = this.getComponentTex(graphNode, tex);
 		this.listReadyToDisplay.push(new ToDisplay(graphNode.primitiverefs[i], newMatrix, mats, tex));
 	}
 
