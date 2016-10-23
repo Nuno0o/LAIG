@@ -204,7 +204,7 @@
 			<transformation>
 			</transformation>
 			<materials>
-				<material id="matDefault" />
+				<material id="inherit" />
 			</materials>
 			<texture id="inherit" />
 			<children>
@@ -216,7 +216,7 @@
 			<transformation>
 			</transformation>
 			<materials>
-				<material id="matDefault" />
+				<material id="inherit" />
 			</materials>
 			<texture id="inherit" />
 			<children>
@@ -228,7 +228,7 @@
 			<transformation>
 			</transformation>
 			<materials>
-				<material id="matDefault" />
+				<material id="inherit" />
 			</materials>
 			<texture id="inherit" />
 			<children>
@@ -742,7 +742,7 @@
 				<scale x="0.5" y="0.5" z="0.5" />
 				<rotate axis="x" angle="90" />
 			</transformation>
-			<materials>
+			<materials> 
 				<material id="matLamp1" />
 				<material id="matLamp2" />
 				<material id="matLamp3" />
