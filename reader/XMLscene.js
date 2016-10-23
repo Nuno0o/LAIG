@@ -138,6 +138,7 @@ XMLscene.prototype.initGraphLights = function(){
 		else this.lights[i].disable();
 
 		this.lights[i].setVisible(true);
+		this.lights[i].update();
 
 	}
 	for (var i = 0; i < this.graph.listSpot.length ; i++){
@@ -158,9 +159,10 @@ XMLscene.prototype.initGraphLights = function(){
 									this.graph.listSpot[i].specular_g,
 									this.graph.listSpot[i].specular_b,
 									this.graph.listSpot[i].specular_a);
-		this.lights[j].setSpotDirection(this.graph.listSpot[i].target_x,
-										this.graph.listSpot[i].target_y,
-										this.graph.listSpot[i].target_z);
+		this.lights[j].setSpotDirection(this.graph.listSpot[i].target_x-this.graph.listSpot[i].location_x,
+										this.graph.listSpot[i].target_y-this.graph.listSpot[i].location_y,
+										this.graph.listSpot[i].target_z-this.graph.listSpot[i].location_z);
+		
 		this.lights[j].setSpotExponent(this.graph.listSpot[i].exponent);
 
 		this.lights[j].setSpotCutOff(Math.PI * this.graph.listSpot[i].angle / 180);
@@ -172,6 +174,7 @@ XMLscene.prototype.initGraphLights = function(){
 		else this.lights[j].disable();
 		
 		this.lights[j].setVisible(true);
+		this.lights[i].update();
 	}
 	this.lightCheckBoxesUpdate();
 }
@@ -199,7 +202,7 @@ XMLscene.prototype.updateLights = function(){
 		else this.lights[1].disable();
 	}
 	if (this.lights[2] != undefined) {
-		if (this.light1) this.lights[2].enable();
+		if (this.light2) this.lights[2].enable();
 		else this.lights[2].disable();
 	}
 	if (this.lights[3] != undefined) {
