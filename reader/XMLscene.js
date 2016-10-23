@@ -26,6 +26,13 @@ XMLscene.prototype.init = function (application) {
 
 	this.axis=new CGFaxis(this);
 	
+	this.lightValues = [];
+	
+	for (var i = 0; i < this.lights.length; i++){
+		this.lightValues[i] = false;
+	}
+	
+	this.lightCheckBoxesUpdate();
 };
 
 XMLscene.prototype.initLights = function () {
@@ -123,8 +130,10 @@ XMLscene.prototype.initGraphLights = function(){
 									this.graph.listOmni[i].specular_b,
 									this.graph.listOmni[i].specular_a);
 		
-		if (this.graph.listOmni[i].enabled) 
+		if (this.graph.listOmni[i].enabled){
 			this.lights[i].enable();
+			this.lightValues[i] = true;
+		}
 		else this.lights[i].disable();
 
 		this.lights[i].setVisible(true);
@@ -155,11 +164,70 @@ XMLscene.prototype.initGraphLights = function(){
 
 		this.lights[j].setSpotCutOff(Math.PI * this.graph.listSpot[i].angle / 180);
 		
-		if (this.graph.listSpot[i].enabled) 
+		if (this.graph.listSpot[i].enabled){ 
 			this.lights[j].enable();
+			this.lightValues[j] = true;
+		}
 		else this.lights[j].disable();
 		
 		this.lights[j].setVisible(true);
+	}
+	this.lightCheckBoxesUpdate();
+}
+
+XMLscene.prototype.lightCheckBoxesUpdate = function(){
+	this.light0 = this.lightValues[0];
+	this.light1 = this.lightValues[1];
+	this.light2 = this.lightValues[2];
+	this.light3 = this.lightValues[3];
+	this.light4 = this.lightValues[4];
+	this.light5 = this.lightValues[5];
+	this.light6 = this.lightValues[6];
+	this.light7 = this.lightValues[7];
+	this.light8 = this.lightValues[8];
+	this.light9 = this.lightValues[9];
+}
+
+XMLscene.prototype.updateLights = function(){
+	if (this.lights[0] != undefined) {
+		if (this.light0) this.lights[0].enable();
+		else this.lights[0].disable();
+	}
+	if (this.lights[1] != undefined) {
+		if (this.light1) this.lights[1].enable();
+		else this.lights[1].disable();
+	}
+	if (this.lights[2] != undefined) {
+		if (this.light1) this.lights[2].enable();
+		else this.lights[2].disable();
+	}
+	if (this.lights[3] != undefined) {
+		if (this.light3) this.lights[3].enable();
+		else this.lights[3].disable();
+	}
+	if (this.lights[4] != undefined) {
+		if (this.light4) this.lights[4].enable();
+		else this.lights[4].disable();
+	}
+	if (this.lights[5] != undefined) {
+		if (this.light5) this.lights[5].enable();
+		else this.lights[5].disable();
+	}
+	if (this.lights[6] != undefined) {
+		if (this.light6) this.lights[6].enable();
+		else this.lights[6].disable();
+	}
+	if (this.lights[7] != undefined) {
+		if (this.light7) this.lights[7].enable();
+		else this.lights[7].disable();
+	}
+	if (this.lights[8] != undefined) {
+		if (this.light8) this.lights[8].enable();
+		else this.lights[8].disable();
+	}
+	if (this.lights[9] != undefined) {
+		if (this.light9) this.lights[9].enable();
+		else this.lights[9].disable();
 	}
 }
 
@@ -377,6 +445,7 @@ XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, t
 	var newMatrix;
 	newMatrix = this.calcMatrix(currMatrix, this.listTransformations[graphNode.transformationref]);
 	for (var i in graphNode.primitiverefs){
+		mats = this.getMats(graphNode, mats);
 		tex = this.getComponentTex(graphNode, tex);
 		this.listReadyToDisplay.push(new ToDisplay(graphNode.primitiverefs[i], newMatrix, mats, tex));
 	}
@@ -446,11 +515,12 @@ XMLscene.prototype.display = function () {
 	// only get executed after the graph has loaded correctly.
 	// This is one possible way to do it
 	if (this.graph.loadedOk)
-	{
+	{	
+		this.updateLights();
 		for (var i = 0; i < this.lights.length; i++){
 			this.lights[i].update();
 		}
-
+		
 		for (var i in this.listReadyToDisplay){
 			this.displayPrim(this.listReadyToDisplay[i]);
 		}
