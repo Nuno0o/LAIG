@@ -305,6 +305,7 @@ XMLscene.prototype.initTextures = function() {
 		this.listTextures[this.graph.textures[i].id].length_s = this.graph.textures[i].length_s;
 		this.listTextures[this.graph.textures[i].id].length_t = this.graph.textures[i].length_t;
 		this.listTextures[this.graph.textures[i].id].loadTexture(this.listTextures[this.graph.textures[i].id].file);
+		this.listTextures[this.graph.textures[i].id].setTextureWrap("REPEAT","REPEAT");
 	}
 }
 

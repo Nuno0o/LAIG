@@ -18,6 +18,24 @@ MyPrimTriang.prototype = Object.create(CGFobject.prototype);
 MyPrimTriang.prototype.constructor=MyPrimTriang;
 
 MyPrimTriang.prototype.setTex = function(length_s,length_t){
+	var temp_v1 = [this.x2-this.x1,this.y2-this.y1,this.z2-this.z1];
+    var temp_v2 = [this.x3-this.x1,this.y3-this.y1,this.z3-this.z1];
+	
+	var temp_a = Math.sqrt(Math.pow(this.x1-this.x3,2)+Math.pow(this.y1-this.y3,2)+Math.pow(this.z1-this.z3,2));
+	var temp_b = Math.sqrt(Math.pow(this.x1-this.x2,2)+Math.pow(this.y1-this.y2,2)+Math.pow(this.z1-this.z2,2));	
+	var temp_c = Math.sqrt(Math.pow(this.x2-this.x3,2)+Math.pow(this.y2-this.y3,2)+Math.pow(this.z2-this.z3,2));
+	
+	var temp_cosBeta = (temp_a*temp_a-temp_b*temp_b+temp_c*temp_c)/(2*temp_a*temp_c);
+	
+	var temp_dist = temp_c-temp_a*temp_cosBeta;
+	console.log("Aqui");
+	console.log(this.texCoords);
+    this.texCoords = [
+    	1/length_s*temp_dist/temp_c,0,
+    	0,1/length_t*1,
+    	1/length_s*1,1/length_t*1
+    ];
+	this.updateTexCoordsGLBuffers();
 	
 }
 
@@ -49,12 +67,14 @@ MyPrimTriang.prototype.initBuffers = function () {
 	var temp_b = Math.sqrt(Math.pow(this.x1-this.x2,2)+Math.pow(this.y1-this.y2,2)+Math.pow(this.z1-this.z2,2));	
 	var temp_c = Math.sqrt(Math.pow(this.x2-this.x3,2)+Math.pow(this.y2-this.y3,2)+Math.pow(this.z2-this.z3,2));
 
-	var temp_beta = Math.acos((temp_a*temp_a-temp_b*temp_b+temp_c*temp_c)/(2*temp_a*temp_c));
+	var temp_cosBeta = (temp_a*temp_a-temp_b*temp_b+temp_c*temp_c)/(2*temp_a*temp_c);
+	
+	var temp_dist = temp_c-temp_a*temp_cosBeta;
 	
     this.texCoords = [
-    	temp_c-temp_a*Math.cos(temp_beta),1-temp_a*Math.sin(temp_beta),
+    	temp_dist/temp_c,0,
     	0,1,
-    	temp_a*Math.cos(temp_beta),1
+    	1,1
     ];
 		
 	this.primitiveType=this.scene.gl.TRIANGLES;
