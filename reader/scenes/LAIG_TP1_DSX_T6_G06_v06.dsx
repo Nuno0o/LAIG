@@ -117,8 +117,40 @@
         <material id="gift2Mat" >
 			<emission r="0" g="0" b="0" a="1" />
             <ambient r="0" g="0" b="0" a="1" />
-            <diffuse r="1" g="1" b="0" a="1" />
+            <diffuse r="1" g="0" b="0" a="1" />
+            <specular r="1" g="0" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+		
+		<material id="ball1" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="1" g="1" b="1" a="1" />
             <specular r="1" g="1" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+		
+		<material id="ball2" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="0.5" g="1" b="0.5" a="1" />
+            <specular r="0.5" g="1" b="0.5" a="1" />
+            <shininess value="10" />
+        </material>
+		
+		<material id="ball3" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="1" g="0.5" b="0.5" a="1" />
+            <specular r="1" g="0.5" b="0.5" a="1" />
+            <shininess value="10" />
+        </material>
+		
+		<material id="ball4" >
+           <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="0.5" g="0.5" b="1" a="1" />
+            <specular r="0.5" g="0.5" b="1" a="1" />
             <shininess value="10" />
         </material>
     </materials>
@@ -987,7 +1019,10 @@
 				<transformationref id="transDiscoBall" />
 			</transformation>
 			<materials>
-				<material id="matDefault" />
+				<material id="ball1" />
+				<material id="ball2" />
+				<material id="ball3" />
+				<material id="ball4" />
 			</materials>
 			<texture id="discoBallTex" />
 			<children>
