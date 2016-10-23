@@ -59,6 +59,10 @@
 		<texture id="lampTex" file="./resources/images/lamp.jpg" length_s="1" length_t="1" />
 		<texture id="discoBallTex" file ="./resources/images/disco.jpg" length_s="1" length_t="1"/>
 		<texture id="blackMarble" file="./resources/images/blackMarble.jpg" length_s="0.2" length_t="0.2" />
+		<texture id="beer" file="./resources/images/beer.jpg" length_s="1" length_t="1"/>
+		<texture id="beertop" file="./resources/images/beertop.jpg" length_s="1" length_t="1"/>
+		<texture id="earth" file="./resources/images/earth.jpg" length_s="1" length_t="1" />
+		<texture id="plastic" file="./resources/images/plastic.jpg" length_s="1" length_t="1" />
 	</textures>
 	
 	<materials>
@@ -174,6 +178,12 @@
         <primitive id="sphere">
 			<sphere radius="0.5" slices="50" stacks="50" />
 		</primitive>
+		<primitive id="torus">
+			<torus inner="0.5" outer="1" slices="30" loops="30"/>
+		</primitive>
+		<primitive id="hoop">
+			<torus inner="1.5" outer="1.7" slices="30" loops="30"/>
+		</primitive>
     </primitives>
 
 	<components>
@@ -196,7 +206,9 @@
             	<componentref id= "Floor" />
             	<componentref id= "C1" />
             	<componentref id= "C2" />
+				<componentref id= "Beer" />
             	<componentref id= "DiscoBall" />
+				<componentref id= "Earth" />
             </children>
         </component>
 
@@ -233,6 +245,18 @@
 			<texture id="inherit" />
 			<children>
 				<primitiveref id="sphere"/>
+			</children>
+		</component>
+		
+		<component id="primTorus">
+			<transformation>
+			</transformation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="inherit" />
+			<children>
+				<primitiveref id="torus"/>
 			</children>
 		</component>
 
@@ -406,6 +430,50 @@
 			<texture id="gift2Tex" />
 			<children>
 				<componentref id="Cube" />
+			</children>
+		</component>
+		
+		<component id="Beer">
+			<transformation>
+			</transformation>
+			<materials>
+				<material id="matDefault" />
+			</materials>
+			<texture id="beer" />
+			<children>
+				<componentref id="BeerBase" />
+				<componentref id="BeerTop" />
+			</children>
+		</component>
+		
+		<component id="BeerBase">
+			<transformation>
+				<translate x="4" y="0.6" z="6" /> 
+				<scale x="0.07" y="0.3" z="0.07" />
+				<rotate axis="x" angle="-90"/>
+			</transformation>
+			<materials>
+				<material id="matDefault" />
+			</materials>
+			<texture id="beer" />
+			<children>
+				<componentref id="primCylinder" />
+			</children>
+		</component>
+			
+		
+		<component id="BeerTop">
+			<transformation>
+				<translate x="4" y="0.9" z="6" /> 
+				<scale x="0.07" y="0.01" z="0.07" />
+				<rotate axis="x" angle="-90"/>
+			</transformation>
+			<materials>
+				<material id="matDefault" />
+			</materials>
+			<texture id="beertop" />
+			<children>
+				<componentref id="primCylinder" />
 			</children>
 		</component>
 		
@@ -782,6 +850,122 @@
 			</children>
 		</component>
 		
+		<component id="LampCable">
+			<transformation>
+				<translate x="0.2" y="1.7" z="0.3"/>
+				<scale x="0.02" y="0.5" z="0.02"/>
+				<rotate axis="x" angle="-90"/>
+			</transformation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="sofaBaseTex" />
+			<children>
+				<componentref id="primCylinder" />
+			</children>
+		</component>
+		
+		<component id="LampHook">
+			<transformation>
+				<translate x="0.2" y="1.63" z="0.3"/>
+				<scale x="0.1" y="0.1" z="0.1"/>
+			</transformation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="sofaBaseTex" />
+			<children>
+				<componentref id="primTorus" />
+			</children>
+		</component>
+		
+		<component id="Earth">
+			<transformation>
+				<translate x="4" y="1.2" z="5.3" /> 
+			</transformation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="inherit" />
+			<children>
+				<componentref id="EarthSphere" />
+				<componentref id="EarthSupport"/>
+			</children>
+		</component>
+		
+		<component id="EarthSphere">
+			<transformation>	
+				<scale x="0.7" y="0.7" z="0.7"/>
+				<rotate axis="x" angle="-90"/>
+			</transformation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="earth" />
+			<children>
+				<componentref id="primSphere" />
+			</children>
+		</component>
+		
+		<component id="EarthSupport">
+			<transformation>
+			</transformation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="plastic" />
+			<children>
+				<componentref id="EarthHoop"/>
+				<componentref id="EarthLeg"/>	
+				<componentref id="EarthBase"/>
+			</children>
+		</component>
+		
+		<component id="EarthHoop">
+			<transformation>
+				<scale x="0.28" y="0.28" z="0.5"/>
+				
+			</transformation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="inherit" />
+			<children>
+				<primitiveref id="hoop" />
+			</children>
+		</component>
+		
+		<component id="EarthLeg">
+			<transformation>
+				<translate x="0" y="0.5" z="0"/>
+				<scale x="0.04" y="1.2" z="0.04"/>
+				<rotate axis="x" angle="90"/>
+			</transformation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="inherit" />
+			<children>
+				<primitiveref id="cylinder" />
+			</children>
+		</component>
+		
+		<component id="EarthBase">
+			<transformation>
+				<translate x="0" y="-0.55" z="0"/>
+				<scale x="0.3" y="0.04" z="0.3"/>
+				<rotate axis="x" angle="90"/>
+			</transformation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="inherit" />
+			<children>
+				<primitiveref id="cylinder" />
+			</children>
+		</component>
+		
+		
 		<component id="Lamp">
 			<transformation>
 				<transformationref id="transLamp" />
@@ -794,6 +978,8 @@
 				<componentref id="LampTop" />
 				<componentref id="LampRod" />
 				<componentref id="LampBase" />
+				<componentref id="LampCable" />
+				<componentref id="LampHook" />
 			</children>
 		</component>
 
