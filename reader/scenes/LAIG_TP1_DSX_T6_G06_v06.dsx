@@ -603,7 +603,6 @@
 			</transformation>
 			<materials>				
 				<material id="sofaLegMat"/>
-				<material id="inherit" />
 			</materials>
 			<texture id="none" />
 			<children>
