@@ -19,6 +19,7 @@ main=function()
     var app = new CGFapplication(document.body);
     var myScene = new XMLscene();
     var myInterface = new MySceneInterface();
+	myScene.sceneInterface = myInterface;
 
     app.init();
 

@@ -10,14 +10,16 @@ MySceneInterface.prototype.init = function(application) {
 	
 	this.gui = new dat.GUI();
 	
+    return true;
+};
+MySceneInterface.prototype.addLights = function(){
 	var group = this.gui.addFolder("Luzes");
 	group.open();
-	for (var i = 0; i < this.scene.lights.length; i++){
+	for (var i = 0; i < this.scene.nlights; i++){
 		var name = 'light' + i;
 		group.add(this.scene, name);
 	}
-    return true;
-};
+}
 	
 
 MySceneInterface.prototype.processKeyDown = function(event) {

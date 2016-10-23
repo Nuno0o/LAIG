@@ -112,6 +112,7 @@ XMLscene.prototype.cycleCamera = function() {
 // ------------------ LIGHTS ------------------------
 
 XMLscene.prototype.initGraphLights = function(){
+	this.nlights = this.graph.listOmni.length+this.graph.listSpot.length;
 	for (var i = 0; i < this.graph.listOmni.length; i++){
 		this.lights[i].setPosition(	this.graph.listOmni[i].location_x,
 									this.graph.listOmni[i].location_y,
@@ -488,6 +489,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.initAppearances();
 	this.initTextures();
 	this.initGraphLights();
+	this.sceneInterface.addLights();
 	this.getTransformations();
 	this.initPrimitives();
 	this.initComponents();
