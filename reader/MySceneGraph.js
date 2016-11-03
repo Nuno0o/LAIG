@@ -522,6 +522,69 @@ MySceneGraph.prototype.parseTransformation = function(rootElement){
 }
 
 // ----------------------------------------------------------------------------
+// ----------------------------- ANIMATION PARSING ----------------------------
+// ----------------------------------------------------------------------------
+function controlPoint(xx, yy, zz){
+	this.xx = xx;
+	this.yy = yy;
+	this.zz = zz;
+}
+
+function parsedAnimation(anim){
+	this.id = anim.id;
+	this.span = parseFloat(anim.attributes.getNamedItem("span").value);
+	this.type = anim.attributes.getNamedItem("type").value;
+	
+	if (this.type == "linear"){
+		var points = anim.getElementsByTagName('controlpoint');
+		var nControlPoints = points.length;
+		this.controlPoints = [];
+		for (var i = 0; i < nControlPoints; i++){
+			this.controlPoints[i] = new controlPoint(	parseFloat(points[i].attributes.getNamedItem("xx").value),
+														parseFloat(points[i].attributes.getNamedItem("yy").value),
+														parseFloat(points[i].attributes.getNamedItem("zz").value));
+		}
+	}
+	else if (this.type == "circular"){
+		this.center = anim.attributes.getNamedItem("center").value.split(" ");
+		this.center_x = parseFloat(this.center[0]);
+		this.center_y = parseFloat(this.center[1]);
+		this.center_z = parseFloat(this.center[2]);
+		this.radius = parseFloat(anim.attributes.getNamedItem("radius").value);
+		this.startang = parseFloat(anim.attributes.getNamedItem("startang").value);
+		this.rotang = parseFloat(anim.attributes.getNamedItem("rotang").value);
+	}
+}
+
+MySceneGraph.prototype.parseAnimations = function(rootElement){
+	var elems = rootElement.getElementsByTagName('animations');
+
+	if(elems[0] == null){
+		return "no animations tag";
+	}
+	
+	if(elems.length != 1){
+		return "too many animations tags";
+	}
+
+    this.animations = [];
+
+    var nanimations = elems[0].children.length;
+
+    if(nanimations < 1){
+    	return "not enough primitives";
+    }
+    for(var i = 0;i < nanimations;i++){
+    	var curr_anim = elems[0].children[i];
+    	this.animations[i] = new parsedAnimation(curr_anim);
+    	if(!this.addId(curr_anim.id, "animation")){
+			return "Bad Id found: " + curr_anim.id;
+		}
+    }
+}
+
+
+// ----------------------------------------------------------------------------
 // ------------------------------ PRIMITIVE PARSING ---------------------------
 // ----------------------------------------------------------------------------
 
@@ -624,6 +687,7 @@ function Component(graph,comp){
 	this.texture = null;
 	this.componentrefs = [];
 	this.primitiverefs = [];
+	this.animationrefs = [];
 
 	//transformation
 	var transf = comp.getElementsByTagName('transformation');
@@ -660,6 +724,20 @@ function Component(graph,comp){
 		}
 		graph.transformations[graph.transformations.length] = new Transformations(transf[0]);
 		this.transformationref = transf[0].id;
+	}
+	
+	var aref = comp.getElementsByTagName('animationref');
+	for (var i = 0; i < aref.length; i++){
+		var found = false;
+		for (var j = 0; j < graph.animations.length; j++){
+				if (graph.animations[j].id == aref[i].id){
+					found = true;
+					break;
+				}
+		}
+		if (!found)
+			return "id de animacao no componente nao atribuido!";
+		this.animationref = aref[i].id;
 	}
 	
 	//read children
@@ -816,6 +894,11 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 	this.errMsg = this.parsePrimitives(rootElement);
 	if (this.errMsg != null) return this.errMsg;
 
+	// read animations
+	
+	this.errMsg = this.parseAnimations(rootElement);
+	if (this.errMsg != null) return this.errMsg;
+	
 	//read components
 
 	this.errMsg = this.parseComponents(rootElement);

@@ -329,6 +329,21 @@ XMLscene.prototype.mergeMaterialToTex = function(texID,matID){
 		this.listTextures[texID].setShininess(this.listAppearances[matID].shininess);
 }
 
+// ----------------- ANIMATIONS ----------------------
+XMLscene.prototype.initAnimations = function(){
+	this.listAnimations = [];
+	for (var i = 0; i < this.graph.animations.length; i++){
+		var anim = this.graph.animations[i];
+		if (anim.type == "linear"){
+			this.listAnimations[anim.id] = new LinearAnimation(this.graph.animations[i]);
+		}
+		if (anim.type == "circular"){
+			this.listAnimations[anim.id] = new CircularAnimation(this.graph.animations[i]);
+		}
+	}
+	
+}
+
 // ----------------- PRIMITIVES ----------------------
 
 XMLscene.prototype.initPrimitives = function(){
@@ -483,6 +498,9 @@ XMLscene.prototype.cycleMaterials = function(){
 
 XMLscene.prototype.onGraphLoaded = function () 
 {
+	this.setUpdatePeriod(100);
+	this.frameDiff = 0;
+	this.currTime = -1;
 	this.enableTextures(true);
 	this.activeMat = 0;
 	this.listReadyToDisplay = [];
@@ -495,9 +513,22 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.initGraphLights();
 	this.sceneInterface.addLights();
 	this.getTransformations();
+	this.initAnimations();
 	this.initPrimitives();
 	this.initComponents();
 };
+
+XMLscene.prototype.getFrameDiff = function(currTime){
+	if (this.currTime == -1) this.currTime = currTime;
+	else{
+		this.frameDiff = Math.abs(this.currTime - currTime);
+		this.currTime = currTime;
+	}
+}
+
+XMLscene.prototype.update = function(currTime){
+	this.getFrameDiff(currTime);
+}
 
 XMLscene.prototype.display = function () {
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
