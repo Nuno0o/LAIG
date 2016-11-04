@@ -479,6 +479,8 @@
 		<component id="Beer">
 			<transformation>
 			</transformation>
+			<animationref id="animLinear1" />
+			<animationref id="animCirc1" />
 			<materials>
 				<material id="matDefault" />
 			</materials>

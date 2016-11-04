@@ -305,7 +305,6 @@ XMLscene.prototype.initTextures = function() {
 		this.listTextures[this.graph.textures[i].id].length_s = this.graph.textures[i].length_s;
 		this.listTextures[this.graph.textures[i].id].length_t = this.graph.textures[i].length_t;
 		this.listTextures[this.graph.textures[i].id].loadTexture(this.listTextures[this.graph.textures[i].id].file);
-		this.listTextures[this.graph.textures[i].id].setTextureWrap("REPEAT","REPEAT");
 	}
 }
 
@@ -370,18 +369,34 @@ XMLscene.prototype.initPrimitives = function(){
 
 // ----------------- COMPONENTS ----------------------
 
-function ToDisplay(primitive, currMatrix, mats, tex){
+function ToDisplay(primitive, currMatrix, mats, tex, anims){
 	this.primitive = primitive;
 	this.currMatrix = currMatrix;
 	this.mats = mats;
 	this.tex = tex;
 	this.activeMat = 0;
+	
+	this.currentAnimation = 0;
+	this.animations = anims;
 }
 
 ToDisplay.prototype.incrementActiveMat = function(){
 	var length = this.mats.length;
 	this.activeMat++;
 	if (this.activeMat >= length) this.activeMat = 0;
+}
+
+ToDisplay.prototype.incrementCurrentAnimation = function(){
+	this.currentAnimation++;
+	if (this.currentAnimation >= this.animations.length) this.currentAnimation = 0;
+}
+
+XMLscene.prototype.getAnimsFromID = function(animIdVec){
+	var animations = [];
+	for (var i in animIdVec){
+		animations.push(this.listAnimations[animIdVec[0]]);
+	}
+	return animations;
 }
 
 XMLscene.prototype.displayPrim = function(toDisplayPrim){
@@ -455,25 +470,34 @@ XMLscene.prototype.getMats = function(graphNode, mats){
 		return this.appendMats(graphNode, []);}
 }
 
+XMLscene.prototype.getAnims = function(graphNode, anims){
+	for (var i in graphNode.animationrefs){
+		anims = this.push_back(anims, graphNode.animationrefs[i]);
+	}
+	return anims;
+}
+
 XMLscene.prototype.getComponentTex = function(graphNode, currTexID){
 	if (this.texHasNone(graphNode.texture)) return null;
 	else if (this.texHasInherit(graphNode.texture)) return currTexID;
 	else return graphNode.texture;
 }
 
-XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, tex){
+XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, tex, anims){
 	var newMatrix;
 	newMatrix = this.calcMatrix(currMatrix, this.listTransformations[graphNode.transformationref]);
+	anims = this.getAnims(graphNode, anims);
 	for (var i in graphNode.primitiverefs){
 		mats = this.getMats(graphNode, mats);
 		tex = this.getComponentTex(graphNode, tex);
-		this.listReadyToDisplay.push(new ToDisplay(graphNode.primitiverefs[i], newMatrix, mats, tex));
+		var animations = this.getAnimsFromID(anims);
+		this.listReadyToDisplay.push(new ToDisplay(graphNode.primitiverefs[i], newMatrix, mats, tex, animations));
 	}
 
 	for (var i in graphNode.componentrefs){
 		mats = this.getMats(graphNode, mats);
 		tex = this.getComponentTex(graphNode, tex);
-		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], newMatrix, mats, tex);
+		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], newMatrix, mats, tex, anims);
 	}
 }
 
@@ -482,7 +506,7 @@ XMLscene.prototype.initComponents = function(){
 	this.initialMatrix = this.listTransformations[this.root.transformationref];
 	this.defMats = this.root.materials;
 	this.defTex = this.root.texture;
-	this.calcAndDisplayGraph(this.root, this.initialMatrix, this.defMats, this.defTex);
+	this.calcAndDisplayGraph(this.root, this.initialMatrix, this.defMats, this.defTex, []);
 }
 
 
@@ -498,13 +522,17 @@ XMLscene.prototype.cycleMaterials = function(){
 
 XMLscene.prototype.onGraphLoaded = function () 
 {
-	this.setUpdatePeriod(100);
+	this.setUpdatePeriod(1000);
 	this.frameDiff = 0;
 	this.currTime = -1;
-	this.enableTextures(true);
 	this.activeMat = 0;
-	this.listReadyToDisplay = [];
 	this.currentCamera = 0;
+	
+	this.enableTextures(true);
+	
+	this.listReadyToDisplay = [];
+	this.activeAnimations = [];
+	
 	this.initGraphGlobalLighting();
 	this.initGraphAxis();
 	this.initGraphCameras();
@@ -526,8 +554,20 @@ XMLscene.prototype.getFrameDiff = function(currTime){
 	}
 }
 
+XMLscene.prototype.runAnimations = function(frameDiff){
+	for (var i in this.listReadyToDisplay){	
+		if (this.listReadyToDisplay[i].animations.length == 0) continue;
+		this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].update(frameDiff);
+		
+		if (this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].isDone()){
+			this.listReadyToDisplay[i].incrementCurrentAnimation();
+		}
+	}
+}
+
 XMLscene.prototype.update = function(currTime){
 	this.getFrameDiff(currTime);
+	this.runAnimations(this.frameDiff);
 }
 
 XMLscene.prototype.display = function () {

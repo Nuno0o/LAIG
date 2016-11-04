@@ -730,14 +730,14 @@ function Component(graph,comp){
 	for (var i = 0; i < aref.length; i++){
 		var found = false;
 		for (var j = 0; j < graph.animations.length; j++){
-				if (graph.animations[j].id == aref[i].id){
-					found = true;
-					break;
-				}
+			if (graph.animations[j].id == aref[i].id){
+				found = true;
+				break;
+			}
 		}
 		if (!found)
 			return "id de animacao no componente nao atribuido!";
-		this.animationref = aref[i].id;
+		this.animationrefs[this.animationrefs.length] = aref[i].id;
 	}
 	
 	//read children
