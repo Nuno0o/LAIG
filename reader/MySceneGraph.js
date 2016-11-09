@@ -524,6 +524,7 @@ MySceneGraph.prototype.parseTransformation = function(rootElement){
 // ----------------------------------------------------------------------------
 // ----------------------------- ANIMATION PARSING ----------------------------
 // ----------------------------------------------------------------------------
+
 function controlPoint(xx, yy, zz){
 	this.xx = xx;
 	this.yy = yy;
@@ -725,19 +726,21 @@ function Component(graph,comp){
 		graph.transformations[graph.transformations.length] = new Transformations(transf[0]);
 		this.transformationref = transf[0].id;
 	}
-	
-	var aref = comp.getElementsByTagName('animationref');
-	for (var i = 0; i < aref.length; i++){
-		var found = false;
-		for (var j = 0; j < graph.animations.length; j++){
-			if (graph.animations[j].id == aref[i].id){
-				found = true;
-				break;
+	var animations = comp.getElementsByTagName('animation');
+	if (animations.length > 0){
+		var aref = animations[0].getElementsByTagName('animationref');
+		for (var i = 0; i < aref.length; i++){
+			var found = false;
+			for (var j = 0; j < graph.animations.length; j++){
+				if (graph.animations[j].id == aref[i].id){
+					found = true;
+					break;
+				}
 			}
+			if (!found)
+				return "id de animacao no componente nao atribuido!";
+			this.animationrefs[this.animationrefs.length] = aref[i].id;
 		}
-		if (!found)
-			return "id de animacao no componente nao atribuido!";
-		this.animationrefs[this.animationrefs.length] = aref[i].id;
 	}
 	
 	//read children

@@ -471,10 +471,12 @@ XMLscene.prototype.getMats = function(graphNode, mats){
 }
 
 XMLscene.prototype.getAnims = function(graphNode, anims){
+	var newAnims = [];
+	for (var i in anims) newAnims[i] = anims[i];
 	for (var i in graphNode.animationrefs){
-		anims = this.push_back(anims, graphNode.animationrefs[i]);
+		newAnims.push(graphNode.animationrefs[i]);
 	}
-	return anims;
+	return newAnims;
 }
 
 XMLscene.prototype.getComponentTex = function(graphNode, currTexID){
@@ -486,18 +488,16 @@ XMLscene.prototype.getComponentTex = function(graphNode, currTexID){
 XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, tex, anims){
 	var newMatrix;
 	newMatrix = this.calcMatrix(currMatrix, this.listTransformations[graphNode.transformationref]);
-	anims = this.getAnims(graphNode, anims);
 	for (var i in graphNode.primitiverefs){
 		mats = this.getMats(graphNode, mats);
 		tex = this.getComponentTex(graphNode, tex);
 		var animations = this.getAnimsFromID(anims);
 		this.listReadyToDisplay.push(new ToDisplay(graphNode.primitiverefs[i], newMatrix, mats, tex, animations));
 	}
-
 	for (var i in graphNode.componentrefs){
 		mats = this.getMats(graphNode, mats);
 		tex = this.getComponentTex(graphNode, tex);
-		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], newMatrix, mats, tex, anims);
+		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], newMatrix, mats, tex, this.getAnims(this.graph.components[graphNode.componentrefs[i]], anims));
 	}
 }
 
@@ -522,7 +522,7 @@ XMLscene.prototype.cycleMaterials = function(){
 
 XMLscene.prototype.onGraphLoaded = function () 
 {
-	this.setUpdatePeriod(1000);
+	this.setUpdatePeriod(5);
 	this.frameDiff = 0;
 	this.currTime = -1;
 	this.activeMat = 0;
@@ -549,15 +549,16 @@ XMLscene.prototype.onGraphLoaded = function ()
 XMLscene.prototype.getFrameDiff = function(currTime){
 	if (this.currTime == -1) this.currTime = currTime;
 	else{
-		this.frameDiff = Math.abs(this.currTime - currTime);
+		this.frameDiff = currTime - this.currTime;
 		this.currTime = currTime;
 	}
 }
 
-XMLscene.prototype.runAnimations = function(frameDiff){
+XMLscene.prototype.runAnimations = function(currTime){
+	this.getFrameDiff(currTime);
 	for (var i in this.listReadyToDisplay){	
 		if (this.listReadyToDisplay[i].animations.length == 0) continue;
-		this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].update(frameDiff);
+		this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].update(this.frameDiff);
 		
 		if (this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].isDone()){
 			this.listReadyToDisplay[i].incrementCurrentAnimation();
@@ -566,8 +567,7 @@ XMLscene.prototype.runAnimations = function(frameDiff){
 }
 
 XMLscene.prototype.update = function(currTime){
-	this.getFrameDiff(currTime);
-	this.runAnimations(this.frameDiff);
+	this.runAnimations(currTime);
 }
 
 XMLscene.prototype.display = function () {

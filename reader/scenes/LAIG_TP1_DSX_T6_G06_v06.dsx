@@ -479,8 +479,10 @@
 		<component id="Beer">
 			<transformation>
 			</transformation>
-			<animationref id="animLinear1" />
-			<animationref id="animCirc1" />
+			<animation>
+				<animationref id="animLinear1" />
+				<animationref id="animCirc1" /> 
+			</animation>
 			<materials>
 				<material id="matDefault" />
 			</materials>
@@ -497,6 +499,9 @@
 				<scale x="0.07" y="0.3" z="0.07" />
 				<rotate axis="x" angle="-90"/>
 			</transformation>
+			<animation>
+				<animationref id="animLinear1" />
+			</animation>
 			<materials>
 				<material id="matDefault" />
 			</materials>

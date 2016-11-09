@@ -76,7 +76,7 @@ LinearAnimation.prototype.getCurrentSegment = function(){
 LinearAnimation.prototype.update = function(frameDiff){
 	this.baseAnimation.update(frameDiff);
 	
-	this.getCurrentSegment();	
+	this.getCurrentSegment();
 }
 
 LinearAnimation.prototype.isDone = function(){
