@@ -218,6 +218,13 @@
 		<primitive id="torus">
 			<torus inner="0.5" outer="1" slices="30" loops="30"/>
 		</primitive>
+		<primitive id="chessboard">
+			<chessboard du="8" dv="8" textureref="wood" su="0" sv="0">
+                <c1 r="1" g="1" b="1" a="1" />
+                <c2 r="1" g="0.5" b="0.5" a="1" />
+                <cs r="1" g="1" b="0.2" a="1" />
+  			</chessboard>
+  		</primitive>
     </primitives>
 
 	<components>

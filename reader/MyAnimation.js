@@ -125,6 +125,10 @@ LinearAnimation.prototype.reset = function(){
 	this.baseAnimation.reset();
 }
 
+LinearAnimation.prototype.getTranslation = function(){
+	return this.translations;
+}
+
 // ---------------------------------------------------------------------------------------------------------------
 // ------------------------------------------- CIRCULAR ANIMATION ------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------------
@@ -169,4 +173,12 @@ CircularAnimation.prototype.isDone = function(){
 CircularAnimation.prototype.reset = function(){
 	this.baseAnimation.reset();
 	this.currAng = 0;
+}
+
+CircularAnimation.prototype.getTranslation = function(){
+	var x = this.centerVec[0] + (this.radius * Math.cos(this.startAng + this.currAng));
+	var y = this.centerVec[1];
+	var z = this.centerVec[2] + (this.radius * Math.sin(this.startAng + this.currAng));
+
+	return [x, y, z];
 }

@@ -25,13 +25,13 @@ XMLscene.prototype.init = function (application) {
     this.gl.depthFunc(this.gl.LEQUAL);
 
 	this.axis=new CGFaxis(this);
-
+	
 	this.lightValues = [];
-
+	
 	for (var i = 0; i < this.lights.length; i++){
 		this.lightValues[i] = false;
 	}
-
+	
 	this.lightCheckBoxesUpdate();
 };
 
@@ -50,7 +50,7 @@ XMLscene.prototype.setDefaultAppearance = function () {
     this.setAmbient(0.2, 0.4, 0.8, 1.0);
     this.setDiffuse(0.2, 0.4, 0.8, 1.0);
     this.setSpecular(0.2, 0.4, 0.8, 1.0);
-    this.setShininess(10.0);
+    this.setShininess(10.0);	
 };
 
 // -----------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ XMLscene.prototype.setDefaultAppearance = function () {
 // ------------------------ AXIS -----------------------------
 
 XMLscene.prototype.initGraphAxis = function() {
-	this.axis = new CGFaxis(this, this.graph.axis_length);
+	this.axis = new CGFaxis(this, this.graph.axis_length);	
 }
 
 // ----------------------- LIGHTING --------------------------
@@ -130,7 +130,7 @@ XMLscene.prototype.initGraphLights = function(){
 									this.graph.listOmni[i].specular_g,
 									this.graph.listOmni[i].specular_b,
 									this.graph.listOmni[i].specular_a);
-
+		
 		if (this.graph.listOmni[i].enabled){
 			this.lights[i].enable();
 			this.lightValues[i] = true;
@@ -143,7 +143,7 @@ XMLscene.prototype.initGraphLights = function(){
 	}
 	for (var i = 0; i < this.graph.listSpot.length ; i++){
 		var j = i + this.graph.listOmni.length;
-
+		
 		this.lights[j].setPosition(	this.graph.listSpot[i].location_x,
 									this.graph.listSpot[i].location_y,
 									this.graph.listSpot[i].location_z, 1);
@@ -162,17 +162,17 @@ XMLscene.prototype.initGraphLights = function(){
 		this.lights[j].setSpotDirection(this.graph.listSpot[i].target_x-this.graph.listSpot[i].location_x,
 										this.graph.listSpot[i].target_y-this.graph.listSpot[i].location_y,
 										this.graph.listSpot[i].target_z-this.graph.listSpot[i].location_z);
-
+		
 		this.lights[j].setSpotExponent(this.graph.listSpot[i].exponent);
 
 		this.lights[j].setSpotCutOff(Math.PI * this.graph.listSpot[i].angle / 180);
-
-		if (this.graph.listSpot[i].enabled){
+		
+		if (this.graph.listSpot[i].enabled){ 
 			this.lights[j].enable();
 			this.lightValues[j] = true;
 		}
 		else this.lights[j].disable();
-
+		
 		this.lights[j].setVisible(true);
 		this.lights[i].update();
 	}
@@ -329,40 +329,6 @@ XMLscene.prototype.mergeMaterialToTex = function(texID,matID){
 }
 
 
-XMLscene.prototype.displayPrimToAnimation = function(toDisplayPrim){
-
-	if (toDisplayPrim.animations.length == 0) {
-		this.displayPrimitive(toDisplayPrim);
-		return;
-	}
-	//console.log(toDisplayPrim.tex, toDisplayPrim.animations);
-	if (toDisplayPrim.currentAnimation >= toDisplayPrim.animations.length){
-		this.displayPrimitive(toDisplayPrim);
-		return;
-	}
-	if (toDisplayPrim.animations[toDisplayPrim.currentAnimation].type == "circular"){
-		var center = toDisplayPrim.animations[toDisplayPrim.currentAnimation].centerVec;
-		var currAng = toDisplayPrim.animations[toDisplayPrim.currentAnimation].currAng;
-		var radius = toDisplayPrim.animations[toDisplayPrim.currentAnimation].radius;
-		var startAng = toDisplayPrim.animations[toDisplayPrim.currentAnimation].startAng;
-		var x = center[0] + (radius * Math.cos(startAng + currAng));
-		var y = center[1];
-		var z = center[2] + (radius * Math.sin(startAng + currAng));
-		this.pushMatrix();
-		this.translate(x, y, z);
-		//this.displayAtCoords(toDisplayPrim, x, y, z);
-		this.displayPrim(toDisplayPrim, toDisplayPrim.currMatrix);
-		this.popMatrix();
-	}
-	else if (toDisplayPrim.animations[toDisplayPrim.currentAnimation].type == "linear"){
-		this.pushMatrix();
-			var translation = toDisplayPrim.animations[toDisplayPrim.currentAnimation].translations;
-			this.translate(translation[0], translation[1], translation[2]);
-			this.displayPrim(toDisplayPrim, toDisplayPrim.currMatrix);
-		this.popMatrix();
-	}
-}
-
 // ----------------- PRIMITIVES ----------------------
 
 XMLscene.prototype.initPrimitives = function(){
@@ -384,7 +350,7 @@ XMLscene.prototype.initPrimitives = function(){
 		if(pri.name == 'torus'){
 			this.listPrimitives[pri.id] = new MyPrimTorus(this, pri.inner, pri.outer,pri.slices,pri.loops);
 		}
-    if(pri.name == 'plane'){
+		if(pri.name == 'plane'){
 			this.listPrimitives[pri.id] = new Plane(this, pri.dimX, pri.dimY,pri.partsX,pri.partsY);
 		}
 	}
@@ -399,8 +365,11 @@ function ToDisplay(primitive, currMatrix, mats, tex, anims){
 	this.tex = tex;
 	this.activeMat = 0;
 
-	this.currentAnimation = 0;
 	this.animations = anims;
+	this.currentAnimations = [];
+	for (var i = 0; i < this.animations.length; i++){
+		this.currentAnimations[i] = 0;
+	}
 }
 
 ToDisplay.prototype.incrementActiveMat = function(){
@@ -409,9 +378,9 @@ ToDisplay.prototype.incrementActiveMat = function(){
 	if (this.activeMat >= length) this.activeMat = 0;
 }
 
-ToDisplay.prototype.incrementCurrentAnimation = function(){
-	this.currentAnimation++;
-}
+ToDisplay.prototype.incrementCurrentAnimation = function(layer){
+	this.currentAnimations[layer]++;
+}	
 
 XMLscene.prototype.getAnimsFromID = function(animIdVec){
 	var animations = [];
@@ -426,6 +395,44 @@ XMLscene.prototype.getAnimsFromID = function(animIdVec){
 		}
 	}
 	return animations;
+}
+
+XMLscene.prototype.displayPrimToAnimation = function(toDisplayPrim){
+	// Animations for a given primitive: [[layer0_anim0, layer0_anim1, ...], [layer1_anim0, layer1_anim1, ...], ...], current = [0,0,0,...]
+
+	// Is this primitive is static forever? If so, just display it.
+	if (toDisplayPrim.animations.length == 0) {
+		this.displayPrimitive(toDisplayPrim);
+		return;
+	}
+
+	console.log(toDisplayPrim.tex, toDisplayPrim.currentAnimations, toDisplayPrim.animations);
+
+	// Check all layers for active animations. If none is active then just display the primitive normally.
+	// Else, stack up translations. Then apply the total translation and display!
+
+	var totalTranslation = [0,0,0];
+
+	for (var layer = 0; layer < toDisplayPrim.animations.length; layer++){
+
+		// Current layer has an active animation?
+		if (toDisplayPrim.currentAnimations[layer] >= toDisplayPrim.animations[layer].length) continue;
+		else {
+			
+			var thisTranslation = toDisplayPrim.animations[layer][toDisplayPrim.currentAnimations[layer]].getTranslation();
+
+			totalTranslation[0] += thisTranslation[0]; 
+			totalTranslation[1] += thisTranslation[1];
+			totalTranslation[2] += thisTranslation[2];
+
+		}
+	}
+
+	// Display it!
+	this.pushMatrix();
+		this.translate(totalTranslation[0],totalTranslation[1],totalTranslation[2]);
+		this.displayPrim(toDisplayPrim, toDisplayPrim.currMatrix);
+	this.popMatrix();
 }
 
 XMLscene.prototype.displayPrimitive = function(toDisplayPrim){
@@ -449,15 +456,6 @@ XMLscene.prototype.displayPrim = function(toDisplayPrim, matrix){
 	this.popMatrix();
 }
 
-XMLscene.prototype.displayAtCoords = function(toDisplayPrim, x, y, z){
-	this.pushMatrix();
-		//current position on current matrix's 12, 13, and 14 index.
-		//por na origem
-		//por centro na posição desejada
-		this.translate(x, y, z);
-		this.displayPrim(toDisplayPrim, toDisplayPrim.currMatrix);
-	this.popMatrix();
-}
 
 XMLscene.prototype.calcMatrix = function(oldMatrix, transf){
 	var newMatrix = mat4.create();
@@ -528,9 +526,11 @@ XMLscene.prototype.getComponentTex = function(graphNode, currTexID){
 	else return graphNode.texture;
 }
 
+/*
 XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, tex, anims){
 	var newMatrix;
 	newMatrix = this.calcMatrix(currMatrix, this.listTransformations[graphNode.transformationref]);
+console.log(graphNode.id, anims);
 	for (var i in graphNode.primitiverefs){
 		mats = this.getMats(graphNode, mats);
 		tex = this.getComponentTex(graphNode, tex);
@@ -543,6 +543,48 @@ XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, t
 		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], newMatrix, mats, tex, this.getAnims(this.graph.components[graphNode.componentrefs[i]], anims));
 	}
 }
+*/
+
+XMLscene.prototype.cloneAnim = function(animID){
+	var currParsed = this.graph.animations[animID];
+	if (currParsed.type == "linear"){
+		return new LinearAnimation(currParsed);
+	}
+	if (currParsed.type == "circular"){
+		return new CircularAnimation(currParsed);
+	}
+	return null;
+}
+
+XMLscene.prototype.getAnims_ = function(graphNode, anims){
+
+	var newAnims = [];
+	for (var i in anims) newAnims[i] = anims[i];
+	var currAnims = [];
+	for (var i in graphNode.animationrefs){
+		currAnims.push(this.cloneAnim(graphNode.animationrefs[i]));
+	}
+	if(currAnims.length > 0) newAnims.push(currAnims);
+	return newAnims;
+}
+
+XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, tex, anims){
+	var newMatrix;
+	newMatrix = this.calcMatrix(currMatrix, this.listTransformations[graphNode.transformationref]);
+	console.log(graphNode.id, anims);
+
+	for (var i in graphNode.primitiverefs){
+		mats = this.getMats(graphNode, mats);
+		tex = this.getComponentTex(graphNode, tex);
+		this.listReadyToDisplay.push(new ToDisplay(graphNode.primitiverefs[i], newMatrix, mats, tex, anims));
+	}
+	for (var i in graphNode.componentrefs){
+		mats = this.getMats(graphNode, mats);
+		tex = this.getComponentTex(graphNode, tex);
+		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], newMatrix, mats, tex, this.getAnims_(this.graph.components[graphNode.componentrefs[i]], anims));
+	}
+}
+
 
 XMLscene.prototype.initComponents = function(){
 	this.root = this.graph.components[this.graph.root];
@@ -563,19 +605,19 @@ XMLscene.prototype.cycleMaterials = function(){
 	}
 }
 
-XMLscene.prototype.onGraphLoaded = function ()
+XMLscene.prototype.onGraphLoaded = function () 
 {
 	this.setUpdatePeriod(1);
 	this.frameDiff = 0;
 	this.currTime = -1;
 	this.activeMat = 0;
 	this.currentCamera = 0;
-
+	
 	this.enableTextures(true);
-
+	
 	this.listReadyToDisplay = [];
 	this.activeAnimations = [];
-
+	
 	this.initGraphGlobalLighting();
 	this.initGraphAxis();
 	this.initGraphCameras();
@@ -598,15 +640,28 @@ XMLscene.prototype.getFrameDiff = function(currTime){
 
 XMLscene.prototype.runAnimations = function(currTime){
 	this.getFrameDiff(currTime);
-	for (var i in this.listReadyToDisplay){
+	for (var i in this.listReadyToDisplay){	
+
+		// Primitive has no animations
 		if (this.listReadyToDisplay[i].animations.length == 0) continue;
-		if (this.listReadyToDisplay[i].currentAnimation >= this.listReadyToDisplay[i].animations.length) continue;
-		if (this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].isDone()){
-			this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].reset();
-			this.listReadyToDisplay[i].incrementCurrentAnimation();
+		// Run through current animations
+		for (var layer = 0; layer < this.listReadyToDisplay[i].animations.length; layer++){
+			// Check if this layer doesn't have an animation to do
+			if (this.listReadyToDisplay[i].currentAnimations[layer] >= this.listReadyToDisplay[i].animations[layer].length) continue;
+
+			// Animations for a given primitive: [[layer0_anim0, layer0_anim1, ...], [layer1_anim0, layer1_anim1, ...], ...], current = [0,0,0,...]
+			if (this.listReadyToDisplay[i].animations[layer][this.listReadyToDisplay[i].currentAnimations[layer]].isDone()){
+				this.listReadyToDisplay[i].animations[layer][this.listReadyToDisplay[i].currentAnimations[layer]].reset();
+				this.listReadyToDisplay[i].incrementCurrentAnimation(layer);
+			}
+
+			// Check again. No need to update if it's done.
+			if (this.listReadyToDisplay[i].currentAnimations[layer] >= this.listReadyToDisplay[i].animations[layer].length) continue;
+
+			// It it ain't done, update!
+			this.listReadyToDisplay[i].animations[layer][this.listReadyToDisplay[i].currentAnimations[layer]].update(this.frameDiff);
 		}
-		if (this.listReadyToDisplay[i].currentAnimation >= this.listReadyToDisplay[i].animations.length) continue;
-		this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].update(this.frameDiff);
+
 	}
 }
 
@@ -629,22 +684,22 @@ XMLscene.prototype.display = function () {
 	this.axis.display();
 
 	this.setDefaultAppearance();
-
+	
 	// ---- END Background, camera and axis setup
 
 	// it is important that things depending on the proper loading of the graph
 	// only get executed after the graph has loaded correctly.
 	// This is one possible way to do it
 	if (this.graph.loadedOk)
-	{
+	{	
 		this.updateLights();
 		for (var i = 0; i < this.lights.length; i++){
 			this.lights[i].update();
 		}
-
+		
 		for (var i in this.listReadyToDisplay){
 			//this.displayPrimitive(this.listReadyToDisplay[i]);
 			this.displayPrimToAnimation(this.listReadyToDisplay[i]);
 		}
-	};
+	};	
 };

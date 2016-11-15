@@ -4,12 +4,12 @@ serialInclude=function(a){var b=console,c=serialInclude.l;if(a.length>0)c.splice
 
 function getUrlVars() {
     var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
     function(m,key,value) {
-      vars[decodeURIComponent(key)] = decodeURIComponent(value);
+      vars[decodeURIComponent(key)] = decodeURIComponent(value); 
     });
     return vars;
-}
+}	 
 
 serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MySceneInterface.js', 'MyPrimRect.js','MyPrimTriang.js','MyPrimCylinder.js', 'MyPrimSphere.js','MyPrimTorus.js','MyAnimation.js','Plane.js',
 
@@ -28,15 +28,15 @@ main=function()
 
     myInterface.setActiveCamera(myScene.camera);
 
-	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml
-	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor)
-
+	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml 
+	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor) 
+	
 	var filename=getUrlVars()['file'] || "LAIG_TP1_DSX_T6_G06_v06.dsx";
 
-	// create and load graph, and associate it to scene.
+	// create and load graph, and associate it to scene. 
 	// Check console for loading errors
 	var myGraph = new MySceneGraph(filename, myScene);
-
+	
 	// start
     app.run();
 }

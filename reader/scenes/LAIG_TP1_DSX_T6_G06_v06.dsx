@@ -207,6 +207,10 @@
 			<controlpoint xx="0" yy="0" zz="0" />
 			<controlpoint xx="1" yy="0" zz="1" />
 		</animation>
+		<animation id="animLinearUp" span="10" type="linear">
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="0" yy="5" zz="0" />
+		</animation>
 		<animation id="animCirc1" span="10" type="circular" centerx="0" centery="0" centerz="0"
 				   radius="0.1" startang="0" rotang="360" />
 		<animation id="animCirc2" span="9" type="circular" centerx="0" centery="0" centerz="0"
@@ -503,7 +507,7 @@
 			<transformation>
 			</transformation>
 			<animation>
-				<animationref id="animCirc1" />
+				<animationref id="animLinearUp" />
 			</animation>
 			<materials>
 				<material id="matDefault" />
@@ -537,6 +541,9 @@
 				<scale x="0.07" y="0.01" z="0.07" />
 				<rotate axis="x" angle="-90"/>
 			</transformation>
+			<animation>
+				<animationref id="animCirc1" />
+			</animation>
 			<materials>
 				<material id="matDefault" />
 			</materials>
@@ -735,11 +742,6 @@
 			<transformation>
 				<transformationref id="transSofa1" />
 			</transformation>
-			<animation>
-				<animationref id="animLinear1" />
-				<animationref id="animLinear1" />
-				<animationref id="animCirc1" />
-			</animation>
 			<materials>
 				<material id="inherit" />
 			</materials>
@@ -997,8 +999,10 @@
 		<component id="EarthHoop">
 			<transformation>
 				<scale x="0.28" y="0.28" z="0.5"/>
-
 			</transformation>
+			<animation>
+				<animationref id="animLinear1"/>
+			</animation>
 			<materials>
 				<material id="inherit" />
 			</materials>
