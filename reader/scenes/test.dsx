@@ -1,0 +1,257 @@
+<dsx>
+    <scene root="root" axis_length="3" />
+  
+    <views default="def_view" >
+    	<perspective id="persp" near="0.1" far="500" angle="45">
+            <from x="15" y="15" z="15" />
+            <to x="0" y="0" z="0" />
+        </perspective>
+        <perspective id="persp2" near="0.1" far="100" angle="90">
+            <from x="10" y="5" z="20" />
+            <to x="0" y="0" z="1" />
+        </perspective>
+        <perspective id="persp3" near="0.1" far="200" angle="30">
+        	<from x="20" y="1" z="11" />
+        	<to x="2" y="1" z="5"/>
+       	</perspective>  
+    </views>
+
+    <illumination doublesided="0" local="0" >
+        <ambient r="0" g="0" b="0" a="1" />
+        <background r="0" g="0" b="0" a="1" />
+    </illumination>
+
+	<lights>
+        <omni id="light_omni" enabled="1" >
+            <location x="9" y="6" z="9" w="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="0.5" g="0.2" b="0.5" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+        </omni>
+		<omni id="light_omni_lamp" enabled="1" >
+            <location x="2.5" y="2.4" z="3.5" w="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="1" g="0.2" b="1" a="1" />
+            <specular r="0.2" g="0.2" b="0.2" a="1" />
+        </omni>
+        <spot id="light_spot" enabled="1" angle="90" exponent="10">
+            <target x="0" y="0" z="5" />
+            <location x="9" y="6" z="0.5" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="0.1" g="0.1" b="0.5" a="1" />
+            <specular r="0.1" g="0.1" b="0.1" a="1" />
+        </spot>
+		<spot id="light_spot2" enabled="1" angle="45" exponent="10">
+            <target x="2" y="4" z="4" />
+            <location x="9" y="6" z="9" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="0.5" g="0.1" b="0.4" a="1" />
+            <specular r="1" g="0" b="1" a="1" />
+        </spot>
+    </lights>
+
+    <textures>
+    	<texture id="wood" file="./resources/images/floor.png" length_s="0.2" length_t="0.2" /> 
+		<texture id="sofaCushionTex" file="./resources/images/cushion.jpg" length_s="1" length_t="1" />
+		<texture id="sofaBaseTex" file="./resources/images/sofaBase.jpg" length_s="1" length_t="1" />
+		<texture id="gift1Tex" file="./resources/images/gift1.jpg" length_s="1" length_t="1" />
+		<texture id="gift2Tex" file="./resources/images/gift2.jpg" length_s="1" length_t="1" />
+		<texture id="lampTex" file="./resources/images/lamp.jpg" length_s="1" length_t="1" />
+		<texture id="discoBallTex" file ="./resources/images/disco.jpg" length_s="1" length_t="1"/>
+		<texture id="blackMarble" file="./resources/images/blackMarble.jpg" length_s="0.2" length_t="0.2" />
+		<texture id="beer" file="./resources/images/beer.jpg" length_s="1" length_t="1"/>
+		<texture id="beertop" file="./resources/images/beertop.jpg" length_s="1" length_t="1"/>
+		<texture id="earth" file="./resources/images/earth.jpg" length_s="1" length_t="1" />
+		<texture id="plastic" file="./resources/images/plastic.jpg" length_s="1" length_t="1" />
+	</textures>
+	
+	<materials>
+        <material id="matDefault" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="1" g="1" b="1" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+        
+        <material id="matLamp1" >
+        	<emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="0" g="1" b="1" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+
+        <material id="matLamp2" >
+        	<emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="0" g="0.3" b="0" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+
+        <material id="matLamp3" >
+        	<emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="0.1" g="0.1" b="0.5" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+		
+		<material id="sofaLegMat" >
+			<emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="1" g="0" b="0" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+
+        <material id="gift1Mat" >
+			<emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="1" g="0" b="0" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+
+        <material id="gift2Mat" >
+			<emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="1" g="0" b="0" a="1" />
+            <specular r="1" g="0" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+		
+		<material id="ball1" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="1" g="1" b="1" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+		
+		<material id="ball2" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="0.5" g="1" b="0.5" a="1" />
+            <specular r="0.5" g="1" b="0.5" a="1" />
+            <shininess value="10" />
+        </material>
+		
+		<material id="ball3" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="1" g="0.5" b="0.5" a="1" />
+            <specular r="1" g="0.5" b="0.5" a="1" />
+            <shininess value="10" />
+        </material>
+		
+		<material id="ball4" >
+           <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="0.5" g="0.5" b="1" a="1" />
+            <specular r="0.5" g="0.5" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+    </materials>
+	
+	<transformations>
+        <transformation id="transWallX">
+           	<translate x="4.5" y="3" z="0" />
+        </transformation>
+        <transformation id="transWallZ">
+        	<translate x="0" y="3" z="4.5" /> 
+           	<rotate axis="y" angle="90" />
+        </transformation>
+        <transformation id="transFloor">
+        	<translate x="4.5" y="0" z="4.5" />
+        	<scale x="9" y="1" z="9" />
+           	<rotate axis="x" angle="-90" />
+        </transformation>
+        <transformation id="transC1">
+        	<translate x="4" y="0.6" z="6.8" /> 
+        	<scale x="0.1667" y="0.1667" z="0.1667" />
+			<translate x="0" y="1" z="0" /> 
+        	<scale x="3" y="2.2" z="3" />
+        </transformation>
+        <transformation id="transC2">
+			<translate x="4" y="0.6" z="6.8" /> 
+        	<scale x="0.1667" y="0.1667" z="0.1667" />
+			<translate x="0.6" y="2.1" z="0" /> 
+        	<scale x="1" y="0.5" z="1.9" />
+        </transformation>
+		<transformation id="transSofa1">
+			<translate x="2" y="0.85" z="7" />
+		</transformation>
+		<transformation id="transSofa2">
+			<rotate axis="y" angle="180" />
+			<translate x="-6" y="0.85" z="-5" />
+		</transformation>
+		<transformation id="transTable">
+			<translate x="4" y="0.5" z="6" />
+		</transformation>
+		<transformation id="transLamp">
+			<translate x="2.5" y="0.05" z="3.5" />
+		</transformation>
+		<transformation id="transDiscoBall">
+			<rotate axis="x" angle="90" />
+			<translate x="4" y="6" z="-5" />
+			<scale x="2" y="2" z="2" />
+		</transformation>
+    </transformations>
+	
+	<animations>
+		<animation id="animLinear1" span="10" type="linear">
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="1" yy="0" zz="0" />
+			<controlpoint xx="1" yy="1" zz="0" />
+			<controlpoint xx="1" yy="1" zz="1" />
+		</animation>
+		<animation id="animCirc1" span="5" type="circular" centerx="0" centery="0" centerz ="1"
+				   radius="5" startang="0" rotang="360" />
+	</animations>
+	
+	<primitives>	
+        <primitive id="sphere">
+			<sphere radius="0.5" slices="50" stacks="50" />
+		</primitive>
+		<primitive id="torus">
+			<torus inner="0.5" outer="1" slices="30" loops="30"/>
+		</primitive>
+    </primitives>
+
+	<components>
+		
+		<component id="root" >
+            <transformation>
+                <translate x="0" y="0" z="0" />
+            </transformation>
+            <materials>
+                <material id="matDefault" />
+            </materials>
+            <texture id="none" />
+            <children>
+            	<componentref id="CompSphere" />
+            </children>
+        </component>
+        <component id="CompSphere" >
+            <transformation>
+                <translate x="0" y="2" z="0" />
+            </transformation>
+            <animation>
+            	<animationref id="animCirc1" />
+            	<animationref id="animCirc1" />
+       		</animation>
+            <materials>
+                <material id="ball1" />
+                <material id="ball2" />
+                <material id="inherit" />
+            </materials>
+            <texture id="none" />
+            <children>
+            	<primitiveref id="torus" />
+            </children>
+        </component>
+	</components>
+
+</dsx>

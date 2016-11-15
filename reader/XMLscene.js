@@ -328,19 +328,39 @@ XMLscene.prototype.mergeMaterialToTex = function(texID,matID){
 		this.listTextures[texID].setShininess(this.listAppearances[matID].shininess);
 }
 
-// ----------------- ANIMATIONS ----------------------
-XMLscene.prototype.initAnimations = function(){
-	this.listAnimations = [];
-	for (var i = 0; i < this.graph.animations.length; i++){
-		var anim = this.graph.animations[i];
-		if (anim.type == "linear"){
-			this.listAnimations[anim.id] = new LinearAnimation(this.graph.animations[i]);
-		}
-		if (anim.type == "circular"){
-			this.listAnimations[anim.id] = new CircularAnimation(this.graph.animations[i]);
-		}
+
+XMLscene.prototype.displayPrimToAnimation = function(toDisplayPrim){
+
+	if (toDisplayPrim.animations.length == 0) {
+		this.displayPrimitive(toDisplayPrim);
+		return;
 	}
-	
+	//console.log(toDisplayPrim.tex, toDisplayPrim.animations);
+	if (toDisplayPrim.currentAnimation >= toDisplayPrim.animations.length){
+		this.displayPrimitive(toDisplayPrim);
+		return;
+	}
+	if (toDisplayPrim.animations[toDisplayPrim.currentAnimation].type == "circular"){
+		var center = toDisplayPrim.animations[toDisplayPrim.currentAnimation].centerVec;
+		var currAng = toDisplayPrim.animations[toDisplayPrim.currentAnimation].currAng;
+		var radius = toDisplayPrim.animations[toDisplayPrim.currentAnimation].radius;
+		var startAng = toDisplayPrim.animations[toDisplayPrim.currentAnimation].startAng;
+		var x = center[0] + (radius * Math.cos(startAng + currAng));
+		var y = center[1];
+		var z = center[2] + (radius * Math.sin(startAng + currAng));
+		this.pushMatrix();
+		this.translate(x, y, z);
+		//this.displayAtCoords(toDisplayPrim, x, y, z);
+		this.displayPrim(toDisplayPrim, toDisplayPrim.currMatrix);
+		this.popMatrix();
+	}
+	else if (toDisplayPrim.animations[toDisplayPrim.currentAnimation].type == "linear"){
+		this.pushMatrix();
+			var translation = toDisplayPrim.animations[toDisplayPrim.currentAnimation].translations;
+			this.translate(translation[0], translation[1], translation[2]);
+			this.displayPrim(toDisplayPrim, toDisplayPrim.currMatrix);
+		this.popMatrix();
+	}
 }
 
 // ----------------- PRIMITIVES ----------------------
@@ -388,18 +408,28 @@ ToDisplay.prototype.incrementActiveMat = function(){
 
 ToDisplay.prototype.incrementCurrentAnimation = function(){
 	this.currentAnimation++;
-	if (this.currentAnimation >= this.animations.length) this.currentAnimation = 0;
-}
+}	
 
 XMLscene.prototype.getAnimsFromID = function(animIdVec){
 	var animations = [];
 	for (var i in animIdVec){
-		animations.push(this.listAnimations[animIdVec[0]]);
+		var currId = animIdVec[i];
+		var currParsed = this.graph.animations[currId];
+		if (currParsed.type == "linear"){
+			animations.push(new LinearAnimation(currParsed));
+		}
+		if (currParsed.type == "circular"){
+			animations.push(new CircularAnimation(currParsed));
+		}
 	}
 	return animations;
 }
 
-XMLscene.prototype.displayPrim = function(toDisplayPrim){
+XMLscene.prototype.displayPrimitive = function(toDisplayPrim){
+	this.displayPrim(toDisplayPrim, toDisplayPrim.currMatrix);
+}
+
+XMLscene.prototype.displayPrim = function(toDisplayPrim, matrix){
 	this.pushMatrix();
 		if (toDisplayPrim.tex != null) {
 			if(this.listPrimitives[toDisplayPrim.primitive].constructor.name == 'MyPrimRect' || this.listPrimitives[toDisplayPrim.primitive].constructor.name == 'MyPrimTriang'){
@@ -411,8 +441,18 @@ XMLscene.prototype.displayPrim = function(toDisplayPrim){
 		else {
 			this.listAppearances[toDisplayPrim.mats[toDisplayPrim.activeMat]].apply();
 		}
-		this.multMatrix(toDisplayPrim.currMatrix);
+		this.multMatrix(matrix);
 		this.listPrimitives[toDisplayPrim.primitive].display();
+	this.popMatrix();
+}
+
+XMLscene.prototype.displayAtCoords = function(toDisplayPrim, x, y, z){
+	this.pushMatrix();
+		//current position on current matrix's 12, 13, and 14 index.
+		//por na origem
+		//por centro na posição desejada
+		this.translate(x, y, z);
+		this.displayPrim(toDisplayPrim, toDisplayPrim.currMatrix);
 	this.popMatrix();
 }
 
@@ -522,7 +562,7 @@ XMLscene.prototype.cycleMaterials = function(){
 
 XMLscene.prototype.onGraphLoaded = function () 
 {
-	this.setUpdatePeriod(5);
+	this.setUpdatePeriod(1);
 	this.frameDiff = 0;
 	this.currTime = -1;
 	this.activeMat = 0;
@@ -541,7 +581,6 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.initGraphLights();
 	this.sceneInterface.addLights();
 	this.getTransformations();
-	this.initAnimations();
 	this.initPrimitives();
 	this.initComponents();
 };
@@ -558,11 +597,13 @@ XMLscene.prototype.runAnimations = function(currTime){
 	this.getFrameDiff(currTime);
 	for (var i in this.listReadyToDisplay){	
 		if (this.listReadyToDisplay[i].animations.length == 0) continue;
-		this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].update(this.frameDiff);
-		
+		if (this.listReadyToDisplay[i].currentAnimation >= this.listReadyToDisplay[i].animations.length) continue;
 		if (this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].isDone()){
+			this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].reset();
 			this.listReadyToDisplay[i].incrementCurrentAnimation();
 		}
+		if (this.listReadyToDisplay[i].currentAnimation >= this.listReadyToDisplay[i].animations.length) continue;
+		this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].update(this.frameDiff);
 	}
 }
 
@@ -599,7 +640,8 @@ XMLscene.prototype.display = function () {
 		}
 		
 		for (var i in this.listReadyToDisplay){
-			this.displayPrim(this.listReadyToDisplay[i]);
+			//this.displayPrimitive(this.listReadyToDisplay[i]);
+			this.displayPrimToAnimation(this.listReadyToDisplay[i]);
 		}
 	};	
 };

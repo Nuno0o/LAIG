@@ -547,10 +547,9 @@ function parsedAnimation(anim){
 		}
 	}
 	else if (this.type == "circular"){
-		this.center = anim.attributes.getNamedItem("center").value.split(" ");
-		this.center_x = parseFloat(this.center[0]);
-		this.center_y = parseFloat(this.center[1]);
-		this.center_z = parseFloat(this.center[2]);
+		this.center_x = parseFloat(anim.attributes.getNamedItem("centerx").value);
+		this.center_y = parseFloat(anim.attributes.getNamedItem("centery").value);
+		this.center_z = parseFloat(anim.attributes.getNamedItem("centerz").value);
 		this.radius = parseFloat(anim.attributes.getNamedItem("radius").value);
 		this.startang = parseFloat(anim.attributes.getNamedItem("startang").value);
 		this.rotang = parseFloat(anim.attributes.getNamedItem("rotang").value);
@@ -577,10 +576,11 @@ MySceneGraph.prototype.parseAnimations = function(rootElement){
     }
     for(var i = 0;i < nanimations;i++){
     	var curr_anim = elems[0].children[i];
-    	this.animations[i] = new parsedAnimation(curr_anim);
     	if(!this.addId(curr_anim.id, "animation")){
 			return "Bad Id found: " + curr_anim.id;
 		}
+    	this.animations[curr_anim.id] = new parsedAnimation(curr_anim);
+    	
     }
 }
 
@@ -731,7 +731,7 @@ function Component(graph,comp){
 		var aref = animations[0].getElementsByTagName('animationref');
 		for (var i = 0; i < aref.length; i++){
 			var found = false;
-			for (var j = 0; j < graph.animations.length; j++){
+			for (j in graph.animations){
 				if (graph.animations[j].id == aref[i].id){
 					found = true;
 					break;
