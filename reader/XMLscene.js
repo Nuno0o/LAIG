@@ -25,13 +25,13 @@ XMLscene.prototype.init = function (application) {
     this.gl.depthFunc(this.gl.LEQUAL);
 
 	this.axis=new CGFaxis(this);
-	
+
 	this.lightValues = [];
-	
+
 	for (var i = 0; i < this.lights.length; i++){
 		this.lightValues[i] = false;
 	}
-	
+
 	this.lightCheckBoxesUpdate();
 };
 
@@ -50,7 +50,7 @@ XMLscene.prototype.setDefaultAppearance = function () {
     this.setAmbient(0.2, 0.4, 0.8, 1.0);
     this.setDiffuse(0.2, 0.4, 0.8, 1.0);
     this.setSpecular(0.2, 0.4, 0.8, 1.0);
-    this.setShininess(10.0);	
+    this.setShininess(10.0);
 };
 
 // -----------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ XMLscene.prototype.setDefaultAppearance = function () {
 // ------------------------ AXIS -----------------------------
 
 XMLscene.prototype.initGraphAxis = function() {
-	this.axis = new CGFaxis(this, this.graph.axis_length);	
+	this.axis = new CGFaxis(this, this.graph.axis_length);
 }
 
 // ----------------------- LIGHTING --------------------------
@@ -130,7 +130,7 @@ XMLscene.prototype.initGraphLights = function(){
 									this.graph.listOmni[i].specular_g,
 									this.graph.listOmni[i].specular_b,
 									this.graph.listOmni[i].specular_a);
-		
+
 		if (this.graph.listOmni[i].enabled){
 			this.lights[i].enable();
 			this.lightValues[i] = true;
@@ -143,7 +143,7 @@ XMLscene.prototype.initGraphLights = function(){
 	}
 	for (var i = 0; i < this.graph.listSpot.length ; i++){
 		var j = i + this.graph.listOmni.length;
-		
+
 		this.lights[j].setPosition(	this.graph.listSpot[i].location_x,
 									this.graph.listSpot[i].location_y,
 									this.graph.listSpot[i].location_z, 1);
@@ -162,17 +162,17 @@ XMLscene.prototype.initGraphLights = function(){
 		this.lights[j].setSpotDirection(this.graph.listSpot[i].target_x-this.graph.listSpot[i].location_x,
 										this.graph.listSpot[i].target_y-this.graph.listSpot[i].location_y,
 										this.graph.listSpot[i].target_z-this.graph.listSpot[i].location_z);
-		
+
 		this.lights[j].setSpotExponent(this.graph.listSpot[i].exponent);
 
 		this.lights[j].setSpotCutOff(Math.PI * this.graph.listSpot[i].angle / 180);
-		
-		if (this.graph.listSpot[i].enabled){ 
+
+		if (this.graph.listSpot[i].enabled){
 			this.lights[j].enable();
 			this.lightValues[j] = true;
 		}
 		else this.lights[j].disable();
-		
+
 		this.lights[j].setVisible(true);
 		this.lights[i].update();
 	}
@@ -384,6 +384,9 @@ XMLscene.prototype.initPrimitives = function(){
 		if(pri.name == 'torus'){
 			this.listPrimitives[pri.id] = new MyPrimTorus(this, pri.inner, pri.outer,pri.slices,pri.loops);
 		}
+    if(pri.name == 'plane'){
+			this.listPrimitives[pri.id] = new Plane(this, pri.dimX, pri.dimY,pri.partsX,pri.partsY);
+		}
 	}
 }
 
@@ -395,7 +398,7 @@ function ToDisplay(primitive, currMatrix, mats, tex, anims){
 	this.mats = mats;
 	this.tex = tex;
 	this.activeMat = 0;
-	
+
 	this.currentAnimation = 0;
 	this.animations = anims;
 }
@@ -408,7 +411,7 @@ ToDisplay.prototype.incrementActiveMat = function(){
 
 ToDisplay.prototype.incrementCurrentAnimation = function(){
 	this.currentAnimation++;
-}	
+}
 
 XMLscene.prototype.getAnimsFromID = function(animIdVec){
 	var animations = [];
@@ -560,19 +563,19 @@ XMLscene.prototype.cycleMaterials = function(){
 	}
 }
 
-XMLscene.prototype.onGraphLoaded = function () 
+XMLscene.prototype.onGraphLoaded = function ()
 {
 	this.setUpdatePeriod(1);
 	this.frameDiff = 0;
 	this.currTime = -1;
 	this.activeMat = 0;
 	this.currentCamera = 0;
-	
+
 	this.enableTextures(true);
-	
+
 	this.listReadyToDisplay = [];
 	this.activeAnimations = [];
-	
+
 	this.initGraphGlobalLighting();
 	this.initGraphAxis();
 	this.initGraphCameras();
@@ -595,7 +598,7 @@ XMLscene.prototype.getFrameDiff = function(currTime){
 
 XMLscene.prototype.runAnimations = function(currTime){
 	this.getFrameDiff(currTime);
-	for (var i in this.listReadyToDisplay){	
+	for (var i in this.listReadyToDisplay){
 		if (this.listReadyToDisplay[i].animations.length == 0) continue;
 		if (this.listReadyToDisplay[i].currentAnimation >= this.listReadyToDisplay[i].animations.length) continue;
 		if (this.listReadyToDisplay[i].animations[this.listReadyToDisplay[i].currentAnimation].isDone()){
@@ -626,22 +629,22 @@ XMLscene.prototype.display = function () {
 	this.axis.display();
 
 	this.setDefaultAppearance();
-	
+
 	// ---- END Background, camera and axis setup
 
 	// it is important that things depending on the proper loading of the graph
 	// only get executed after the graph has loaded correctly.
 	// This is one possible way to do it
 	if (this.graph.loadedOk)
-	{	
+	{
 		this.updateLights();
 		for (var i = 0; i < this.lights.length; i++){
 			this.lights[i].update();
 		}
-		
+
 		for (var i in this.listReadyToDisplay){
 			//this.displayPrimitive(this.listReadyToDisplay[i]);
 			this.displayPrimToAnimation(this.listReadyToDisplay[i]);
 		}
-	};	
+	};
 };
