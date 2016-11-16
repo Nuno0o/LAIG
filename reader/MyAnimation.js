@@ -42,6 +42,7 @@ function LinearAnimation(parsedAnimation){
 	this.currentSegment = 0;
 	this.segmentDistances = [];
 	this.translations = [0,0,0];
+	this.expectedTranslations = [0,0,0];
 	this.totalDistance = this.calcTotalDistance();
 	
 }
@@ -56,6 +57,9 @@ LinearAnimation.prototype.calcTotalDistance = function(){
 										(this.controlPointVec[i].zz - this.controlPointVec[i+1].zz) * (this.controlPointVec[i].zz - this.controlPointVec[i+1].zz) );
 		totalDistance += currDistance;
 		this.segmentDistances[i] = currDistance;
+		this.expectedTranslations[0] += this.controlPointVec[i+1].xx - this.controlPointVec[i].xx;
+		this.expectedTranslations[1] += this.controlPointVec[i+1].yy - this.controlPointVec[i].yy;
+		this.expectedTranslations[2] += this.controlPointVec[i+1].zz - this.controlPointVec[i].zz;	
 	}
 	return totalDistance;
 }
@@ -129,6 +133,10 @@ LinearAnimation.prototype.getTranslation = function(){
 	return this.translations;
 }
 
+LinearAnimation.prototype.getRotationAngle = function(){
+	return 0;
+}
+
 // ---------------------------------------------------------------------------------------------------------------
 // ------------------------------------------- CIRCULAR ANIMATION ------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------------
@@ -141,6 +149,9 @@ function CircularAnimation(parsedAnimation){
 	this.startAng = Math.PI * parsedAnimation.startang / 180;
 	this.rotAng = Math.PI * parsedAnimation.rotang / 180;
 
+	this.expectedTranslations = [	this.centerVec[0] + (this.radius * Math.cos(this.startAng + this.rotAng)),
+									this.centerVec[1],
+									this.centerVec[2] + (this.radius * Math.sin(this.startAng + this.rotAng))];
 	this.totalDistance = this.calcTotalDistance();
 	this.currAng = this.startAng;
 }
@@ -162,7 +173,7 @@ CircularAnimation.prototype.calcIncrement = function(frameDiff){
 
 CircularAnimation.prototype.update = function(frameDiff){
 	this.baseAnimation.update(frameDiff);
-	this.updateCurrAng(this.calcIncrement(frameDiff));
+	if (!this.isDone())	this.updateCurrAng(this.calcIncrement(frameDiff));
 }
 
 CircularAnimation.prototype.isDone = function(){
@@ -181,4 +192,8 @@ CircularAnimation.prototype.getTranslation = function(){
 	var z = this.centerVec[2] + (this.radius * Math.sin(this.startAng + this.currAng));
 
 	return [x, y, z];
+}
+
+CircularAnimation.prototype.getRotationAngle = function(){
+	return  - this.currAng;
 }

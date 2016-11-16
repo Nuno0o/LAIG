@@ -353,19 +353,24 @@ XMLscene.prototype.initPrimitives = function(){
 		if(pri.name == 'plane'){
 			this.listPrimitives[pri.id] = new Plane(this, pri.dimX, pri.dimY,pri.partsX,pri.partsY);
 		}
+		if(pri.name == 'patch'){
+			this.listPrimitives[pri.id] = new Patch(this, pri.orderU, pri.orderV,pri.partsU,pri.partsV,pri.controlPoints);
+		}
 	}
 }
 
 // ----------------- COMPONENTS ----------------------
 
-function ToDisplay(primitive, currMatrix, mats, tex, anims){
+function ToDisplay(primitive, transformations, mats, tex, anims){
 	this.primitive = primitive;
-	this.currMatrix = currMatrix;
+
+	this.transformations = transformations;
 	this.mats = mats;
 	this.tex = tex;
 	this.activeMat = 0;
 
 	this.animations = anims;
+
 	this.currentAnimations = [];
 	for (var i = 0; i < this.animations.length; i++){
 		this.currentAnimations[i] = 0;
@@ -381,6 +386,14 @@ ToDisplay.prototype.incrementActiveMat = function(){
 ToDisplay.prototype.incrementCurrentAnimation = function(layer){
 	this.currentAnimations[layer]++;
 }	
+
+XMLscene.prototype.computeTransformationList = function(transformations){
+	for (var i in transformations){
+		for (var j in transformations[i]){
+			this.applyTransformation(transformations[i][j]);
+		}
+	}
+}
 
 XMLscene.prototype.getAnimsFromID = function(animIdVec){
 	var animations = [];
@@ -406,17 +419,25 @@ XMLscene.prototype.displayPrimToAnimation = function(toDisplayPrim){
 		return;
 	}
 
-	console.log(toDisplayPrim.tex, toDisplayPrim.currentAnimations, toDisplayPrim.animations);
-
 	// Check all layers for active animations. If none is active then just display the primitive normally.
 	// Else, stack up translations. Then apply the total translation and display!
 
 	var totalTranslation = [0,0,0];
-
+	var angle = 0;
 	for (var layer = 0; layer < toDisplayPrim.animations.length; layer++){
 
+		// Current layer even has animations?
+		if (toDisplayPrim.animations[layer].length == 0) continue;
+
 		// Current layer has an active animation?
-		if (toDisplayPrim.currentAnimations[layer] >= toDisplayPrim.animations[layer].length) continue;
+		if (toDisplayPrim.currentAnimations[layer] >= toDisplayPrim.animations[layer].length) {
+
+			var expectedTranslations = toDisplayPrim.animations[layer][toDisplayPrim.currentAnimations[layer] - 1].expectedTranslations;
+
+			totalTranslation[0] += expectedTranslations[0]; 
+			totalTranslation[1] += expectedTranslations[1];
+			totalTranslation[2] += expectedTranslations[2];
+		}
 		else {
 			
 			var thisTranslation = toDisplayPrim.animations[layer][toDisplayPrim.currentAnimations[layer]].getTranslation();
@@ -425,13 +446,15 @@ XMLscene.prototype.displayPrimToAnimation = function(toDisplayPrim){
 			totalTranslation[1] += thisTranslation[1];
 			totalTranslation[2] += thisTranslation[2];
 
+			if (toDisplayPrim.animations[layer][toDisplayPrim.currentAnimations[layer]].currAng != undefined)
+				angle = toDisplayPrim.animations[layer][toDisplayPrim.currentAnimations[layer]].currAng;
 		}
 	}
 
 	// Display it!
 	this.pushMatrix();
 		this.translate(totalTranslation[0],totalTranslation[1],totalTranslation[2]);
-		this.displayPrim(toDisplayPrim, toDisplayPrim.currMatrix);
+		this.displayPrim(toDisplayPrim);
 	this.popMatrix();
 }
 
@@ -439,7 +462,7 @@ XMLscene.prototype.displayPrimitive = function(toDisplayPrim){
 	this.displayPrim(toDisplayPrim, toDisplayPrim.currMatrix);
 }
 
-XMLscene.prototype.displayPrim = function(toDisplayPrim, matrix){
+XMLscene.prototype.displayPrim = function(toDisplayPrim){
 	this.pushMatrix();
 		if (toDisplayPrim.tex != null) {
 			if(this.listPrimitives[toDisplayPrim.primitive].constructor.name == 'MyPrimRect' || this.listPrimitives[toDisplayPrim.primitive].constructor.name == 'MyPrimTriang'){
@@ -451,7 +474,9 @@ XMLscene.prototype.displayPrim = function(toDisplayPrim, matrix){
 		else {
 			this.listAppearances[toDisplayPrim.mats[toDisplayPrim.activeMat]].apply();
 		}
-		this.multMatrix(matrix);
+
+		this.computeTransformationList(toDisplayPrim.transformations);
+
 		this.listPrimitives[toDisplayPrim.primitive].display();
 	this.popMatrix();
 }
@@ -526,25 +551,6 @@ XMLscene.prototype.getComponentTex = function(graphNode, currTexID){
 	else return graphNode.texture;
 }
 
-/*
-XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, tex, anims){
-	var newMatrix;
-	newMatrix = this.calcMatrix(currMatrix, this.listTransformations[graphNode.transformationref]);
-console.log(graphNode.id, anims);
-	for (var i in graphNode.primitiverefs){
-		mats = this.getMats(graphNode, mats);
-		tex = this.getComponentTex(graphNode, tex);
-		var animations = this.getAnimsFromID(anims);
-		this.listReadyToDisplay.push(new ToDisplay(graphNode.primitiverefs[i], newMatrix, mats, tex, animations));
-	}
-	for (var i in graphNode.componentrefs){
-		mats = this.getMats(graphNode, mats);
-		tex = this.getComponentTex(graphNode, tex);
-		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], newMatrix, mats, tex, this.getAnims(this.graph.components[graphNode.componentrefs[i]], anims));
-	}
-}
-*/
-
 XMLscene.prototype.cloneAnim = function(animID){
 	var currParsed = this.graph.animations[animID];
 	if (currParsed.type == "linear"){
@@ -564,24 +570,92 @@ XMLscene.prototype.getAnims_ = function(graphNode, anims){
 	for (var i in graphNode.animationrefs){
 		currAnims.push(this.cloneAnim(graphNode.animationrefs[i]));
 	}
-	if(currAnims.length > 0) newAnims.push(currAnims);
+	//if(currAnims.length > 0) 
+	newAnims.push(currAnims);
 	return newAnims;
 }
 
-XMLscene.prototype.calcAndDisplayGraph = function(graphNode, currMatrix, mats, tex, anims){
-	var newMatrix;
-	newMatrix = this.calcMatrix(currMatrix, this.listTransformations[graphNode.transformationref]);
-	console.log(graphNode.id, anims);
+XMLscene.prototype.cloneTransformation = function(change){
+	if (change.type == 'translate'){
+		return ['translate', change.xtrans, change.ytrans, change.ztrans];
+	}
+	if (change.type == 'rotate'){
+		return ['rotate', change.axis, change.angle];
+	}
+	if (change.type == 'scale'){
+		return ['scale', change.scalex, change.scaley, change.scalez];
+	}
+	return [];
+}
 
+XMLscene.prototype.applyTransformation = function(clonedTransformation){
+	if (clonedTransformation.length == 0) return;
+	if (clonedTransformation[0] == "translate"){
+		this.translate(clonedTransformation[1],clonedTransformation[2],clonedTransformation[3]);
+	}
+	if (clonedTransformation[0] == 'rotate') {
+		if (clonedTransformation[1] == 'x'){
+			this.rotate(Math.PI * clonedTransformation[2] / 180, 1, 0, 0);
+		}
+		if (clonedTransformation[1] == 'y'){
+			this.rotate(Math.PI * clonedTransformation[2] / 180, 0, 1, 0);
+		}
+		if (clonedTransformation[1] == 'z'){
+			this.rotate(Math.PI * clonedTransformation[2] / 180, 0, 0, 1);
+		}
+	}
+	if (clonedTransformation[0] == 'scale') {
+		this.scale(clonedTransformation[1],clonedTransformation[2],clonedTransformation[3]);
+	}
+}
+
+XMLscene.prototype.getTransformationsFromID = function(transID){
+	var retorno = [];
+	for (var i in this.graph.transformations){
+		if (this.graph.transformations[i].id == transID){
+			for (var j in this.graph.transformations[i].changes){
+				retorno.push(this.cloneTransformation(this.graph.transformations[i].changes[j]));
+			}
+		}
+	}
+	return retorno;
+}
+
+XMLscene.prototype.getTransformations_ = function(graphNode, transformations){
+	var newTrans = [];
+	for (var i in transformations) { newTrans[i] = transformations[i]; }
+	var actual = this.getTransformationsFromID(graphNode.transformationref);
+	newTrans.push(actual);
+	return newTrans;
+}
+
+XMLscene.prototype.injectRotation = function(transformations){
+	var rotation = ['rotate', 'y', 0];
+
+	var newLast = [];
+	newLast.push(rotation);
+
+	for (var i = 0; i < transformations[transformations.length - 1].length; i++){
+		newLast.push(transformations[transformations.length - 1][i]);
+	}
+	transformations[transformations.length - 1] = newLast;
+}
+
+XMLscene.prototype.calcAndDisplayGraph = function(graphNode, transformations, mats, tex, anims){
+	transformations = this.getTransformations_(graphNode, transformations);
+	this.injectRotation(transformations);
 	for (var i in graphNode.primitiverefs){
 		mats = this.getMats(graphNode, mats);
 		tex = this.getComponentTex(graphNode, tex);
-		this.listReadyToDisplay.push(new ToDisplay(graphNode.primitiverefs[i], newMatrix, mats, tex, anims));
+		this.listReadyToDisplay.push(new ToDisplay(graphNode.primitiverefs[i], transformations, mats, tex, anims));
 	}
 	for (var i in graphNode.componentrefs){
 		mats = this.getMats(graphNode, mats);
 		tex = this.getComponentTex(graphNode, tex);
-		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], newMatrix, mats, tex, this.getAnims_(this.graph.components[graphNode.componentrefs[i]], anims));
+
+		var newAnims = this.getAnims_(this.graph.components[graphNode.componentrefs[i]], anims);
+
+		this.calcAndDisplayGraph(this.graph.components[graphNode.componentrefs[i]], transformations, mats, tex, newAnims);
 	}
 }
 
@@ -591,7 +665,7 @@ XMLscene.prototype.initComponents = function(){
 	this.initialMatrix = this.listTransformations[this.root.transformationref];
 	this.defMats = this.root.materials;
 	this.defTex = this.root.texture;
-	this.calcAndDisplayGraph(this.root, this.initialMatrix, this.defMats, this.defTex, []);
+	this.calcAndDisplayGraph(this.root, [], this.defMats, this.defTex, []);
 }
 
 
@@ -607,7 +681,7 @@ XMLscene.prototype.cycleMaterials = function(){
 
 XMLscene.prototype.onGraphLoaded = function () 
 {
-	this.setUpdatePeriod(1);
+	this.setUpdatePeriod(20);
 	this.frameDiff = 0;
 	this.currTime = -1;
 	this.activeMat = 0;
@@ -638,25 +712,26 @@ XMLscene.prototype.getFrameDiff = function(currTime){
 	}
 }
 
-XMLscene.prototype.runAnimations = function(currTime){
-	this.getFrameDiff(currTime);
+XMLscene.prototype.runAnimations = function(frameDiff){
+	
 	for (var i in this.listReadyToDisplay){	
 
 		// Primitive has no animations
 		if (this.listReadyToDisplay[i].animations.length == 0) continue;
 		// Run through current animations
 		for (var layer = 0; layer < this.listReadyToDisplay[i].animations.length; layer++){
+
+			// Check if this layer has any animations first.
+			if (this.listReadyToDisplay[i].animations[layer].length == 0) continue;
+
 			// Check if this layer doesn't have an animation to do
 			if (this.listReadyToDisplay[i].currentAnimations[layer] >= this.listReadyToDisplay[i].animations[layer].length) continue;
 
-			// Animations for a given primitive: [[layer0_anim0, layer0_anim1, ...], [layer1_anim0, layer1_anim1, ...], ...], current = [0,0,0,...]
+			// Animations for a given primitive: [[layer0_anim0, layer0_anim1, ...], [layer1_anim0, layer1_anim1, ...], [], [layer3_anim0], ...], current = [0,0,0,...]
 			if (this.listReadyToDisplay[i].animations[layer][this.listReadyToDisplay[i].currentAnimations[layer]].isDone()){
-				this.listReadyToDisplay[i].animations[layer][this.listReadyToDisplay[i].currentAnimations[layer]].reset();
 				this.listReadyToDisplay[i].incrementCurrentAnimation(layer);
+				continue;
 			}
-
-			// Check again. No need to update if it's done.
-			if (this.listReadyToDisplay[i].currentAnimations[layer] >= this.listReadyToDisplay[i].animations[layer].length) continue;
 
 			// It it ain't done, update!
 			this.listReadyToDisplay[i].animations[layer][this.listReadyToDisplay[i].currentAnimations[layer]].update(this.frameDiff);
@@ -665,31 +740,48 @@ XMLscene.prototype.runAnimations = function(currTime){
 	}
 }
 
+XMLscene.prototype.updatePrimitivesRotations = function(frameDiff){
+
+	// Update all primitive's layer's rotations according to their current animation!
+	for (var i in this.listReadyToDisplay){
+		var currPrim = this.listReadyToDisplay[i];
+		for (var layer = 0; layer < currPrim.animations.length; layer++){
+
+			// Current layer has any animations...?
+			if (currPrim.animations[layer].length == 0) continue;
+
+			// Current layer finished its animations
+			if (currPrim.currentAnimations[layer] >= currPrim.animations[layer].length){
+				currPrim.transformations[layer + 1][0][2] = currPrim.animations[layer][currPrim.animations[layer].length - 1].getRotationAngle();
+				continue;
+			}
+
+			// Current layer is playing an animation
+			currPrim.transformations[layer + 1][0][2] = currPrim.animations[layer][currPrim.currentAnimations[layer]].getRotationAngle();
+		}
+	}
+
+}
+
 XMLscene.prototype.update = function(currTime){
-	this.runAnimations(currTime);
+	// Update all animated objects.
+	this.getFrameDiff(currTime);
+	this.runAnimations(this.frameDiff);
+	//this.updatePrimitivesRotations(this.frameDiff);
 }
 
 XMLscene.prototype.display = function () {
+	
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-
-	// Initialize Model-View matrix as identity (no transformation
 	this.updateProjectionMatrix();
     this.loadIdentity();
-
-	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
-
-	// Draw axis
 	this.axis.display();
-
 	this.setDefaultAppearance();
-	
-	// ---- END Background, camera and axis setup
 
-	// it is important that things depending on the proper loading of the graph
-	// only get executed after the graph has loaded correctly.
-	// This is one possible way to do it
+	this.doneOnce = 0;
+
 	if (this.graph.loadedOk)
 	{	
 		this.updateLights();
@@ -698,8 +790,8 @@ XMLscene.prototype.display = function () {
 		}
 		
 		for (var i in this.listReadyToDisplay){
-			//this.displayPrimitive(this.listReadyToDisplay[i]);
+			//this.displayPrim(this.listReadyToDisplay[i]);
 			this.displayPrimToAnimation(this.listReadyToDisplay[i]);
 		}
-	};	
+	}	
 };

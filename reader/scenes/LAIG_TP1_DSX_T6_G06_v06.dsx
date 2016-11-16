@@ -209,12 +209,14 @@
 		</animation>
 		<animation id="animLinearUp" span="10" type="linear">
 			<controlpoint xx="0" yy="0" zz="0" />
-			<controlpoint xx="0" yy="5" zz="0" />
+			<controlpoint xx="0" yy="1" zz="0" />
 		</animation>
 		<animation id="animCirc1" span="10" type="circular" centerx="0" centery="0" centerz="0"
 				   radius="0.1" startang="0" rotang="360" />
-		<animation id="animCirc2" span="9" type="circular" centerx="0" centery="0" centerz="0"
+		<animation id="animCirc2" span="20" type="circular" centerx="0" centery="0" centerz="0"
 				   radius="1" startang="0" rotang="90" />
+		<animation id="animCirc3" span="9" type="circular" centerx="0" centery="0" centerz="0"
+				   radius="0" startang="0" rotang="360" />
 	</animations>
 
 	<primitives>
@@ -235,6 +237,16 @@
 		</primitive>
 		<primitive id="plane1">
 			<plane dimX="2" dimY="2" partsX="3" partsY="3"/>
+		</primitive>
+		<primitive id="patch1">
+			<patch orderU="2" orderV="1" partsU="10" partsV="10" >    
+				<controlpoint x="-1.5" y="-1.5" z="0" />
+				<controlpoint x="-1.5" y="1.5" z="0" />
+				<controlpoint x="0" y="-1.5" z="3" />
+				<controlpoint x="0" y="1.5" z="3" />
+				<controlpoint x="1.5" y="-1.5" z="0" />
+				<controlpoint x="1.5" y="1.5" z="0" />
+			</patch>
 		</primitive>
     </primitives>
 
@@ -258,7 +270,8 @@
             	<componentref id= "Floor" />
             	<componentref id= "C1" />
             	<componentref id= "C2" />
-              <componentref id= "Plane" />
+              	<componentref id= "Plane" />
+              	<componentref id= "Patch" />
 				<componentref id= "Beer" />
             	<componentref id= "DiscoBall" />
 				<componentref id= "Earth" />
@@ -277,6 +290,18 @@
     				<primitiveref id="plane1" />
     			</children>
     		</component>
+
+		<component id="Patch">
+			<transformation>
+			</transformation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="inherit" />
+			<children>
+				<primitiveref id="patch1" />
+			</children>
+		</component>
 
 		<component id="primRect">
 			<transformation>
@@ -478,6 +503,9 @@
 			<transformation>
 				<transformationref id="transC1" />
 			</transformation>
+			<animation>
+				<animationref id="animCirc3" />
+			</animation>
 			<materials>
 				<material id="gift1Mat" />
 			</materials>
@@ -1001,7 +1029,7 @@
 				<scale x="0.28" y="0.28" z="0.5"/>
 			</transformation>
 			<animation>
-				<animationref id="animLinear1"/>
+				<animationref id="animCirc1"/>
 			</animation>
 			<materials>
 				<material id="inherit" />
@@ -1064,6 +1092,9 @@
 			<transformation>
 				<transformationref id="transDiscoBall" />
 			</transformation>
+			<animation>
+				<animationref id="animCirc1"/>
+			</animation>
 			<materials>
 				<material id="ball1" />
 				<material id="ball2" />

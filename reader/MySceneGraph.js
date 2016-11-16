@@ -652,8 +652,46 @@ function Primitive(prim){
 		if(this.dimX != null && this.dimY != null && this.partsX != null && this.partsY != null)
 			return null;
 	}
-	
+	if(this.name == "patch"){
+        this.orderU = parseInt(prim.children[0].attributes.getNamedItem("orderU").value);
+        this.orderV = parseInt(prim.children[0].attributes.getNamedItem("orderV").value);
+        this.partsU = parseInt(prim.children[0].attributes.getNamedItem("partsU").value);
+        this.partsV = parseInt(prim.children[0].attributes.getNamedItem("partsV").value);
+        var primControl = prim.children[0];
+        this.controlPoints = [];
+        for( var i = 0;i < (this.orderU+1)*(this.orderV+1);i++){
+            this.controlPoints[i] = new ControlPoint(primControl.children[i]);
+        }
+        if(this.orderU != null && this.orderV != null && this.partsU != null && this.partsV != null && this.controlPoints.length == (this.orderU+1)*(this.orderV+1))
+            return null;
+    }
+    if(this.name == "chessboard"){
+		this.du = parseInt(prim.children[0].attributes.getNamedItem("du").value);
+		this.dv = parseInt(prim.children[0].attributes.getNamedItem("dv").value);
+		this.textureref = prim.children[0].attributes.getNamedItem("partsU").value;
+		this.su = parseInt(prim.children[0].attributes.getNamedItem("su").value);
+		this.sv = parseInt(prim.children[0].attributes.getNamedItem("sv").value);
+		var primColors = prim.children[0];
+		this.c1 = new ColorBoard(getDirectChildrenByTagName(primColors,'c1')[0]);
+		this.c2 = new ColorBoard(getDirectChildrenByTagName(primColors,'c2')[0]);
+		this.cs = new ColorBoard(getDirectChildrenByTagName(primColors,'cs')[0]);
+		if(this.su != null && this.sv != null && this.du != null && this.dv != null && this.c1.length == 3 && this.c2.length == 3 && this.cs.length == 3)
+			return null;
+	}
 	return "Error parsing primitives";
+}
+
+function ColorBoard(primColor){
+	this.r = parseFloat(primControl.attributes.getNamedItem("r").value);
+	this.g = parseFloat(primControl.attributes.getNamedItem("g").value);
+	this.b = parseFloat(primControl.attributes.getNamedItem("b").value);
+	this.a = parseFloat(primControl.attributes.getNamedItem("a").value);
+}
+
+function ControlPoint(primControl){
+    this.x = parseFloat(primControl.attributes.getNamedItem("x").value);
+    this.y = parseFloat(primControl.attributes.getNamedItem("y").value);
+    this.z = parseFloat(primControl.attributes.getNamedItem("z").value);
 }
 
 MySceneGraph.prototype.parsePrimitives = function(rootElement){

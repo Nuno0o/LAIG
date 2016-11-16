@@ -9,7 +9,7 @@ function Plane(scene,dimX,dimY,partsX,partsY) {
   getSurfacePoint = function(u, v) {
 		return this.nurbsSurface.getPoint(u, v);
 	};
-	CGFnurbsObject.call(this,scene,getSurfacePoint,this.partsX,this.partsY);
+	CGFnurbsObject.call(this,scene,getSurfacePoint,20,20);
 
 };
 
@@ -18,15 +18,15 @@ Plane.prototype.constructor=Plane;
 
 Plane.prototype.initSurface = function () {
   var controlVertexes = [];
-  for(var i = 0;i <= 1;i++){
+  for(var i = 0;i <= this.partsX;i++){
     controlVertexes.push([]);
   }
-  for(var u = 0;u <= 1;u++){
-    for(var v = 0;v <= 1;v++){
-      controlVertexes[u][v] = [u*this.dimX-this.dimX/2,v*this.dimY-this.dimY/2,0,1];
+  for(var u = 0;u <= this.partsX;u++){
+    for(var v = 0;v <= this.partsY;v++){
+      controlVertexes[u][v] = [(u/this.partsX)*this.dimX-this.dimX/2,(v/this.partsY)*this.dimY-this.dimY/2,0,1];
     }
   }
-  this.nurbsSurface = makeSurface(1,1,controlVertexes);
+  this.nurbsSurface = makeSurface(this.partsX,this.partsY,controlVertexes);
 
 }
 
