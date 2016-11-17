@@ -668,7 +668,7 @@ function Primitive(prim){
     if(this.name == "chessboard"){
 		this.du = parseInt(prim.children[0].attributes.getNamedItem("du").value);
 		this.dv = parseInt(prim.children[0].attributes.getNamedItem("dv").value);
-		this.textureref = prim.children[0].attributes.getNamedItem("partsU").value;
+		this.textureref = prim.children[0].attributes.getNamedItem("textureref").value;
 		this.su = parseInt(prim.children[0].attributes.getNamedItem("su").value);
 		this.sv = parseInt(prim.children[0].attributes.getNamedItem("sv").value);
 		var primColors = prim.children[0];
@@ -682,10 +682,10 @@ function Primitive(prim){
 }
 
 function ColorBoard(primColor){
-	this.r = parseFloat(primControl.attributes.getNamedItem("r").value);
-	this.g = parseFloat(primControl.attributes.getNamedItem("g").value);
-	this.b = parseFloat(primControl.attributes.getNamedItem("b").value);
-	this.a = parseFloat(primControl.attributes.getNamedItem("a").value);
+	this.r = parseFloat(primColor.attributes.getNamedItem("r").value);
+	this.g = parseFloat(primColor.attributes.getNamedItem("g").value);
+	this.b = parseFloat(primColor.attributes.getNamedItem("b").value);
+	this.a = parseFloat(primColor.attributes.getNamedItem("a").value);
 }
 
 function ControlPoint(primControl){

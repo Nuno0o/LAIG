@@ -209,13 +209,18 @@
 		</animation>
 		<animation id="animLinearUp" span="10" type="linear">
 			<controlpoint xx="0" yy="0" zz="0" />
-			<controlpoint xx="0" yy="1" zz="0" />
+			<controlpoint xx="1" yy="0" zz="0" />
+			<controlpoint xx="0" yy="0" zz="1" />
+			<controlpoint xx="0" yy="0" zz="1" />
+			<controlpoint xx="0" yy="0" zz="0" />
 		</animation>
 		<animation id="animCirc1" span="10" type="circular" centerx="0" centery="0" centerz="0"
-				   radius="0.1" startang="0" rotang="360" />
+				   radius="0" startang="0" rotang="360" />
 		<animation id="animCirc2" span="20" type="circular" centerx="0" centery="0" centerz="0"
 				   radius="1" startang="0" rotang="90" />
 		<animation id="animCirc3" span="9" type="circular" centerx="0" centery="0" centerz="0"
+				   radius="0" startang="0" rotang="360" />
+		<animation id="animCirc4" span="9" type="circular" centerx="0" centery="0" centerz="0"
 				   radius="0" startang="0" rotang="360" />
 	</animations>
 
@@ -504,7 +509,7 @@
 				<transformationref id="transC1" />
 			</transformation>
 			<animation>
-				<animationref id="animCirc3" />
+				<animationref id="animLinearUp" />
 			</animation>
 			<materials>
 				<material id="gift1Mat" />
@@ -519,9 +524,6 @@
 			<transformation>
 				<transformationref id="transC2" />
 			</transformation>
-			<animation>
-				<animationref id="animCirc1" />
-			</animation>
 			<materials>
 				<material id="gift2Mat" />
 			</materials>
@@ -535,7 +537,6 @@
 			<transformation>
 			</transformation>
 			<animation>
-				<animationref id="animLinearUp" />
 			</animation>
 			<materials>
 				<material id="matDefault" />
@@ -569,9 +570,6 @@
 				<scale x="0.07" y="0.01" z="0.07" />
 				<rotate axis="x" angle="-90"/>
 			</transformation>
-			<animation>
-				<animationref id="animCirc1" />
-			</animation>
 			<materials>
 				<material id="matDefault" />
 			</materials>
@@ -986,6 +984,9 @@
 			<transformation>
 				<translate x="4" y="1.2" z="5.3" />
 			</transformation>
+			<animation>
+				<animationref id="animLinearUp" />
+			</animation>
 			<materials>
 				<material id="inherit" />
 			</materials>
@@ -1001,6 +1002,9 @@
 				<scale x="0.7" y="0.7" z="0.7"/>
 				<rotate axis="x" angle="-90"/>
 			</transformation>
+			<animation>
+				<animationref id="animCirc3" />
+			</animation>
 			<materials>
 				<material id="inherit" />
 			</materials>
@@ -1028,9 +1032,6 @@
 			<transformation>
 				<scale x="0.28" y="0.28" z="0.5"/>
 			</transformation>
-			<animation>
-				<animationref id="animCirc1"/>
-			</animation>
 			<materials>
 				<material id="inherit" />
 			</materials>
@@ -1093,7 +1094,7 @@
 				<transformationref id="transDiscoBall" />
 			</transformation>
 			<animation>
-				<animationref id="animCirc1"/>
+				<animationref id= "animCirc3" />
 			</animation>
 			<materials>
 				<material id="ball1" />

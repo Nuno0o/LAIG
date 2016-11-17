@@ -134,6 +134,22 @@ LinearAnimation.prototype.getTranslation = function(){
 }
 
 LinearAnimation.prototype.getRotationAngle = function(){
+
+	var direction = [ 	this.controlPointVec[this.currentSegment + 1].xx - this.controlPointVec[this.currentSegment].xx,
+						this.controlPointVec[this.currentSegment + 1].yy - this.controlPointVec[this.currentSegment].yy,
+						this.controlPointVec[this.currentSegment + 1].zz - this.controlPointVec[this.currentSegment].zz ];
+
+	var norm = Math.sqrt(direction[0]*direction[0] + direction[1]*direction[1] + direction[2]*direction[2]);
+
+	var vector = [direction[0] / norm, direction[1] / norm, direction[2] / norm];
+
+	if (vector[0] >= 0){
+		return (Math.acos(vector[2])) * 180 / Math.PI;
+	}
+	else{
+		return (Math.acos(vector[2]) + Math.PI) * 180 / Math.PI;
+	}
+
 	return 0;
 }
 
@@ -195,5 +211,5 @@ CircularAnimation.prototype.getTranslation = function(){
 }
 
 CircularAnimation.prototype.getRotationAngle = function(){
-	return  - this.currAng;
+	return  (- this.currAng) * 180 / ( Math.PI );
 }

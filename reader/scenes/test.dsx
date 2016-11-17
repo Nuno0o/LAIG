@@ -207,8 +207,10 @@
 			<controlpoint xx="1" yy="1" zz="0" />
 			<controlpoint xx="1" yy="1" zz="1" />
 		</animation>
-		<animation id="animCirc1" span="5" type="circular" centerx="0" centery="0" centerz ="1"
-				   radius="5" startang="0" rotang="360" />
+		<animation id="animCirc1" span="10" type="circular" centerx="0" centery="0" centerz ="0"
+				   radius="1" startang="0" rotang="-360" />
+		<animation id="animCirc2" span="2" type="circular" centerx="0" centery="0" centerz ="0"
+				   radius="0" startang="0" rotang="-360" />
 	</animations>
 	
 	<primitives>	
@@ -218,6 +220,9 @@
 		<primitive id="torus">
 			<torus inner="0.5" outer="1" slices="30" loops="30"/>
 		</primitive>
+		<primitive id="cylinder">
+        	<cylinder base="1" top="1" height="1" slices="20" stacks="20" />
+        </primitive>
 		<primitive id="chessboard">
 			<chessboard du="8" dv="8" textureref="wood" su="0" sv="0">
                 <c1 r="1" g="1" b="1" a="1" />
@@ -238,16 +243,36 @@
             </materials>
             <texture id="none" />
             <children>
-            	<componentref id="CompSphere" />
+            	<componentref id="Comp" />
             </children>
         </component>
-        <component id="CompSphere" >
+
+        <component id="Comp" >
             <transformation>
-                <translate x="0" y="2" z="0" />
+                <translate x="-1" y="0" z="1" />
+                <rotate axis="y" angle="60" />
+                <translate x="4" y="0" z="1" />
             </transformation>
             <animation>
-            	<animationref id="animCirc1" />
-            	<animationref id="animCirc1" />
+               <animationref id="animCirc1" />
+            </animation>
+            <materials>
+                <material id="ball1" />
+                <material id="ball2" />
+                <material id="inherit" />
+            </materials>
+            <texture id="none" />
+            <children>
+                <componentref id="CompSphere" />
+                <componentref id="CompTorus" />
+            </children>
+        </component>
+
+        <component id="CompSphere" >
+            <transformation>
+            	<rotate axis="y" angle="90" />
+            </transformation>
+            <animation>
        		</animation>
             <materials>
                 <material id="ball1" />
@@ -256,7 +281,22 @@
             </materials>
             <texture id="none" />
             <children>
-            	<primitiveref id="torus" />
+            	<primitiveref id="cylinder" />
+            </children>
+        </component>
+        <component id="CompTorus" >
+            <transformation>
+            </transformation>
+            <animation>
+       		</animation>
+            <materials>
+                <material id="ball1" />
+                <material id="ball2" />
+                <material id="inherit" />
+            </materials>
+            <texture id="wood" />
+            <children>
+            	<primitiveref id="sphere" />
             </children>
         </component>
 	</components>
