@@ -302,7 +302,7 @@
     			</materials>
     			<texture id="inherit" />
     			<children>
-    				<primitiveref id="aviao" />
+    				<primitiveref id="chess" />
     			</children>
     		</component>
 

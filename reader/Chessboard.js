@@ -8,7 +8,7 @@ function Chessboard(scene,du,dv,tex,su,sv,c1,c2,cs){
   this.c1 = c1;
   this.c2 = c2;
   this.cs = cs;
-
+  this.shader = new CGFshader(this.scene.gl,"resources/shaders/chessboard.vert","resources/shaders/chessboard.frag");
   this.board = new Plane(scene,1,1,du,dv);
 }
 
