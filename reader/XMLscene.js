@@ -437,7 +437,7 @@ XMLscene.prototype.displayPrim = function(toDisplayPrim){
 		else {
 			this.listAppearances[toDisplayPrim.mats[toDisplayPrim.activeMat]].apply();
 		}
-		
+
 		this.listPrimitives[toDisplayPrim.primitive].display();
 }
 
@@ -576,15 +576,16 @@ XMLscene.prototype.getTransformations_ = function(graphNode, transformations){
 XMLscene.prototype.injectAnimationTransformations = function(transformations){
 	var rotation = ['rotate', 'y', 0];
 	var translation = ['translate', 0, 0, 0];
+	var translation2 = ['translate', 0, 0, 0];
 	var newLast = [];
-	
-	newLast.push(translation);
 
 	for (var i = 0; i < transformations[transformations.length - 1].length; i++){
 		newLast.push(transformations[transformations.length - 1][i]);
 	}
-	
+
+	newLast.push(translation);
 	newLast.push(rotation);
+	newLast.push(translation2);
 	transformations[transformations.length - 1] = newLast;
 }
 
@@ -627,7 +628,7 @@ XMLscene.prototype.cycleMaterials = function(){
 
 XMLscene.prototype.onGraphLoaded = function () 
 {
-	this.setUpdatePeriod(10);
+	this.setUpdatePeriod(50);
 	this.frameDiff = 0;
 	this.currTime = -1;
 	this.activeMat = 0;
@@ -697,13 +698,12 @@ XMLscene.prototype.updatePrimitivesRotations = function(frameDiff){
 
 			// Current layer finished its animations
 			if (currPrim.currentAnimations[layer] >= currPrim.animations[layer].length){
-				currPrim.transformations[layer][currPrim.transformations[layer].length - 1][2] = currPrim.animations[layer][currPrim.animations[layer].length - 1].getRotationAngle();
+				currPrim.transformations[layer][currPrim.transformations[layer].length - 2][2] = currPrim.animations[layer][currPrim.animations[layer].length - 1].getRotationAngle();
 				continue;
 			}
 
 			// Current layer is playing an animation
-			currPrim.transformations[layer][currPrim.transformations[layer].length - 1][2] = currPrim.animations[layer][currPrim.currentAnimations[layer]].getRotationAngle();
-			
+			currPrim.transformations[layer][currPrim.transformations[layer].length - 2][2] = currPrim.animations[layer][currPrim.currentAnimations[layer]].getRotationAngle();
 		}
 	}
 
@@ -716,22 +716,34 @@ XMLscene.prototype.updatePrimitivesTranslations = function(frameDiff){
 
 		for (var layer = 0; layer < currPrim.animations.length; layer++){
 			if (currPrim.animations[layer].length == 0) continue;
-
 			if (currPrim.currentAnimations[layer] >= currPrim.animations[layer].length){
 
 				var expectedTranslations = currPrim.animations[layer][currPrim.animations[layer].length - 1].expectedTranslations;
 
-				currPrim.transformations[layer][0][1] = expectedTranslations[0];
-				currPrim.transformations[layer][0][2] = expectedTranslations[1];
-				currPrim.transformations[layer][0][3] = expectedTranslations[2];
-
+				currPrim.transformations[layer][currPrim.transformations[layer].length - 3][1] = 0 - (expectedTranslations[0]);
+				currPrim.transformations[layer][currPrim.transformations[layer].length - 3][2] = 0 - (expectedTranslations[1]);
+				currPrim.transformations[layer][currPrim.transformations[layer].length - 3][3] = 0 - (expectedTranslations[2]);
+				
+				currPrim.transformations[layer][currPrim.transformations[layer].length - 1][1] = expectedTranslations[0];
+				currPrim.transformations[layer][currPrim.transformations[layer].length - 1][2] = expectedTranslations[1];
+				currPrim.transformations[layer][currPrim.transformations[layer].length - 1][3] = expectedTranslations[2];
+				
 				continue;
 			}
+
 			var thisTranslation = currPrim.animations[layer][currPrim.currentAnimations[layer]].getTranslation();
 
-			currPrim.transformations[layer][0][1] = thisTranslation[0];
-			currPrim.transformations[layer][0][2] = thisTranslation[1];
-			currPrim.transformations[layer][0][3] = thisTranslation[2];
+			var x = thisTranslation[0];
+			var y = thisTranslation[1];
+			var z = thisTranslation[2];
+
+			currPrim.transformations[layer][currPrim.transformations[layer].length - 3][1] = 0 - x;
+			currPrim.transformations[layer][currPrim.transformations[layer].length - 3][2] = 0 - y;
+			currPrim.transformations[layer][currPrim.transformations[layer].length - 3][3] = 0 - z;
+			currPrim.transformations[layer][currPrim.transformations[layer].length - 1][1] = x;
+			currPrim.transformations[layer][currPrim.transformations[layer].length - 1][2] = y;	
+			currPrim.transformations[layer][currPrim.transformations[layer].length - 1][3] = z;
+
 		}
 	}
 }
@@ -741,8 +753,8 @@ XMLscene.prototype.update = function(currTime){
 	if (this.graph.loadedOk){
 		this.getFrameDiff(currTime);
 		this.runAnimations(this.frameDiff);
-		this.updatePrimitivesRotations(this.frameDiff);
 		this.updatePrimitivesTranslations(this.frameDiff);
+		this.updatePrimitivesRotations(this.frameDiff);
 	}
 }
 

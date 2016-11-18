@@ -147,7 +147,7 @@ LinearAnimation.prototype.getRotationAngle = function(){
 		return (Math.acos(vector[2])) * 180 / Math.PI;
 	}
 	else{
-		return (Math.acos(vector[2]) + Math.PI) * 180 / Math.PI;
+		return (Math.acos(vector[2]) + Math.PI / 2) * 180 / Math.PI;
 	}
 
 	return 0;
