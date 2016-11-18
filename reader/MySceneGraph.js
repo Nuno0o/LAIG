@@ -1,13 +1,13 @@
 function MySceneGraph(filename, scene) {
 	this.loadedOk = null;
-	
+
 	// Establish bidirectional references between scene and graph
 	this.scene = scene;
 	scene.graph=this;
 
 	this.idList = [];
-		
-	// File reading 
+
+	// File reading
 	this.reader = new CGFXMLreader();
 
 	/*
@@ -15,38 +15,38 @@ function MySceneGraph(filename, scene) {
 	 * After the file is read, the reader calls onXMLReady on this object.
 	 * If any error occurs, the reader calls onXMLError on this object, with an error message
 	 */
-	 
-	this.reader.open('scenes/'+filename, this);  
+
+	this.reader.open('scenes/'+filename, this);
 }
 
 /*
  * Callback to be executed after successful reading
  */
-MySceneGraph.prototype.onXMLReady=function() 
+MySceneGraph.prototype.onXMLReady=function()
 {
 	console.log("XML Loading finished.");
 	var rootElement = this.reader.xmlDoc.documentElement;
-	
+
 	// Here should go the calls for different functions to parse the various blocks
 	var error = this.dsxParser(rootElement);
 
 	if (error != null) {
 		this.onXMLError(error);
 		return;
-	}	
+	}
 
 	this.loadedOk=true;
-	
+
 	// As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
 	this.scene.onGraphLoaded();
 };
-	
+
 /*
  * Callback to be executed on any read error
  */
- 
+
 MySceneGraph.prototype.onXMLError=function (message) {
-	console.error("XML Loading Error: "+message);	
+	console.error("XML Loading Error: "+message);
 	this.loadedOk=false;
 };
 
@@ -54,7 +54,7 @@ MySceneGraph.prototype.onXMLError=function (message) {
 MySceneGraph.prototype.addId = function(id, type){
 
 	if (id == null) return false;
-	
+
 	var pair = [id, type];
 
 	for ( var i in this.idList ){
@@ -91,16 +91,16 @@ MySceneGraph.prototype.parseScene = function(rootElement){
 	if(elems[0] == null){
 		return "no scene tag";
 	}
-	
+
 	if(elems.length != 1){
 		return "too many scene tags";
 	}
 
 	var scenes = elems[0];
 	/* Elementos da scene*/
-	
+
 	this.root = this.reader.getString(scenes,'root');
-	
+
 	this.axis_length = this.reader.getFloat(scenes,'axis_length');
 }
 
@@ -138,18 +138,18 @@ Perspective.prototype.printPerspective = function(){
 	return 	"id: " + this.id + "\n" +
 			"near= " + this.near + "\n" +
 			"far= " + this.far + "\n" +
-			"angle= " + this.angle + "\n" + 
+			"angle= " + this.angle + "\n" +
 			"from: x = " + this.from_x + ", y = " + this.from_y + ", z = " + this.from_z + "\n" +
 			"to: x = " + this.to_x + ", y = " + this.to_y + ", z = " + this.to_z + "\n";
 }
 
 MySceneGraph.prototype.parsePerspective = function(rootElement){
 	var elems = rootElement.getElementsByTagName('views');
-	
+
 	if(elems[0] == null){
 		return "no views tag";
 	}
-	
+
 	if(elems.length != 1){
 		return "too many views tags";
 	}
@@ -168,7 +168,7 @@ MySceneGraph.prototype.parsePerspective = function(rootElement){
 
 		if(!this.addId(curr_per.id, "view")){
 			return "Bad Id found: " + curr_per.id;
-		}		
+		}
 	}
 }
 
@@ -182,7 +182,7 @@ MySceneGraph.prototype.parseIllumination=function(rootElement){
 	if(elems[0] == null){
 		return "no illumination tag";
 	}
-	
+
 	if(elems.length != 1){
 		return "too many illumination tags";
 	}
@@ -224,22 +224,22 @@ function LightOmni(light){
 	specular = 	light.getElementsByTagName('specular');
 
 	this.location_x = parseFloat(locations[0].attributes.getNamedItem("x").value);
-	this.location_y = parseFloat(locations[0].attributes.getNamedItem("y").value); 
+	this.location_y = parseFloat(locations[0].attributes.getNamedItem("y").value);
 	this.location_z = parseFloat(locations[0].attributes.getNamedItem("z").value);
 	this.location_w = parseFloat(locations[0].attributes.getNamedItem("w").value);
 
 	this.ambient_r = parseFloat(ambient[0].attributes.getNamedItem("r").value);
-	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value); 
+	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value);
 	this.ambient_b = parseFloat(ambient[0].attributes.getNamedItem("b").value);
 	this.ambient_a = parseFloat(ambient[0].attributes.getNamedItem("a").value);
 
 	this.diffuse_r = parseFloat(diffuse[0].attributes.getNamedItem("r").value);
-	this.diffuse_g = parseFloat(diffuse[0].attributes.getNamedItem("g").value); 
+	this.diffuse_g = parseFloat(diffuse[0].attributes.getNamedItem("g").value);
 	this.diffuse_b = parseFloat(diffuse[0].attributes.getNamedItem("b").value);
 	this.diffuse_a = parseFloat(diffuse[0].attributes.getNamedItem("a").value);
 
 	this.specular_r = parseFloat(specular[0].attributes.getNamedItem("r").value);
-	this.specular_g = parseFloat(specular[0].attributes.getNamedItem("g").value); 
+	this.specular_g = parseFloat(specular[0].attributes.getNamedItem("g").value);
 	this.specular_b = parseFloat(specular[0].attributes.getNamedItem("b").value);
 	this.specular_a = parseFloat(specular[0].attributes.getNamedItem("a").value);
 }
@@ -251,7 +251,7 @@ function LightSpot(light){
 	this.exponent = parseFloat(light.attributes.getNamedItem("exponent").value);
 
 	var locations, ambient, diffuse, specular;
-	
+
 	target = 	light.getElementsByTagName("target");
 	locations = 	light.getElementsByTagName("location");
 	ambient = 	light.getElementsByTagName("ambient");
@@ -259,25 +259,25 @@ function LightSpot(light){
 	specular = 	light.getElementsByTagName("specular");
 
 	this.target_x = parseFloat(target[0].attributes.getNamedItem("x").value);
-	this.target_y = parseFloat(target[0].attributes.getNamedItem("y").value); 
+	this.target_y = parseFloat(target[0].attributes.getNamedItem("y").value);
 	this.target_z = parseFloat(target[0].attributes.getNamedItem("z").value);
 
 	this.location_x = parseFloat(locations[0].attributes.getNamedItem("x").value);
-	this.location_y = parseFloat(locations[0].attributes.getNamedItem("y").value); 
+	this.location_y = parseFloat(locations[0].attributes.getNamedItem("y").value);
 	this.location_z = parseFloat(locations[0].attributes.getNamedItem("z").value);
 
 	this.ambient_r = parseFloat(ambient[0].attributes.getNamedItem("r").value);
-	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value); 
+	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value);
 	this.ambient_b = parseFloat(ambient[0].attributes.getNamedItem("b").value);
 	this.ambient_a = parseFloat(ambient[0].attributes.getNamedItem("a").value);
 
 	this.diffuse_r = parseFloat(diffuse[0].attributes.getNamedItem("r").value);
-	this.diffuse_g = parseFloat(diffuse[0].attributes.getNamedItem("g").value); 
+	this.diffuse_g = parseFloat(diffuse[0].attributes.getNamedItem("g").value);
 	this.diffuse_b = parseFloat(diffuse[0].attributes.getNamedItem("b").value);
 	this.diffuse_a = parseFloat(diffuse[0].attributes.getNamedItem("a").value);
 
 	this.specular_r = parseFloat(specular[0].attributes.getNamedItem("r").value);
-	this.specular_g = parseFloat(specular[0].attributes.getNamedItem("g").value); 
+	this.specular_g = parseFloat(specular[0].attributes.getNamedItem("g").value);
 	this.specular_b = parseFloat(specular[0].attributes.getNamedItem("b").value);
 	this.specular_a = parseFloat(specular[0].attributes.getNamedItem("a").value);
 }
@@ -303,14 +303,14 @@ MySceneGraph.prototype.parseLights = function(rootElement){
 		this.listOmni[i] = new LightOmni(this.lightsOmni[i]);
 		if(!this.addId(this.listOmni[i].id, "light")){
 			return "Bad Id found: " + this.listOmni[i].id;
-		}	
+		}
 	}
 
 	for (var i = 0; i < this.lightsSpot.length; i++){
 		this.listSpot[i] = new LightSpot(this.lightsSpot[i]);
 		if(!this.addId(this.listSpot[i].id, "light")){
 			return "Bad Id found: " + this.listSpot[i].id;
-		}	
+		}
 	}
 }
 
@@ -328,7 +328,7 @@ function Texture(texture){
 Texture.prototype.printTexture = function(){
 	return 	"id: " + this.id + "\n" +
 			"file: " + this.file + "\n" +
-			"length_s: " + this.length_s + "\n" + 
+			"length_s: " + this.length_s + "\n" +
 			"length_t: " + this.length_t + "\n";
 }
 
@@ -338,15 +338,15 @@ MySceneGraph.prototype.parseTexture = function(rootElement){
 	if(elems[0] == null){
 		return "no textures tag";
 	}
-	
+
 	if(elems.length != 1){
 		return "too many textures tags";
 	}
-	
+
 	this.textures = [];
-	
+
 	var ntextures = elems[0].children.length;
-	
+
 	if (ntextures < 1){
 		return "not enough textures!";
 	}
@@ -366,7 +366,7 @@ MySceneGraph.prototype.parseTexture = function(rootElement){
 
 function Material(material){
 	this.id = material.id;
-	
+
 	//emission
 	var emission = material.getElementsByTagName('emission');
 	if(emission[0] == null){
@@ -379,7 +379,7 @@ function Material(material){
 	this.emission_g = parseFloat(emission[0].attributes.getNamedItem("g").value);
 	this.emission_b = parseFloat(emission[0].attributes.getNamedItem("b").value);
 	this.emission_a = parseFloat(emission[0].attributes.getNamedItem("a").value);
-	
+
 	//ambient
 	var ambient = material.getElementsByTagName('ambient');
 	if(ambient[0] == null){
@@ -392,7 +392,7 @@ function Material(material){
 	this.ambient_g = parseFloat(ambient[0].attributes.getNamedItem("g").value);
 	this.ambient_b = parseFloat(ambient[0].attributes.getNamedItem("b").value);
 	this.ambient_a = parseFloat(ambient[0].attributes.getNamedItem("a").value);
-	
+
 	//difuse
 	var diffuse = material.getElementsByTagName('diffuse');
 	if(diffuse[0] == null){
@@ -405,7 +405,7 @@ function Material(material){
 	this.diffuse_g = parseFloat(diffuse[0].attributes.getNamedItem("g").value);
 	this.diffuse_b = parseFloat(diffuse[0].attributes.getNamedItem("b").value);
 	this.diffuse_a = parseFloat(diffuse[0].attributes.getNamedItem("a").value);
-	
+
 	//specular
 	var specular = material.getElementsByTagName('specular');
 	if(specular[0] == null){
@@ -418,7 +418,7 @@ function Material(material){
 	this.specular_g = parseFloat(specular[0].attributes.getNamedItem("g").value);
 	this.specular_b = parseFloat(specular[0].attributes.getNamedItem("b").value);
 	this.specular_a = parseFloat(specular[0].attributes.getNamedItem("a").value);
-	
+
 	//shininess
 	var shininess = material.getElementsByTagName('shininess');
 	if(shininess[0] == null){
@@ -437,7 +437,7 @@ MySceneGraph.prototype.parseMaterials = function(rootElement){
 	if(elems[0] == null){
 		return "no materials tag";
 	}
-	
+
 	if(elems.length != 1){
 		return "too many materials tags";
 	}
@@ -453,7 +453,7 @@ MySceneGraph.prototype.parseMaterials = function(rootElement){
 	for (var i = 0; i < nmaterials; i++){
 
 		var curr_mat = elems[0].children[i];
-		
+
 		this.materials[i] = new Material(curr_mat);
 
 		if(!this.addId(curr_mat.id, "material")){
@@ -500,7 +500,7 @@ MySceneGraph.prototype.parseTransformation = function(rootElement){
 	if(elems[0] == null){
 		return "no transformations tag";
 	}
-	
+
 	if(elems.length != 1){
 		return "too many transformations tags";
 	}
@@ -535,7 +535,7 @@ function parsedAnimation(anim){
 	this.id = anim.id;
 	this.span = parseFloat(anim.attributes.getNamedItem("span").value);
 	this.type = anim.attributes.getNamedItem("type").value;
-	
+
 	if (this.type == "linear"){
 		var points = anim.getElementsByTagName('controlpoint');
 		var nControlPoints = points.length;
@@ -562,7 +562,7 @@ MySceneGraph.prototype.parseAnimations = function(rootElement){
 	if(elems[0] == null){
 		return "no animations tag";
 	}
-	
+
 	if(elems.length != 1){
 		return "too many animations tags";
 	}
@@ -580,7 +580,7 @@ MySceneGraph.prototype.parseAnimations = function(rootElement){
 			return "Bad Id found: " + curr_anim.id;
 		}
     	this.animations[curr_anim.id] = new parsedAnimation(curr_anim);
-    	
+
     }
 }
 
@@ -617,7 +617,7 @@ function Primitive(prim){
 		this.z1 = parseFloat(prim.children[0].attributes.getNamedItem("z1").value);
 		this.z2 = parseFloat(prim.children[0].attributes.getNamedItem("z2").value);
 		this.z3 = parseFloat(prim.children[0].attributes.getNamedItem("z3").value);
-		if(this.x1 != null && this.x2 != null && this.x3 != null && this.y1 != null && this.y2 != null && this.y3 != null && this.z1 != null && this.z2 != null && this.z3 != null) 
+		if(this.x1 != null && this.x2 != null && this.x3 != null && this.y1 != null && this.y2 != null && this.y3 != null && this.z1 != null && this.z2 != null && this.z3 != null)
 		    return null;
 	}
 	if(this.name == "cylinder"){
@@ -660,11 +660,15 @@ function Primitive(prim){
         var primControl = prim.children[0];
         this.controlPoints = [];
         for( var i = 0;i < (this.orderU+1)*(this.orderV+1);i++){
-            this.controlPoints[i] = new ControlPoint(primControl.children[i]);
+					var primCoords = primControl.children[i];
+          this.controlPoints[i] = [parseFloat(primCoords.attributes.getNamedItem("x").value),parseFloat(primCoords.attributes.getNamedItem("y").value),parseFloat(primCoords.attributes.getNamedItem("z").value)];
         }
         if(this.orderU != null && this.orderV != null && this.partsU != null && this.partsV != null && this.controlPoints.length == (this.orderU+1)*(this.orderV+1))
             return null;
     }
+		if(this.name == "vehicle"){
+			return null;
+		}
     if(this.name == "chessboard"){
 		this.du = parseInt(prim.children[0].attributes.getNamedItem("du").value);
 		this.dv = parseInt(prim.children[0].attributes.getNamedItem("dv").value);
@@ -700,7 +704,7 @@ MySceneGraph.prototype.parsePrimitives = function(rootElement){
 	if(elems[0] == null){
 		return "no primitives tag";
 	}
-	
+
 	if(elems.length != 1){
 		return "too many primitives tags";
 	}
@@ -789,7 +793,7 @@ function Component(graph,comp){
 			this.animationrefs[this.animationrefs.length] = aref[i].id;
 		}
 	}
-	
+
 	//read children
 	var child = comp.getElementsByTagName('children');
 	if(child[0] == null){
@@ -800,7 +804,7 @@ function Component(graph,comp){
 	}
 	var compref = child[0].getElementsByTagName('componentref');
 	var primref = child[0].getElementsByTagName('primitiveref');
-	
+
 	for(var j = 0;j < primref.length;j++){
 		var found = false;
 		for(var k = 0;k < graph.primitives.length;k++){
@@ -811,7 +815,7 @@ function Component(graph,comp){
 			return "id da primitiva de um componente nao atribuida";
 		this.primitiverefs[j] = primref[j].id;
 	}
-	
+
 
 	for(var j = 0;j < compref.length;j++){
 		this.componentrefs[j] = compref[j].id;
@@ -821,7 +825,7 @@ function Component(graph,comp){
 	if(mater[0] == null){
 		return "no materials tag in a component";
 	}
-	
+
 	if(mater.length != 1){
 		return "too many materials tags in a component";
 	}
@@ -856,7 +860,7 @@ MySceneGraph.prototype.parseComponents = function(rootElement){
 	if(elems[0] == null){
 		return "no components tag";
 	}
-	
+
 	if(elems.length != 1){
 		return "too many components tags";
 	}
@@ -909,11 +913,11 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 	this.parseScene(rootElement);
 
 	// read views and perspectives
-	
-	this.errMsg = ""; 
+
+	this.errMsg = "";
 	this.errMsg = this.parsePerspective(rootElement);
 	if (this.errMsg != null) return this.errMsg;
-	
+
 	// read illumination
 
 	this.errMsg = this.parseIllumination(rootElement);
@@ -945,17 +949,17 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 	if (this.errMsg != null) return this.errMsg;
 
 	// read animations
-	
+
 	this.errMsg = this.parseAnimations(rootElement);
 	if (this.errMsg != null) return this.errMsg;
-	
+
 	//read components
 
 	this.errMsg = this.parseComponents(rootElement);
 	if (this.errMsg != null) return this.errMsg;
-	
+
 	//verify if components exist
-	
+
 	this.errMsg = this.verifyComponents(rootElement);
 	if (this.errMsg != null) return this.errMsg;
 

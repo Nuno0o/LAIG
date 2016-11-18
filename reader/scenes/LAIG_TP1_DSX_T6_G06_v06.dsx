@@ -244,7 +244,7 @@
 			<plane dimX="2" dimY="2" partsX="3" partsY="3"/>
 		</primitive>
 		<primitive id="patch1">
-			<patch orderU="2" orderV="1" partsU="10" partsV="10" >    
+			<patch orderU="2" orderV="1" partsU="10" partsV="10" >
 				<controlpoint x="-1.5" y="-1.5" z="0" />
 				<controlpoint x="-1.5" y="1.5" z="0" />
 				<controlpoint x="0" y="-1.5" z="3" />
@@ -253,6 +253,10 @@
 				<controlpoint x="1.5" y="1.5" z="0" />
 			</patch>
 		</primitive>
+    <primitive id="aviao">
+			<vehicle/>
+		</primitive>
+
     </primitives>
 
 	<components>
@@ -275,8 +279,7 @@
             	<componentref id= "Floor" />
             	<componentref id= "C1" />
             	<componentref id= "C2" />
-              	<componentref id= "Plane" />
-              	<componentref id= "Patch" />
+              <componentref id= "Plane" />
 				<componentref id= "Beer" />
             	<componentref id= "DiscoBall" />
 				<componentref id= "Earth" />
@@ -285,28 +288,17 @@
 
         <component id="Plane">
     			<transformation>
-            <translate x="0" y="0" z="0.5" />
+            <translate x="5" y="2.5" z="2.5" />
     			</transformation>
     			<materials>
     				<material id="inherit" />
     			</materials>
     			<texture id="inherit" />
     			<children>
-    				<primitiveref id="plane1" />
+    				<primitiveref id="aviao" />
     			</children>
     		</component>
 
-		<component id="Patch">
-			<transformation>
-			</transformation>
-			<materials>
-				<material id="inherit" />
-			</materials>
-			<texture id="inherit" />
-			<children>
-				<primitiveref id="patch1" />
-			</children>
-		</component>
 
 		<component id="primRect">
 			<transformation>

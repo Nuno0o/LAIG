@@ -24,7 +24,7 @@ Patch.prototype.initSurface = function () {
   for(var u = 0;u <= this.orderU;u++){
     for(var v = 0;v <= this.orderV;v++){
 		var index = u*(this.orderV+1)+v;
-		controlVertexes[u][v] = [this.controlPoints[index].x,this.controlPoints[index].y,this.controlPoints[index].z,1];
+		controlVertexes[u][v] = [this.controlPoints[index][0],this.controlPoints[index][1],this.controlPoints[index][2],1];
     }
   }
   this.nurbsSurface = makeSurface(this.orderU,this.orderV,controlVertexes);
