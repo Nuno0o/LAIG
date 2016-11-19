@@ -676,27 +676,19 @@ function Primitive(prim){
 		this.su = parseInt(prim.children[0].attributes.getNamedItem("su").value);
 		this.sv = parseInt(prim.children[0].attributes.getNamedItem("sv").value);
 		var primColors = prim.children[0];
-		this.c1 = new ColorBoard(getDirectChildrenByTagName(primColors,'c1')[0]);
-		this.c2 = new ColorBoard(getDirectChildrenByTagName(primColors,'c2')[0]);
-		this.cs = new ColorBoard(getDirectChildrenByTagName(primColors,'cs')[0]);
+		var c1 = getDirectChildrenByTagName(primColors,'c1')[0];
+		var c2 = getDirectChildrenByTagName(primColors,'c2')[0];
+		var cs = getDirectChildrenByTagName(primColors,'cs')[0]
+		this.c1 = [parseFloat(c1.attributes.getNamedItem("r").value),parseFloat(c1.attributes.getNamedItem("g").value),parseFloat(c1.attributes.getNamedItem("b").value),parseFloat(c1.attributes.getNamedItem("a").value)];
+		this.c2 = [parseFloat(c2.attributes.getNamedItem("r").value),parseFloat(c2.attributes.getNamedItem("g").value),parseFloat(c2.attributes.getNamedItem("b").value),parseFloat(c2.attributes.getNamedItem("a").value)];
+		this.cs = [parseFloat(cs.attributes.getNamedItem("r").value),parseFloat(cs.attributes.getNamedItem("g").value),parseFloat(cs.attributes.getNamedItem("b").value),parseFloat(cs.attributes.getNamedItem("a").value)];
 		if(this.su != null && this.sv != null && this.du != null && this.dv != null && this.c1.length == 3 && this.c2.length == 3 && this.cs.length == 3)
 			return null;
+
 	}
 	return "Error parsing primitives";
 }
 
-function ColorBoard(primColor){
-	this.r = parseFloat(primColor.attributes.getNamedItem("r").value);
-	this.g = parseFloat(primColor.attributes.getNamedItem("g").value);
-	this.b = parseFloat(primColor.attributes.getNamedItem("b").value);
-	this.a = parseFloat(primColor.attributes.getNamedItem("a").value);
-}
-
-function ControlPoint(primControl){
-    this.x = parseFloat(primControl.attributes.getNamedItem("x").value);
-    this.y = parseFloat(primControl.attributes.getNamedItem("y").value);
-    this.z = parseFloat(primControl.attributes.getNamedItem("z").value);
-}
 
 MySceneGraph.prototype.parsePrimitives = function(rootElement){
 	var elems = rootElement.getElementsByTagName('primitives');

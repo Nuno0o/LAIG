@@ -267,6 +267,13 @@
 		<primitive id="aviao">
 			<vehicle/>
 		</primitive>
+		<primitive id="chess">
+      <chessboard du="8" dv="8" textureref="oi" su="1" sv="1">
+           <c1 r="1" g="1" b="1" a="1" />
+           <c2 r="1" g="1" b="1" a="1" />
+           <cs r="1" g="1" b="1" a="1" />
+      </chessboard>
+		</primitive>
     </primitives>
 
 	<components>
