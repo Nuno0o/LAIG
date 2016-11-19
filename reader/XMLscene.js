@@ -25,13 +25,13 @@ XMLscene.prototype.init = function (application) {
     this.gl.depthFunc(this.gl.LEQUAL);
 
 	this.axis=new CGFaxis(this);
-
+	
 	this.lightValues = [];
-
+	
 	for (var i = 0; i < this.lights.length; i++){
 		this.lightValues[i] = false;
 	}
-
+	
 	this.lightCheckBoxesUpdate();
 };
 
@@ -50,7 +50,7 @@ XMLscene.prototype.setDefaultAppearance = function () {
     this.setAmbient(0.2, 0.4, 0.8, 1.0);
     this.setDiffuse(0.2, 0.4, 0.8, 1.0);
     this.setSpecular(0.2, 0.4, 0.8, 1.0);
-    this.setShininess(10.0);
+    this.setShininess(10.0);	
 };
 
 // -----------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ XMLscene.prototype.setDefaultAppearance = function () {
 // ------------------------ AXIS -----------------------------
 
 XMLscene.prototype.initGraphAxis = function() {
-	this.axis = new CGFaxis(this, this.graph.axis_length);
+	this.axis = new CGFaxis(this, this.graph.axis_length);	
 }
 
 // ----------------------- LIGHTING --------------------------
@@ -130,7 +130,7 @@ XMLscene.prototype.initGraphLights = function(){
 									this.graph.listOmni[i].specular_g,
 									this.graph.listOmni[i].specular_b,
 									this.graph.listOmni[i].specular_a);
-
+		
 		if (this.graph.listOmni[i].enabled){
 			this.lights[i].enable();
 			this.lightValues[i] = true;
@@ -143,7 +143,7 @@ XMLscene.prototype.initGraphLights = function(){
 	}
 	for (var i = 0; i < this.graph.listSpot.length ; i++){
 		var j = i + this.graph.listOmni.length;
-
+		
 		this.lights[j].setPosition(	this.graph.listSpot[i].location_x,
 									this.graph.listSpot[i].location_y,
 									this.graph.listSpot[i].location_z, 1);
@@ -162,17 +162,17 @@ XMLscene.prototype.initGraphLights = function(){
 		this.lights[j].setSpotDirection(this.graph.listSpot[i].target_x-this.graph.listSpot[i].location_x,
 										this.graph.listSpot[i].target_y-this.graph.listSpot[i].location_y,
 										this.graph.listSpot[i].target_z-this.graph.listSpot[i].location_z);
-
+		
 		this.lights[j].setSpotExponent(this.graph.listSpot[i].exponent);
 
 		this.lights[j].setSpotCutOff(Math.PI * this.graph.listSpot[i].angle / 180);
-
-		if (this.graph.listSpot[i].enabled){
+		
+		if (this.graph.listSpot[i].enabled){ 
 			this.lights[j].enable();
 			this.lightValues[j] = true;
 		}
 		else this.lights[j].disable();
-
+		
 		this.lights[j].setVisible(true);
 		this.lights[i].update();
 	}
@@ -345,7 +345,7 @@ XMLscene.prototype.initPrimitives = function(){
 			this.listPrimitives[pri.id] = new MyPrimCylinder(this, pri.slices, pri.stacks,pri.height,pri.base,pri.top);
 		}
 		if(pri.name == 'sphere'){
-			this.listPrimitives[pri.id] = new MyPrimSphere(this, pri.radius, pri.slices, pri.stacks);
+			this.listPrimitives[pri.id] = new MySphere(this, pri.radius, pri.slices, pri.stacks);
 		}
 		if(pri.name == 'torus'){
 			this.listPrimitives[pri.id] = new MyPrimTorus(this, pri.inner, pri.outer,pri.slices,pri.loops);
@@ -356,7 +356,7 @@ XMLscene.prototype.initPrimitives = function(){
 		if(pri.name == 'patch'){
 			this.listPrimitives[pri.id] = new Patch(this, pri.orderU, pri.orderV,pri.partsU,pri.partsV,pri.controlPoints);
 		}
-    if(pri.name == 'vehicle'){
+		if(pri.name == 'vehicle'){
 			this.listPrimitives[pri.id] = new Vehicle(this);
 		}
 	}
@@ -389,7 +389,7 @@ ToDisplay.prototype.incrementActiveMat = function(){
 
 ToDisplay.prototype.incrementCurrentAnimation = function(layer){
 	this.currentAnimations[layer]++;
-}
+}	
 
 XMLscene.prototype.computeTransformationList = function(transformations){
 
@@ -517,7 +517,7 @@ XMLscene.prototype.getAnims_ = function(graphNode, anims){
 	for (var i in graphNode.animationrefs){
 		currAnims.push(this.cloneAnim(graphNode.animationrefs[i]));
 	}
-	//if(currAnims.length > 0)
+	//if(currAnims.length > 0) 
 	newAnims.push(currAnims);
 	return newAnims;
 }
@@ -629,19 +629,19 @@ XMLscene.prototype.cycleMaterials = function(){
 	}
 }
 
-XMLscene.prototype.onGraphLoaded = function ()
+XMLscene.prototype.onGraphLoaded = function () 
 {
-	this.setUpdatePeriod(1);
+	this.setUpdatePeriod(10);
 	this.frameDiff = 0;
 	this.currTime = -1;
 	this.activeMat = 0;
 	this.currentCamera = 0;
-
+	
 	this.enableTextures(true);
-
+	
 	this.listReadyToDisplay = [];
 	this.activeAnimations = [];
-
+	
 	this.initGraphGlobalLighting();
 	this.initGraphAxis();
 	this.initGraphCameras();
@@ -663,8 +663,8 @@ XMLscene.prototype.getFrameDiff = function(currTime){
 }
 
 XMLscene.prototype.runAnimations = function(frameDiff){
-
-	for (var i in this.listReadyToDisplay){
+	
+	for (var i in this.listReadyToDisplay){	
 
 		// Primitive has no animations
 		if (this.listReadyToDisplay[i].animations.length == 0) continue;
@@ -723,13 +723,13 @@ XMLscene.prototype.updatePrimitivesTranslations = function(frameDiff){
 
 				var expectedTranslations = currPrim.animations[layer][currPrim.animations[layer].length - 1].expectedTranslations;
 
-				currPrim.transformations[layer][currPrim.transformations[layer].length - 3][1] = 0 - (expectedTranslations[0]);
-				currPrim.transformations[layer][currPrim.transformations[layer].length - 3][2] = 0 - (expectedTranslations[1]);
-				currPrim.transformations[layer][currPrim.transformations[layer].length - 3][3] = 0 - (expectedTranslations[2]);
-
-				currPrim.transformations[layer][currPrim.transformations[layer].length - 1][1] = expectedTranslations[0];
-				currPrim.transformations[layer][currPrim.transformations[layer].length - 1][2] = expectedTranslations[1];
-				currPrim.transformations[layer][currPrim.transformations[layer].length - 1][3] = expectedTranslations[2];
+				currPrim.transformations[layer][currPrim.transformations[layer].length - 3][1] = (expectedTranslations[0]);
+				currPrim.transformations[layer][currPrim.transformations[layer].length - 3][2] = (expectedTranslations[1]);
+				currPrim.transformations[layer][currPrim.transformations[layer].length - 3][3] = (expectedTranslations[2]);
+				
+				/*currPrim.transformations[layer][2][1] = expectedTranslations[0];
+				currPrim.transformations[layer][2][2] = expectedTranslations[1];
+				currPrim.transformations[layer][2][3] = expectedTranslations[2];*/	
 
 				continue;
 			}
@@ -740,13 +740,13 @@ XMLscene.prototype.updatePrimitivesTranslations = function(frameDiff){
 			var y = thisTranslation[1];
 			var z = thisTranslation[2];
 
-			currPrim.transformations[layer][currPrim.transformations[layer].length - 3][1] = 0 - x;
-			currPrim.transformations[layer][currPrim.transformations[layer].length - 3][2] = 0 - y;
-			currPrim.transformations[layer][currPrim.transformations[layer].length - 3][3] = 0 - z;
-			currPrim.transformations[layer][currPrim.transformations[layer].length - 1][1] = x;
-			currPrim.transformations[layer][currPrim.transformations[layer].length - 1][2] = y;
-			currPrim.transformations[layer][currPrim.transformations[layer].length - 1][3] = z;
+			currPrim.transformations[layer][currPrim.transformations[layer].length - 3][1] = x;
+			currPrim.transformations[layer][currPrim.transformations[layer].length - 3][2] = y;
+			currPrim.transformations[layer][currPrim.transformations[layer].length - 3][3] = z;
 
+			/*currPrim.transformations[layer][2][1] = x;
+			currPrim.transformations[layer][2][2] = y;	
+			currPrim.transformations[layer][2][3] = z;*/
 		}
 	}
 }
@@ -762,7 +762,7 @@ XMLscene.prototype.update = function(currTime){
 }
 
 XMLscene.prototype.display = function () {
-
+	
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 	this.updateProjectionMatrix();
@@ -771,19 +771,17 @@ XMLscene.prototype.display = function () {
 	this.axis.display();
 	this.setDefaultAppearance();
 
-	this.doneOnce = 0;
-
 	if (this.graph.loadedOk)
-	{
+	{	
 
 		this.updateLights();
 		for (var i = 0; i < this.lights.length; i++){
 			this.lights[i].update();
 		}
-
+		
 		for (var i in this.listReadyToDisplay){
 			//this.displayPrim(this.listReadyToDisplay[i]);
 			this.displayPrimToAnimation(this.listReadyToDisplay[i]);
 		}
-	}
+	}	
 };
