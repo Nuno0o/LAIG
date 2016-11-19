@@ -312,7 +312,7 @@
         <component id="Plane">
     			<transformation>
              		<translate x="-1" y="4.8" z="1" />
-                <rotate axis="y" angle="90"/>
+               		 <rotate axis="y" angle="90"/>
              		<scale x="0.6" y="0.6" z="0.6" />
     			</transformation>
     			<animation>

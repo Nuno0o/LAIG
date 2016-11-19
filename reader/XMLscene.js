@@ -681,15 +681,6 @@ XMLscene.prototype.runAnimations = function(frameDiff){
 
 			// Animations for a given primitive: [[layer0_anim0, layer0_anim1, ...], [layer1_anim0, layer1_anim1, ...], [], [layer3_anim0], ...], current = [0,0,0,...]
 			if (this.listReadyToDisplay[i].animations[layer][this.listReadyToDisplay[i].currentAnimations[layer]].isDone()){
-
-				/*var index = (this.listReadyToDisplay[i].animations[layer].length - this.listReadyToDisplay[i].currentAnimations[layer]) * 2 - 1;
-				var angle = this.listReadyToDisplay[i].transformations[layer][this.listReadyToDisplay[i].transformations[layer].length - index][2];
-				console.log(this.listReadyToDisplay[i].transformations[layer][this.listReadyToDisplay[i].transformations[layer].length - index]);
-				console.log("Angle1 : ", angle);
-				this.listReadyToDisplay[i].transformations[layer][this.listReadyToDisplay[i].transformations[layer].length - index - 1][1] *= Math.cos(angle);
-				this.listReadyToDisplay[i].transformations[layer][this.listReadyToDisplay[i].transformations[layer].length - index - 1][3] *= Math.sin(angle);
-				this.listReadyToDisplay[i].transformations[layer][this.listReadyToDisplay[i].transformations[layer].length - index][2] = 0;
-				console.log("Angle2: ", angle);*/
 				this.listReadyToDisplay[i].incrementCurrentAnimation(layer);
 				continue;
 			}

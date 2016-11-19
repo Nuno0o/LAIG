@@ -208,6 +208,8 @@ function CircularAnimation(parsedAnimation){
 	this.startAng = Math.PI * parsedAnimation.startang / 180;
 	this.rotAng = Math.PI * parsedAnimation.rotang / 180;
 
+	if (this.rotAng < 0) this.direction = 1; else this.direction = 0;
+
 	this.expectedTranslations = [	this.centerVec[0] + (this.radius * Math.cos(this.startAng + this.rotAng)),
 									this.centerVec[1],
 									this.centerVec[2] + (this.radius * Math.sin(this.startAng + this.rotAng))];
@@ -261,17 +263,20 @@ CircularAnimation.prototype.getRotationAngle = function(){
 
 	// 2. Calculate the total angle increment of the animation
 
-	var totalAngle = this.rotAng - this.startAng;
+	var totalAngle = this.rotAng + this.startAng;
 
 	// 3. Apply the percentage
 
-	var computedAngle = percentTime * totalAngle + this.startAng;
+	var computedAngle = percentTime * totalAngle - this.startAng;
 
 	// 4. convert it into degrees!
 
 	var convertedAngle = computedAngle * 180 / Math.PI;
 
 	// 5. Point it the correct way!
+
+	if(this.direction) return -( convertedAngle + 180 );
+	else return - convertedAngle;
 
 	return  - convertedAngle;
 }
