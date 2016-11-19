@@ -63,6 +63,7 @@
 		<texture id="beertop" file="./resources/images/beertop.jpg" length_s="1" length_t="1"/>
 		<texture id="earth" file="./resources/images/earth.jpg" length_s="1" length_t="1" />
 		<texture id="plastic" file="./resources/images/plastic.jpg" length_s="1" length_t="1" />
+		<texture id="camo" file="./resources/images/camo.jpg" length_s="1" length_t="1" />
     <texture id="board" file="./resources/images/boardtex.jpg" length_s="1" length_t="1" />
     <texture id="board2" file="./resources/images/boardtex2.jpg" length_s="1" length_t="1" />
 	</textures>
@@ -315,7 +316,7 @@
     			<materials>
     				<material id="inherit" />
     			</materials>
-    			<texture id="inherit" />
+    			<texture id="camo" />
     			<children>
     				<primitiveref id="aviao" />
     			</children>
