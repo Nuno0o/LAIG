@@ -194,8 +194,7 @@
 			<translate x="2.5" y="0.05" z="3.5" />
 		</transformation>
 		<transformation id="transDiscoBall">
-			<rotate axis="x" angle="90" />
-			<translate x="4" y="6" z="-5" />
+			<translate x="4" y="5" z="6" />
 			<scale x="2" y="2" z="2" />
 		</transformation>
     </transformations>
@@ -207,11 +206,23 @@
 			<controlpoint xx="0" yy="0" zz="0" />
 			<controlpoint xx="1" yy="0" zz="1" />
 		</animation>
-		<animation id="animLinearUp" span="10" type="linear">
+		<animation id="animLinearUp" span="20" type="linear">
 			<controlpoint xx="0" yy="0" zz="0" />
 			<controlpoint xx="1" yy="0" zz="0" />
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="1" yy="0" zz="1" />
+			<controlpoint xx="0" yy="0" zz="0" />
 			<controlpoint xx="0" yy="0" zz="1" />
-			<controlpoint xx="0" yy="0" zz="1" />
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="-1" yy="0" zz="1" />
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="-1" yy="0" zz="0" />
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="-1" yy="0" zz="-1" />
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="0" yy="0" zz="-1" />
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="1" yy="0" zz="-1" />
 			<controlpoint xx="0" yy="0" zz="0" />
 		</animation>
 		<animation id="animCirc1" span="10" type="circular" centerx="0" centery="0" centerz="0"
@@ -220,8 +231,8 @@
 				   radius="1" startang="0" rotang="90" />
 		<animation id="animCirc3" span="9" type="circular" centerx="0" centery="0" centerz="0"
 				   radius="0" startang="0" rotang="360" />
-		<animation id="animCirc4" span="9" type="circular" centerx="0" centery="0" centerz="0"
-				   radius="0" startang="0" rotang="360" />
+		<animation id="animCirc4" span="20" type="circular" centerx="0" centery="0" centerz="0"
+				   radius="1" startang="0" rotang="360" />
 	</animations>
 
 	<primitives>
@@ -244,7 +255,7 @@
 			<plane dimX="2" dimY="2" partsX="3" partsY="3"/>
 		</primitive>
 		<primitive id="patch1">
-			<patch orderU="2" orderV="1" partsU="10" partsV="10" >
+			<patch orderU="2" orderV="1" partsU="10" partsV="10" >    
 				<controlpoint x="-1.5" y="-1.5" z="0" />
 				<controlpoint x="-1.5" y="1.5" z="0" />
 				<controlpoint x="0" y="-1.5" z="3" />
@@ -253,17 +264,16 @@
 				<controlpoint x="1.5" y="1.5" z="0" />
 			</patch>
 		</primitive>
-    <primitive id="aviao">
+		<primitive id="aviao">
 			<vehicle/>
 		</primitive>
-    <primitive id="chess">
+		<primitive id="chess">
       <chessboard du="8" dv="8" textureref="oi" su="1" sv="1">
            <c1 r="1" g="1" b="1" a="1" />
            <c2 r="1" g="1" b="1" a="1" />
            <cs r="1" g="1" b="1" a="1" />
       </chessboard>
 		</primitive>
-
     </primitives>
 
 	<components>
@@ -286,7 +296,8 @@
             	<componentref id= "Floor" />
             	<componentref id= "C1" />
             	<componentref id= "C2" />
-              <componentref id= "Plane" />
+              	<componentref id= "Plane" />
+              	<componentref id= "Patch" />
 				<componentref id= "Beer" />
             	<componentref id= "DiscoBall" />
 				<componentref id= "Earth" />
@@ -295,17 +306,31 @@
 
         <component id="Plane">
     			<transformation>
-            <translate x="5" y="2.5" z="2.5" />
+             		<translate x="5" y="2.5" z="2.5" />
     			</transformation>
+    			<animation>
+					<animationref id="animLinearUp" />
+				</animation>
     			<materials>
     				<material id="inherit" />
     			</materials>
     			<texture id="inherit" />
     			<children>
-    				<primitiveref id="chess" />
+    				<primitiveref id="aviao" />
     			</children>
-    		</component>
+    	</component>
 
+		<component id="Patch">
+			<transformation>
+			</transformation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="inherit" />
+			<children>
+				<primitiveref id="patch1" />
+			</children>
+		</component>
 
 		<component id="primRect">
 			<transformation>
@@ -508,7 +533,21 @@
 				<transformationref id="transC1" />
 			</transformation>
 			<animation>
-				<animationref id="animLinearUp" />
+			</animation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="none" />
+			<children>
+				<componentref id="Le Box" />
+			</children>
+		</component>
+
+		<component id="Le Box">
+			<transformation>
+			</transformation>
+			<animation>
+				<animationref id="animCirc4" />
 			</animation>
 			<materials>
 				<material id="gift1Mat" />
@@ -767,6 +806,8 @@
 			<transformation>
 				<transformationref id="transSofa1" />
 			</transformation>
+			<animation>
+			</animation>
 			<materials>
 				<material id="inherit" />
 			</materials>
@@ -984,7 +1025,21 @@
 				<translate x="4" y="1.2" z="5.3" />
 			</transformation>
 			<animation>
-				<animationref id="animLinearUp" />
+			</animation>
+			<materials>
+				<material id="inherit" />
+			</materials>
+			<texture id="inherit" />
+			<children>
+				<componentref id="TheEarth" />
+			</children>
+		</component>
+
+		<component id="TheEarth">
+			<transformation>
+			</transformation>
+			<animation>
+				<animationref id="animCirc4" />
 			</animation>
 			<materials>
 				<material id="inherit" />
@@ -999,7 +1054,6 @@
 		<component id="EarthSphere">
 			<transformation>
 				<scale x="0.7" y="0.7" z="0.7"/>
-				<rotate axis="x" angle="-90"/>
 			</transformation>
 			<animation>
 				<animationref id="animCirc3" />
@@ -1093,7 +1147,7 @@
 				<transformationref id="transDiscoBall" />
 			</transformation>
 			<animation>
-				<animationref id= "animCirc3" />
+				<animationref id="animCirc4" />
 			</animation>
 			<materials>
 				<material id="ball1" />

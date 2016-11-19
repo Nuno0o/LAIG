@@ -1,3 +1,19 @@
+
+function MySphere(scene, radius, slices, stacks){
+	this.sphere = new MyPrimSphere(scene, radius, slices, stacks);
+}
+
+ MySphere.prototype = Object.create(CGFobject.prototype);
+ MySphere.prototype.constructor = MySphere;
+
+ MySphere.prototype.display = function(){
+ 	this.sphere.scene.pushMatrix();
+ 		this.sphere.scene.rotate(-Math.PI, 0, 1, 1);
+ 		this.sphere.display();
+ 	this.sphere.scene.popMatrix();
+ }
+
+
 /**
  * MyPrimSphere
  * @constructor

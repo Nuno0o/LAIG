@@ -143,14 +143,57 @@ LinearAnimation.prototype.getRotationAngle = function(){
 
 	var vector = [direction[0] / norm, direction[1] / norm, direction[2] / norm];
 
-	if (vector[0] >= 0){
-		return (Math.acos(vector[2])) * 180 / Math.PI;
+	var AB = (1 * direction[0] + 0 * direction[1] + 0 * direction[2]);
+
+	var cos = AB / (1 * norm);
+
+	var angle = 0;
+	var radToDeg = 180 / Math.PI;
+
+	/*
+			cos neg	|	cos pos
+		-------------------->
+			cos neg |	cos pos
+					v
+	*/
+
+
+
+	if (cos > 0){
+		if (vector[2] > 0){
+			angle = Math.acos(cos) * radToDeg;
+		}
+		else if (vector[2] < 0) {
+			angle = Math.acos(cos) * radToDeg + 90;
+		}
+		else{
+			angle = Math.acos(cos) * radToDeg + 90;
+		}
+	}
+	else if (cos < 0){
+		if (vector[2] > 0){
+			angle = Math.acos(cos) * radToDeg + 180;
+		}
+		else if (vector[2] < 0){
+			angle = Math.acos(cos) * radToDeg + 90;
+		}
+		else {
+			angle = Math.acos(cos) * radToDeg + 90;
+		}
 	}
 	else{
-		return (Math.acos(vector[2]) + Math.PI / 2) * 180 / Math.PI;
+		if (vector[2] > 0){
+			angle = Math.acos(cos) * radToDeg + 270;
+		}
+		else if (vector[2] < 0) {
+			angle = Math.acos(cos) * radToDeg + 90;
+		}
+		else{
+			angle = Math.acos(cos) * radToDeg;
+		}
 	}
 
-	return 0;
+	return angle;
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -206,10 +249,29 @@ CircularAnimation.prototype.getTranslation = function(){
 	var x = this.centerVec[0] + (this.radius * Math.cos(this.startAng + this.currAng));
 	var y = this.centerVec[1];
 	var z = this.centerVec[2] + (this.radius * Math.sin(this.startAng + this.currAng));
-
 	return [x, y, z];
 }
 
 CircularAnimation.prototype.getRotationAngle = function(){
-	return  (- this.currAng) * 180 / ( Math.PI );
+
+	// the circular animation's angle is calculated as follows:
+	// 1. calculate how far in we are into the animation. This indicates the percentage of angle of the total angle increment
+
+	var percentTime = this.baseAnimation.elapsedTime / this.baseAnimation.span;
+
+	// 2. Calculate the total angle increment of the animation
+
+	var totalAngle = this.rotAng - this.startAng;
+
+	// 3. Apply the percentage
+
+	var computedAngle = percentTime * totalAngle + this.startAng;
+
+	// 4. convert it into degrees!
+
+	var convertedAngle = computedAngle * 180 / Math.PI;
+
+	// 5. Point it the correct way!
+
+	return  - convertedAngle;
 }
