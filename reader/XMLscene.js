@@ -579,26 +579,25 @@ XMLscene.prototype.getTransformations_ = function(graphNode, transformations){
 	return newTrans;
 }
 
-XMLscene.prototype.injectAnimationTransformations = function(transformations){
-	var rotation = ['rotate', 'y', 0];
-	var translation = ['translate', 0, 0, 0];
-	var translation2 = ['translate', 0, 0, 0];
+XMLscene.prototype.injectAnimationTransformations = function(transformations, howManyNew){
 	var newLast = [];
 
 	for (var i = 0; i < transformations[transformations.length - 1].length; i++){
 		newLast.push(transformations[transformations.length - 1][i]);
 	}
 
-	newLast.push(translation);
-	newLast.push(rotation);
-	newLast.push(translation2);
+	for (var j = 0; j < howManyNew; j++){
+		newLast.push(['translate', 0, 0, 0]);
+	}
+
+	newLast.push(['rotate', 'y', 0]);
 	transformations[transformations.length - 1] = newLast;
 }
 
 XMLscene.prototype.calcAndDisplayGraph = function(graphNode, transformations, mats, tex, anims){
 	transformations = this.getTransformations_(graphNode, transformations);
-	this.injectAnimationTransformations(transformations);
 	var newAnims = this.getAnims_(this.graph.components[graphNode.id], anims);
+	this.injectAnimationTransformations(transformations, newAnims[newAnims.length - 1].length);
 	for (var i in graphNode.primitiverefs){
 		mats = this.getMats(graphNode, mats);
 		tex = this.getComponentTex(graphNode, tex);
@@ -682,6 +681,15 @@ XMLscene.prototype.runAnimations = function(frameDiff){
 
 			// Animations for a given primitive: [[layer0_anim0, layer0_anim1, ...], [layer1_anim0, layer1_anim1, ...], [], [layer3_anim0], ...], current = [0,0,0,...]
 			if (this.listReadyToDisplay[i].animations[layer][this.listReadyToDisplay[i].currentAnimations[layer]].isDone()){
+
+				/*var index = (this.listReadyToDisplay[i].animations[layer].length - this.listReadyToDisplay[i].currentAnimations[layer]) * 2 - 1;
+				var angle = this.listReadyToDisplay[i].transformations[layer][this.listReadyToDisplay[i].transformations[layer].length - index][2];
+				console.log(this.listReadyToDisplay[i].transformations[layer][this.listReadyToDisplay[i].transformations[layer].length - index]);
+				console.log("Angle1 : ", angle);
+				this.listReadyToDisplay[i].transformations[layer][this.listReadyToDisplay[i].transformations[layer].length - index - 1][1] *= Math.cos(angle);
+				this.listReadyToDisplay[i].transformations[layer][this.listReadyToDisplay[i].transformations[layer].length - index - 1][3] *= Math.sin(angle);
+				this.listReadyToDisplay[i].transformations[layer][this.listReadyToDisplay[i].transformations[layer].length - index][2] = 0;
+				console.log("Angle2: ", angle);*/
 				this.listReadyToDisplay[i].incrementCurrentAnimation(layer);
 				continue;
 			}
@@ -704,12 +712,10 @@ XMLscene.prototype.updatePrimitivesRotations = function(frameDiff){
 
 			// Current layer finished its animations
 			if (currPrim.currentAnimations[layer] >= currPrim.animations[layer].length){
-				currPrim.transformations[layer][currPrim.transformations[layer].length - 2][2] = currPrim.animations[layer][currPrim.animations[layer].length - 1].getRotationAngle();
 				continue;
 			}
-
 			// Current layer is playing an animation
-			currPrim.transformations[layer][currPrim.transformations[layer].length - 2][2] = currPrim.animations[layer][currPrim.currentAnimations[layer]].getRotationAngle();
+			currPrim.transformations[layer][currPrim.transformations[layer].length - 1][2] = currPrim.animations[layer][currPrim.currentAnimations[layer]].getRotationAngle();
 		}
 	}
 
@@ -723,17 +729,6 @@ XMLscene.prototype.updatePrimitivesTranslations = function(frameDiff){
 		for (var layer = 0; layer < currPrim.animations.length; layer++){
 			if (currPrim.animations[layer].length == 0) continue;
 			if (currPrim.currentAnimations[layer] >= currPrim.animations[layer].length){
-
-				var expectedTranslations = currPrim.animations[layer][currPrim.animations[layer].length - 1].expectedTranslations;
-
-				currPrim.transformations[layer][currPrim.transformations[layer].length - 3][1] = (expectedTranslations[0]);
-				currPrim.transformations[layer][currPrim.transformations[layer].length - 3][2] = (expectedTranslations[1]);
-				currPrim.transformations[layer][currPrim.transformations[layer].length - 3][3] = (expectedTranslations[2]);
-				
-				/*currPrim.transformations[layer][2][1] = expectedTranslations[0];
-				currPrim.transformations[layer][2][2] = expectedTranslations[1];
-				currPrim.transformations[layer][2][3] = expectedTranslations[2];*/	
-
 				continue;
 			}
 
@@ -743,13 +738,11 @@ XMLscene.prototype.updatePrimitivesTranslations = function(frameDiff){
 			var y = thisTranslation[1];
 			var z = thisTranslation[2];
 
-			currPrim.transformations[layer][currPrim.transformations[layer].length - 3][1] = x;
-			currPrim.transformations[layer][currPrim.transformations[layer].length - 3][2] = y;
-			currPrim.transformations[layer][currPrim.transformations[layer].length - 3][3] = z;
+			var index = currPrim.currentAnimations[layer] + 2;
 
-			/*currPrim.transformations[layer][2][1] = x;
-			currPrim.transformations[layer][2][2] = y;	
-			currPrim.transformations[layer][2][3] = z;*/
+			currPrim.transformations[layer][currPrim.transformations[layer].length - index][1] = x;
+			currPrim.transformations[layer][currPrim.transformations[layer].length - index][2] = y;
+			currPrim.transformations[layer][currPrim.transformations[layer].length - index][3] = z;
 		}
 	}
 }

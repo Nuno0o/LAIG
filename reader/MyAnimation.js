@@ -41,7 +41,7 @@ function LinearAnimation(parsedAnimation){
 	this.controlPointVec = parsedAnimation.controlPoints;
 	this.currentSegment = 0;
 	this.segmentDistances = [];
-	this.translations = [0,0,0];
+	this.translations = [this.controlPointVec[0].xx, this.controlPointVec[0].yy, this.controlPointVec[0].zz];
 	this.expectedTranslations = [0,0,0];
 	this.totalDistance = this.calcTotalDistance();
 	
