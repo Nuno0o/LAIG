@@ -14,11 +14,15 @@ uniform float dv;
 uniform float su;
 uniform float sv;
 
+float round(float val){
+	return floor(val+0.5);
+}
+
 void main() {
 	float gapx = 1.0/du;
 	float gapy = 1.0/dv;
 
-	if(floor(aTextureCoord[0]/gapx) == su && floor(aTextureCoord[1]/gapy) == sv)
+	if((aTextureCoord[0])/gapx >= su && (aTextureCoord[1])/gapy >= sv && (aTextureCoord[0])/gapx <= su+1.0 && (aTextureCoord[1])/gapy <= sv+1.0)
 		gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition+aVertexNormal*0.03, 1.0);
 	else gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
 

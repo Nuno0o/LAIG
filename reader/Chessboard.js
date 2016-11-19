@@ -9,7 +9,7 @@ function Chessboard(scene,du,dv,tex,su,sv,c1,c2,cs){
   this.c2 = c2;
   this.cs = cs;
   this.initShaders();
-  this.board = new Plane(scene,1,1,du,dv);
+  this.board = new Plane(scene,1,1,du*4,dv*4);
 }
 
 Chessboard.prototype.initShaders = function(){
