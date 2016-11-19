@@ -198,7 +198,7 @@
 			<translate x="2.5" y="0.05" z="3.5" />
 		</transformation>
 		<transformation id="transDiscoBall">
-			<translate x="4" y="5" z="6" />
+			<translate x="4" y="5" z="4" />
 			<scale x="2" y="2" z="2" />
 		</transformation>
     </transformations>
@@ -210,13 +210,13 @@
 			<controlpoint xx="0" yy="0" zz="0" />
 			<controlpoint xx="1" yy="0" zz="1" />
 		</animation>
-		<animation id="animLinearUp" span="5" type="linear">
-			<controlpoint xx="0" yy="0" zz="0" />
-     		<controlpoint xx="2" yy="0" zz="2" />
+		<animation id="animLinearUp" span="3" type="linear">
+			   <controlpoint xx="0" yy="0" zz="0" />
+     		 <controlpoint xx="0" yy="0" zz="10" />
 		</animation>
-		<animation id="animLinearUpDois" span="5" type="linear">
+		<animation id="animLinearUpDois" span="6" type="linear">
 			<controlpoint xx="0" yy="0" zz="0" />
-     		<controlpoint xx="-2" yy="0" zz="-2" />
+     		<controlpoint xx="0" yy="0" zz="20" />
 		</animation>
 		<animation id="animCirc1" span="10" type="circular" centerx="0" centery="0" centerz="0"
 				   radius="0" startang="0" rotang="360" />
@@ -224,8 +224,8 @@
 				   radius="1" startang="0" rotang="90" />
 		<animation id="animCirc3" span="9" type="circular" centerx="0" centery="0" centerz="0"
 				   radius="0" startang="0" rotang="360" />
-		<animation id="animCirc4" span="8" type="circular" centerx="0" centery="0" centerz="0"
-				   radius="1" startang="0" rotang="90" />
+		<animation id="animCirc4" span="8" type="circular" centerx="-5" centery="0" centerz="0"
+				   radius="5" startang="0" rotang="360" />
 	</animations>
 
 	<primitives>
@@ -311,14 +311,15 @@
 
         <component id="Plane">
     			<transformation>
-             		<translate x="5" y="4" z="2.5" />
+             		<translate x="-1" y="4.8" z="1" />
+                <rotate axis="y" angle="90"/>
              		<scale x="0.6" y="0.6" z="0.6" />
     			</transformation>
     			<animation>
-					<animationref id="animLinearUp" />
-          			<animationref id="animCirc4" />
-          			<animationref id="animLinearUpDois" />
-				</animation>
+            <animationref id="animLinearUp" />
+            <animationref id="animCirc4" />
+            <animationref id="animLinearUpDois" />
+				  </animation>
     			<materials>
     				<material id="inherit" />
     			</materials>
@@ -1049,7 +1050,7 @@
 				<translate x="2" y="1.95" z="5.3" />
 			</transformation>
 			<animation>
-				<animationref id="animCirc3" />
+
 			</animation>
 			<materials>
 				<material id="inherit" />
@@ -1080,7 +1081,7 @@
 				<scale x="0.7" y="0.7" z="0.7"/>
 			</transformation>
 			<animation>
-				
+        <animationref id="animCirc3" />
 			</animation>
 			<materials>
 				<material id="inherit" />
