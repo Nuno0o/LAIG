@@ -15,5 +15,7 @@ function Chessboard(scene,du,dv,tex,su,sv,c1,c2,cs){
 Chessboard.prototype.constructor = Chessboard;
 
 Chessboard.prototype.display = function(){
+  this.scene.setActiveShader(this.shader);
   this.board.display();
+  this.scene.setActiveShader(this.scene.defaultShader);
 }
