@@ -143,13 +143,13 @@ LinearAnimation.prototype.getRotationAngle = function(){
 
 	var vector = [direction[0] / norm, direction[1] / norm, direction[2] / norm];
 
-	var AB = (1 * direction[0] + 0 * direction[1] + 0 * direction[2]);
+	var AB = (-1 * direction[0] + 0 * direction[1] + 0 * direction[2]);
 
 	var cos = AB / (1 * norm);
 	var radToDeg = 180 / Math.PI;
 
-	if (vector[2] < 0) return Math.acos(cos) * radToDeg + 180 - 90;
-	else return Math.acos(cos) * radToDeg - 90;
+	if (vector[2] < 0) return Math.acos(cos) * radToDeg;
+	else return Math.acos(cos) * radToDeg + 180 + 90;
 }
 
 // ---------------------------------------------------------------------------------------------------------------
