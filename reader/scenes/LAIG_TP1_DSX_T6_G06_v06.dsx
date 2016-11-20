@@ -214,7 +214,7 @@
 			 <controlpoint xx="0" yy="0" zz="0" />
      		 <controlpoint xx="0" yy="0" zz="8" />
 		</animation>
-		<animation id="animLinearUpDois" span="5" type="linear">
+		<animation id="animLinearUpDois" span="4" type="linear">
 			<controlpoint xx="0" yy="0" zz="0" />
      		<controlpoint xx="0" yy="0" zz="20" />
 		</animation>

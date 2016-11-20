@@ -32,7 +32,7 @@ Plane.prototype.initSurface = function () {
 
 }
 
-function getKnotsVector(degree) { // TODO (CGF 0.19.3): add to CGFnurbsSurface
+function getKnotsVector(degree) {
 
 	var v = new Array();
 	for (var i=0; i<=degree; i++) {
@@ -45,9 +45,9 @@ function getKnotsVector(degree) { // TODO (CGF 0.19.3): add to CGFnurbsSurface
 }
 
 function makeSurface(degree1,degree2,controlvertexes){
-  var knots1 = this.getKnotsVector(degree1); // to be built inside webCGF in later versions ()
-	var knots2 = this.getKnotsVector(degree2); // to be built inside webCGF in later versions
+  var knots1 = this.getKnotsVector(degree1);
+	var knots2 = this.getKnotsVector(degree2);
 
-	var nurbsSurface = new CGFnurbsSurface(degree1, degree2, knots1, knots2, controlvertexes); // TODO  (CGF 0.19.3): remove knots1 and knots2 from CGFnurbsSurface method call. Calculate inside method.
+	var nurbsSurface = new CGFnurbsSurface(degree1, degree2, knots1, knots2, controlvertexes);
 	return nurbsSurface;
 }
