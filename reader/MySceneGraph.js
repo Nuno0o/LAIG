@@ -655,6 +655,8 @@ function Primitive(prim){
 	if(this.name == "patch"){
         this.orderU = parseInt(prim.children[0].attributes.getNamedItem("orderU").value);
         this.orderV = parseInt(prim.children[0].attributes.getNamedItem("orderV").value);
+		if(this.orderU > 3 || this.orderV > 3)
+			return "Invalid patch order";
         this.partsU = parseInt(prim.children[0].attributes.getNamedItem("partsU").value);
         this.partsV = parseInt(prim.children[0].attributes.getNamedItem("partsV").value);
         var primControl = prim.children[0];
@@ -673,8 +675,15 @@ function Primitive(prim){
 		this.du = parseInt(prim.children[0].attributes.getNamedItem("du").value);
 		this.dv = parseInt(prim.children[0].attributes.getNamedItem("dv").value);
 		this.textureref = prim.children[0].attributes.getNamedItem("textureref").value;
-		this.su = parseInt(prim.children[0].attributes.getNamedItem("su").value);
-		this.sv = parseInt(prim.children[0].attributes.getNamedItem("sv").value);
+		var suTemp = prim.children[0].attributes.getNamedItem("su");
+		var svTemp = prim.children[0].attributes.getNamedItem("sv");
+		if(suTemp == null || svTemp == null){
+			this.su = -1;this.sv = -1;
+		}else{
+			this.su = parseInt(suTemp.value);
+			this.sv = parseInt(svTemp.value);
+		}
+		
 		var primColors = prim.children[0];
 		var c1 = getDirectChildrenByTagName(primColors,'c1')[0];
 		var c2 = getDirectChildrenByTagName(primColors,'c2')[0];
