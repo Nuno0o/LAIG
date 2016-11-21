@@ -64,6 +64,7 @@
 		<texture id="earth" file="./resources/images/earth.jpg" length_s="1" length_t="1" />
 		<texture id="plastic" file="./resources/images/plastic.jpg" length_s="1" length_t="1" />
 		<texture id="camo" file="./resources/images/camo.jpg" length_s="1" length_t="1" />
+		<texture id="papeltex" file="./resources/images/paper.jpg" length_s="1" length_t="1" />
     <texture id="board" file="./resources/images/boardtex.jpg" length_s="1" length_t="1" />
     <texture id="board2" file="./resources/images/boardtex2.jpg" length_s="1" length_t="1" />
 	</textures>
@@ -154,6 +155,13 @@
             <ambient r="0" g="0" b="0" a="1" />
             <diffuse r="0.5" g="0.5" b="1" a="1" />
             <specular r="0.5" g="0.5" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+		<material id="paperMat" >
+           <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="1" g="1" b="1" a="1" />
+            <specular r="0" g="0" b="0" a="1" />
             <shininess value="10" />
         </material>
     </materials>
@@ -308,8 +316,27 @@
 				<componentref id= "Beer" />
             	<componentref id= "DiscoBall" />
 				<componentref id= "Earth" />
+				<componentref id= "Papel" />
             </children>
         </component>
+		
+		<component id="Papel">
+			<transformation>
+				<translate x="3.5" y="0.55" z="6"/>
+				<rotate axis="z" angle="-25"/>
+				<rotate axis="x" angle="-90"/>
+				<scale x="0.1" y="0.1" z="0.1"/>
+			</transformation>
+			<animation>
+			</animation>
+			<materials>
+				<material id="paperMat" />
+			</materials>
+			<texture id="papeltex" />
+			<children>
+				<primitiveref id="testPatch" />
+			</children>
+		</component>
 
         <component id="Plane">
     			<transformation>
