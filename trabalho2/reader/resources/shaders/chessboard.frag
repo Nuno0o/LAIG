@@ -26,5 +26,6 @@ void main() {
 
     if(floor(vTextureCoord[0]/gapx) == su && floor(vTextureCoord[1]/gapy) == sv)
       color = cs;
+      
 		gl_FragColor =  texture2D(uSampler,vTextureCoord) * color;
 }
