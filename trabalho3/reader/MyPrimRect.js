@@ -24,6 +24,16 @@ MyPrimRect.prototype.setTex = function(length_s,length_t){
     ];
 	this.updateTexCoordsGLBuffers();
 }
+MyPrimRect.prototype.setTexCoords = function(u0,u1,v0,v1){
+	this.texCoords = [
+    	u0,v1,
+    	u1,v1,
+    	u0,v0,
+    	u1,v0
+    ];
+	this.updateTexCoordsGLBuffers();
+}
+
 MyPrimRect.prototype.initBuffers = function () {
 	this.vertices = [
             this.x1, this.y1, 0.0,

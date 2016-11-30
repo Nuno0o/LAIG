@@ -11,7 +11,7 @@ function getUrlVars() {
     return vars;
 }
 
-serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MySceneInterface.js', 'MyPrimRect.js','MyPrimTriang.js','MyPrimCylinder.js', 'MyPrimSphere.js','MyPrimTorus.js','MyAnimation.js','Plane.js','Patch.js','Vehicle.js','Chessboard.js',
+serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MySceneInterface.js', 'MyPrimRect.js','MyPrimTriang.js','MyPrimCylinder.js', 'MyPrimSphere.js','MyPrimTorus.js','MyAnimation.js','Plane.js','Patch.js','Vehicle.js','Chessboard.js','MyPrimSkybox.js','MyPrologIO.js',
 
 main=function()
 {
@@ -31,7 +31,7 @@ main=function()
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml
 	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor)
 
-	var filename=getUrlVars()['file'] || "LAIG_TP1_DSX_T6_G06_v06.dsx";
+	var filename=getUrlVars()['file'] || "cena1.dsx";
 
 	// create and load graph, and associate it to scene.
 	// Check console for loading errors

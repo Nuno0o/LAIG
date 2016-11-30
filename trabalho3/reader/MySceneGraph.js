@@ -599,6 +599,10 @@ function Primitive(prim){
 
 	this.name = prim.children[0].tagName;
 
+	if(this.name == "skybox"){
+		this.size = parseFloat(prim.children[0].attributes.getNamedItem("size").value);
+		return null;
+	}
 	if(this.name == "rectangle"){
 		this.x1 = parseFloat(prim.children[0].attributes.getNamedItem("x1").value);
 		this.x2 = parseFloat(prim.children[0].attributes.getNamedItem("x2").value);

@@ -359,9 +359,12 @@ XMLscene.prototype.initPrimitives = function(){
 		if(pri.name == 'vehicle'){
 			this.listPrimitives[pri.id] = new Vehicle(this);
 		}
-    if(pri.name == 'chessboard'){
-      this.listPrimitives[pri.id] = new Chessboard(this,pri.du,pri.dv,pri.textureref,pri.su,pri.sv,pri.c1,pri.c2,pri.cs);
-    }
+   		if(pri.name == 'chessboard'){
+     		this.listPrimitives[pri.id] = new Chessboard(this,pri.du,pri.dv,pri.textureref,pri.su,pri.sv,pri.c1,pri.c2,pri.cs);
+    	}
+		if(pri.name == 'skybox'){
+     		this.listPrimitives[pri.id] = new MyPrimSkybox(this,pri.size);
+    	}
 	}
 }
 
