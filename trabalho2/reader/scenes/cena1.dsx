@@ -1,0 +1,82 @@
+<dsx>
+    <scene root="root" axis_length="3" />
+
+    <views default="def_view" >
+    	<perspective id="persp" near="0.1" far="500" angle="45">
+            <from x="15" y="15" z="15" />
+            <to x="0" y="0" z="0" />
+        </perspective>
+    </views>
+
+    <illumination doublesided="0" local="0" >
+        <ambient r="0" g="0" b="0" a="1" />
+        <background r="0" g="0" b="0" a="1" />
+    </illumination>
+
+	<lights>
+        <omni id="light_omni" enabled="1" >
+            <location x="9" y="6" z="9" w="1" />
+            <ambient r="0" g="0" b="0" a="1" />
+            <diffuse r="0.5" g="0.2" b="0.5" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+        </omni>
+    </lights>
+
+    <textures>
+     <texture id="sky" file="./resources/images/skybox1.png" length_s="1" length_t="1" />
+	</textures>
+
+	<materials>
+        <material id="matDefault" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="1" g="1" b="1" a="1" />
+            <diffuse r="1" g="1" b="1" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+            <shininess value="10" />
+        </material>
+    </materials>
+
+	<transformations>
+        <transformation id="transWallX">
+           	<translate x="4.5" y="3" z="0" />
+        </transformation>
+    </transformations>
+
+	<animations>
+		<animation id="animLinear1" span="10" type="linear">
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="1" yy="0" zz="0" />
+			<controlpoint xx="0" yy="0" zz="0" />
+			<controlpoint xx="1" yy="0" zz="1" />
+		</animation>
+		
+	</animations>
+
+	<primitives>
+        <primitive id="skybox">
+            <skybox size="30" />
+        </primitive>
+
+        <primitive id="rect">
+            <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
+        </primitive>
+    </primitives>
+
+	<components>
+
+		<component id="root" >
+            <transformation>
+                <translate x="0" y="0" z="0" />
+            </transformation>
+            <materials>
+                <material id="matDefault" />
+            </materials>
+            <texture id="sky" />
+            <children>
+                <primitiveref id="skybox"/>
+            </children>
+        </component>
+
+	</components>
+
+</dsx>
