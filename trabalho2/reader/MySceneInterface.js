@@ -12,6 +12,7 @@ MySceneInterface.prototype.init = function(application) {
 	
     return true;
 };
+
 MySceneInterface.prototype.addLights = function(){
 	var group = this.gui.addFolder("Luzes");
 	group.open();
@@ -20,7 +21,6 @@ MySceneInterface.prototype.addLights = function(){
 		group.add(this.scene, name);
 	}
 }
-	
 
 MySceneInterface.prototype.processKeyDown = function(event) {
     switch (event.keyCode) 
@@ -29,5 +29,9 @@ MySceneInterface.prototype.processKeyDown = function(event) {
 		case (86): this.scene.cycleCamera(); this.setActiveCamera(this.scene.camera); break;
 		// M	
 		case (77): this.scene.cycleMaterials(); break;
+		
+		case (81): makeRequest("quit"); break;
+		
+		case (85): makeRequest("start");break;
 	}
 }
