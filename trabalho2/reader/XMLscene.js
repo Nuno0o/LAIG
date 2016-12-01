@@ -263,35 +263,7 @@ XMLscene.prototype.initAppearances = function() {
 }
 // ---------------- TRANSFORMATIONS ------------------
 XMLscene.prototype.getTransformations = function(){
-	this.listTransformations = [];
-
-	for (i in this.graph.transformations){
-		this.matrix = mat4.create();
-		for (var j in this.graph.transformations[i].changes){
-			if (this.graph.transformations[i].changes[j].type == 'translate'){
-				mat4.translate(this.matrix,this.matrix,[this.graph.transformations[i].changes[j].xtrans,
-														this.graph.transformations[i].changes[j].ytrans,
-														this.graph.transformations[i].changes[j].ztrans]);
-			}
-			else if (this.graph.transformations[i].changes[j].type == "scale"){
-				mat4.scale(this.matrix,this.matrix,[	this.graph.transformations[i].changes[j].scalex,
-														this.graph.transformations[i].changes[j].scaley,
-														this.graph.transformations[i].changes[j].scalez]);
-			}
-			else{
-				if (this.graph.transformations[i].changes[j].axis == 'x'){
-					mat4.rotate(this.matrix,this.matrix,Math.PI * this.graph.transformations[i].changes[j].angle / 180, [1,0,0]);
-				}
-				else if(this.graph.transformations[i].changes[j].axis == 'y'){
-					mat4.rotate(this.matrix,this.matrix,Math.PI * this.graph.transformations[i].changes[j].angle / 180, [0,1,0]);
-				}
-				else{
-					mat4.rotate(this.matrix,this.matrix,Math.PI * this.graph.transformations[i].changes[j].angle / 180, [0,0,1]);
-				}
-			}
-		}
-		this.listTransformations[this.graph.transformations[i].id] = this.matrix;
-	}
+	
 }
 
 // ------------------ TEXTURES -----------------------
@@ -407,20 +379,6 @@ XMLscene.prototype.computeLayerOfTransformations = function(transformationLayer)
 	}
 }
 
-XMLscene.prototype.getAnimsFromID = function(animIdVec){
-	var animations = [];
-	for (var i in animIdVec){
-		var currId = animIdVec[i];
-		var currParsed = this.graph.animations[currId];
-		if (currParsed.type == "linear"){
-			animations.push(new LinearAnimation(currParsed));
-		}
-		if (currParsed.type == "circular"){
-			animations.push(new CircularAnimation(currParsed));
-		}
-	}
-	return animations;
-}
 
 XMLscene.prototype.displayPrimToAnimation = function(toDisplayPrim){
 	// Animations for a given primitive: [[layer0_anim0, layer0_anim1, ...], [layer1_anim0, layer1_anim1, ...], ...], current = [0,0,0,...]
@@ -581,7 +539,6 @@ XMLscene.prototype.getTransformations_ = function(graphNode, transformations){
 
 XMLscene.prototype.injectAnimationTransformations = function(transformations, howManyNew){
 	var newLast = [];
-
 	for (var i = 0; i < transformations[transformations.length - 1].length; i++){
 		newLast.push(transformations[transformations.length - 1][i]);
 	}
@@ -614,7 +571,6 @@ XMLscene.prototype.calcAndDisplayGraph = function(graphNode, transformations, ma
 
 XMLscene.prototype.initComponents = function(){
 	this.root = this.graph.components[this.graph.root];
-	this.initialMatrix = this.listTransformations[this.root.transformationref];
 	this.defMats = this.root.materials;
 	this.defTex = this.root.texture;
 	this.calcAndDisplayGraph(this.root, [], this.defMats, this.defTex, []);
@@ -767,7 +723,6 @@ XMLscene.prototype.display = function () {
 		}
 		
 		for (var i in this.listReadyToDisplay){
-			//this.displayPrim(this.listReadyToDisplay[i]);
 			this.displayPrimToAnimation(this.listReadyToDisplay[i]);
 		}
 	}	
