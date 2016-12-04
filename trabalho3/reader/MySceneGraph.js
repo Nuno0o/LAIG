@@ -699,12 +699,6 @@ function Primitive(prim){
 			return null;
 
 	}
-	if (this.name == "tileIvory"){
-		this.color = [1,1,1,1];
-	}
-	if (this.name == "tileCigar"){
-		this.color = [1,0,0,1];
-	}
 	return "Error parsing primitives";
 }
 
@@ -817,9 +811,8 @@ function Component(graph,comp){
 	var primref = child[0].getElementsByTagName('primitiveref');
 
 	this.gameboard = child[0].getElementsByTagName('gameboard');
-	this.auxiliarboardIvory = child[0].getElementsByTagName('auxiliarboardIvory');
-	this.auxiliarboardCigar = child[0].getElementsByTagName('auxiliarboardCigar');
-
+	if (this.gameboard.length != 0) this.gameboard_tilesize = parseInt(this.gameboard[0].attributes.getNamedItem("tilesize").value);
+	
 	for(var j = 0;j < primref.length;j++){
 		var found = false;
 		for(var k = 0;k < graph.primitives.length;k++){

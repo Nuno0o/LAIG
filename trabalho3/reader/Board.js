@@ -5,15 +5,18 @@
 /*
 	Element representing a board.
 */
-function Board(scene, dimX, dimY){
+function Board(scene, dimX, dimY, tileSize){
 
-	// The board's tile set.
-	this.tiles = [];
+	this.scene = scene;
+	this.tileSize = tileSize;
 
 	// The board's dimensions.
 	this.dimX = dimX;
 	this.dimY = dimY;
 
+	// The board's tile set.
+	this.tiles = [];
+	this.initTiles();
 }
 
 /*
@@ -37,6 +40,20 @@ Board.prototype.getTiles = function(){
 }
 
 /*
+	Lay out the board.
+*/
+Board.prototype.initTiles = function(){
+	for (var y = 0; y < this.dimY; y++){
+		for(var x = 0; x < this.dimX; x++){
+			if (x % 2 == 0 && y % 2 == 0){
+				this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.tileSize);
+			}
+			else this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.tileSize);
+		}
+	}
+}
+
+/*
 	Method to get the board's number of columns.
 */
 
@@ -52,6 +69,17 @@ Board.prototype.getDimY = function(){
 	return this.dimY;
 }
 
+Board.prototype.display = function(){
+	for (var y = 0; y < this.dimY; y++){
+		for (var x = 0; x < this.dimX; x++){
+			this.scene.pushMatrix();
+				this.scene.translate(this.tileSize * x, 0, this.tileSize * y);
+				this.tiles[y*this.dimX + x].display();
+			this.scene.popMatrix();
+		}
+	}
+		
+}
 // -----------------------------------------------------------------------------
 // ------------------------------ GAME BOARD -----------------------------------
 // -----------------------------------------------------------------------------
@@ -60,10 +88,11 @@ Board.prototype.getDimY = function(){
 	Element representing a main board.
 */
 
-function GameBoard (scene, dimX, dimY) {
+function GameBoard (scene, dimX, dimY, tileSize) {
 
 	// board element
-	this.board = new Board(scene, dimX, dimY);
+	this.board = new Board(scene, dimX, dimY, tileSize);
+
 }
 
 /*
@@ -135,9 +164,7 @@ GameBoard.prototype.move = function(oldCol, oldRow, newCol, newRow){
 */
 
 GameBoard.prototype.display = function(){
-	this.scene.pushMatrix();
-
-	this.scene.popMatrix();
+	this.board.display();
 }
 
 // -----------------------------------------------------------------------------
@@ -148,7 +175,7 @@ GameBoard.prototype.display = function(){
 	Element representing an auxiliary board.
 */
 
-function AuxBoard (scene, dimX, dimY) {
+function AuxBoard (scene, dimX, dimY, tileSize) {
 
 	// board element
 	this.board = new Board(scene, dimX, dimY);
@@ -211,7 +238,5 @@ AuxBoard.prototype.setTile = function(col, row, tile){
 */
 
 AuxBoard.prototype.display = function(){
-	this.scene.pushMatrix();
-	//displaying goes here
-	this.scene.popMatrix();
+	this.board.display();
 }

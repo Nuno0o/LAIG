@@ -6,9 +6,6 @@ function Piece(scene){
 
   // The tile occupied by the piece
   this.tile = null;
-
-  // The color of the piece.
-  this.color = [0,0,0,0];
 }
 
 /*
@@ -28,13 +25,6 @@ Piece.prototype.setTile = function(tile){
 */
 Piece.prototype.getTile = function(){
   return this.tile;
-}
-
-/*
-  Method to set the piece's color.
-*/
-Piece.prototype.setColor = function(RGBA){
-  this.color = RGBA;
 }
 
 /*

@@ -1,7 +1,7 @@
 /*
   Element representing a board's tile.
 */
-function Tile(scene, board, color){
+function Tile(scene, board, size){
   this.scene = scene;
 
   // The board containing the tile. May be main or auxiliary board.
@@ -10,11 +10,10 @@ function Tile(scene, board, color){
   // The piece on the tile. If there's a piece, point to it. Else null;
   this.piece = null;
 
-  // The color of the tile.
-  this.color = color;
-
   // The physical representation of the tile
-  this.plane = new Plane(this.scene,1,1,10,10);
+  this.size = size;
+
+  this.plane = new Plane(this.scene, size, size, 2, 2);
 }
 
 /*
@@ -34,13 +33,6 @@ Tile.prototype.setPiece = function(piece){
 */
 Tile.prototype.getPiece = function(){
   return this.piece;
-}
-
-/*
-  Method to set the tile's color.
-*/
-Tile.prototype.setColor = function(RGBA){
-  this.color = RGBA;
 }
 
 /*

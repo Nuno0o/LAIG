@@ -70,14 +70,6 @@
             <vehicle/>
         </primitive>
 
-        <primitive id="tileIvory">
-            <tileIvory/>
-        </primitive>
-
-         <primitive id="tileCigar">
-            <tileCigar/>
-        </primitive>
-
     </primitives>
 
     <components>
@@ -93,7 +85,7 @@
             <children>
                 <componentref id="sky"/>
                 <componentref id="plane"/>
-                <gameboard />
+                <gameboard tilesize="1" />
             </children>
         </component>
 

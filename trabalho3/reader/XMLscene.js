@@ -365,13 +365,7 @@ XMLscene.prototype.initPrimitives = function(){
 		if(pri.name == 'skybox'){
      		this.listPrimitives[pri.id] = new MyPrimSkybox(this,pri.size);
     	}
-    	if(pri.name == 'tileIvory'){
-    		this.listPrimitives[pri.id] = new Tile(this, null, pri.color);
-    	}
-    	if(pri.name == 'tileCigar'){
-    		this.listPrimitives[pri.id] = new Tile(this, null, pri.color);
-    	}
-	}
+    }
 }
 
 // ----------------- COMPONENTS ----------------------
@@ -610,15 +604,9 @@ XMLscene.prototype.calcAndDisplayGraph = function(graphNode, transformations, ma
 	this.injectAnimationTransformations(transformations, newAnims[newAnims.length - 1].length);
 
 	if (graphNode.gameboard.length != 0){
-		//
-	}
+		this.hasGameboard = true;
 
-	if (graphNode.auxiliarboardIvory.length != 0){
-		//
-	}
-
-	if (graphNode.auxiliarboardCigar.length != 0){
-		//
+		this.gameboard_tilesize = graphNode.gameboard_tilesize;
 	}
 
 	for (var i in graphNode.primitiverefs){
@@ -663,6 +651,8 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.activeMat = 0;
 	this.currentCamera = 0;
 	
+	this.hasGameboard = false;
+
 	this.enableTextures(true);
 	
 	this.listReadyToDisplay = [];
@@ -678,6 +668,11 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.getTransformations();
 	this.initPrimitives();
 	this.initComponents();
+
+	if (this.hasGameboard){
+		this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize);
+	}
+
 };
 
 XMLscene.prototype.getFrameDiff = function(currTime){
@@ -794,5 +789,10 @@ XMLscene.prototype.display = function () {
 			//this.displayPrim(this.listReadyToDisplay[i]);
 			this.displayPrimToAnimation(this.listReadyToDisplay[i]);
 		}
+
+		if (this.gameboard != null){
+			this.gameboard.display();
+		}
 	}	
+
 };
