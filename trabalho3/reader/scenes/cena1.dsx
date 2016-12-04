@@ -2,7 +2,7 @@
     <scene root="root" axis_length="3" />
 
     <views default="def_view" >
-    	<perspective id="persp" near="0.1" far="500" angle="45">
+        <perspective id="persp" near="0.1" far="500" angle="45">
             <from x="15" y="15" z="15" />
             <to x="0" y="0" z="0" />
         </perspective>
@@ -13,7 +13,7 @@
         <background r="0" g="0" b="0" a="1" />
     </illumination>
 
-	<lights>
+    <lights>
         <omni id="light_omni" enabled="1" >
             <location x="9" y="6" z="9" w="1" />
             <ambient r="0" g="0" b="0" a="1" />
@@ -26,9 +26,9 @@
         <texture id="sky" file="./resources/images/skybox1.png" length_s="1" length_t="1" />
         <texture id="planeTex" file="./resources/images/plane.jpg" length_s="1" length_t="1" />
         <texture id="board1" file="./resources/images/board1.jpg" length_s="1" length_t="1" />
-	</textures>
+    </textures>
 
-	<materials>
+    <materials>
         <material id="matDefault" >
             <emission r="0" g="0" b="0" a="1" />
             <ambient r="1" g="1" b="1" a="1" />
@@ -46,18 +46,18 @@
         </material>
     </materials>
 
-	<transformations>
+    <transformations>
         <transformation id="transWallX">
-           	<translate x="4.5" y="3" z="0" />
+            <translate x="4.5" y="3" z="0" />
         </transformation>
     </transformations>
 
-	<animations>
-		<animation id="animPlane" span="86400" type="circular" centerx="0" centery="0" centerz="0" radius="10" startang="0" rotang="3110400" />
-		
-	</animations>
+    <animations>
+        <animation id="animPlane" span="86400" type="circular" centerx="0" centery="0" centerz="0" radius="10" startang="0" rotang="3110400" />
+        
+    </animations>
 
-	<primitives>
+    <primitives>
         <primitive id="skybox">
             <skybox size="150" />
         </primitive>
@@ -66,23 +66,23 @@
             <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
         </primitive>
 
-        <primitive id="gameboard">
-            <chessboard du="12" dv="12" textureref="board1" su="-2" sv="-2">
-                <c1 r="0.2" g="0.1" b="0.1" a="1" />
-                <c2 r="0.6" g="0.6" b="0.6" a="1" />
-                <cs r="1" g="0" b="0" a="1" />
-            </chessboard>
-        </primitive>
-
         <primitive id="plane">
             <vehicle/>
         </primitive>
 
+        <primitive id="tileIvory">
+            <tileIvory/>
+        </primitive>
+
+         <primitive id="tileCigar">
+            <tileCigar/>
+        </primitive>
+
     </primitives>
 
-	<components>
+    <components>
 
-		<component id="root" >
+        <component id="root" >
             <transformation>
                 <translate x="0" y="0" z="0" />
             </transformation>
@@ -91,9 +91,9 @@
             </materials>
             <texture id="none" />
             <children>
-                <componentref id="boards"/>
                 <componentref id="sky"/>
                 <componentref id="plane"/>
+                <gameboard />
             </children>
         </component>
 
@@ -107,21 +107,6 @@
             <texture id="sky" />
             <children>
                 <primitiveref id="skybox"/>
-            </children>
-        </component>
-
-        <component id="boards" >
-            <transformation>
-                <rotate axis="x" angle="-90"/>
-                <scale x="12" y="12" z="0"/>
-                <translate x="0" y="0" z="0" />
-            </transformation>
-            <materials>
-                <material id="matDefault" />
-            </materials>
-            <texture id="none" />
-            <children>
-                <primitiveref id="gameboard"/>
             </children>
         </component>
 
@@ -143,7 +128,7 @@
             </children>
         </component>
 
-	</components>
+    </components>
 
 
 

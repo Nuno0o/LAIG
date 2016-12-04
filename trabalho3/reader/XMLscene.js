@@ -365,6 +365,12 @@ XMLscene.prototype.initPrimitives = function(){
 		if(pri.name == 'skybox'){
      		this.listPrimitives[pri.id] = new MyPrimSkybox(this,pri.size);
     	}
+    	if(pri.name == 'tileIvory'){
+    		this.listPrimitives[pri.id] = new Tile(this, null, pri.color);
+    	}
+    	if(pri.name == 'tileCigar'){
+    		this.listPrimitives[pri.id] = new Tile(this, null, pri.color);
+    	}
 	}
 }
 
@@ -598,14 +604,29 @@ XMLscene.prototype.injectAnimationTransformations = function(transformations, ho
 }
 
 XMLscene.prototype.calcAndDisplayGraph = function(graphNode, transformations, mats, tex, anims){
+
 	transformations = this.getTransformations_(graphNode, transformations);
 	var newAnims = this.getAnims_(this.graph.components[graphNode.id], anims);
 	this.injectAnimationTransformations(transformations, newAnims[newAnims.length - 1].length);
+
+	if (graphNode.gameboard.length != 0){
+		//
+	}
+
+	if (graphNode.auxiliarboardIvory.length != 0){
+		//
+	}
+
+	if (graphNode.auxiliarboardCigar.length != 0){
+		//
+	}
+
 	for (var i in graphNode.primitiverefs){
 		mats = this.getMats(graphNode, mats);
 		tex = this.getComponentTex(graphNode, tex);
 		this.listReadyToDisplay.push(new ToDisplay(graphNode.primitiverefs[i], transformations, mats, tex, newAnims));
 	}
+
 	for (var i in graphNode.componentrefs){
 		mats = this.getMats(graphNode, mats);
 		tex = this.getComponentTex(graphNode, tex);
