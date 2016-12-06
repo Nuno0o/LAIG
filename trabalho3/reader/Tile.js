@@ -1,7 +1,7 @@
 /*
   Element representing a board's tile.
 */
-function Tile(scene, board, size){
+function Tile(scene, board, size, id){
   this.scene = scene;
 
   // The board containing the tile. May be main or auxiliary board.
@@ -13,6 +13,7 @@ function Tile(scene, board, size){
   // The physical representation of the tile
   this.size = size;
 
+  this.id = id;
   this.plane = new Plane(this.scene, size, size, 2, 2);
 }
 
@@ -42,6 +43,7 @@ Tile.prototype.display = function(){
 
     this.scene.pushMatrix();
       this.scene.rotate(-Math.PI/2, 1, 0, 0);
+      this.scene.registerForPick(this.id, this.plane);
       this.plane.display();
     this.scene.popMatrix();
 }

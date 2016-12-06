@@ -46,9 +46,9 @@ Board.prototype.initTiles = function(){
 	for (var y = 0; y < this.dimY; y++){
 		for(var x = 0; x < this.dimX; x++){
 			if (x % 2 == 0 && y % 2 == 0){
-				this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.tileSize);
+				this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.tileSize,y*this.dimX + x);
 			}
-			else this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.tileSize);
+			else this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.tileSize,y*this.dimX + x);
 		}
 	}
 }
