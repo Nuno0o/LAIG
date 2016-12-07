@@ -5,13 +5,16 @@
 /*
 	Element representing a board.
 */
-function Board(scene, dimX, dimY, tileSize,c1,c2,tex){
+function Board(scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex){
 
 	this.scene = scene;
 	this.tileSize = tileSize;
 	this.c1 = c1;
 	this.c2 = c2;
 	this.tex = tex;
+	this.pc1 = pc1;
+	this.pc2 = pc2;
+	this.ptex = ptex;
 	// The board's dimensions.
 	this.dimX = dimX;
 	this.dimY = dimY;
@@ -47,10 +50,7 @@ Board.prototype.getTiles = function(){
 Board.prototype.initTiles = function(){
 	for (var y = 0; y < this.dimY; y++){
 		for(var x = 0; x < this.dimX; x++){
-			if (x % 2 == 0 && y % 2 == 0 || x % 2 != 0 && y % 2 != 0){
-				this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.tileSize,y*this.dimX + x);
-			}
-			else this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.tileSize,y*this.dimX + x);
+			this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.tileSize,y*this.dimX + x,this.pc1,this.pc2,this.ptex);
 		}
 	}
 }
@@ -97,10 +97,10 @@ Board.prototype.display = function(){
 	Element representing a main board.
 */
 
-function GameBoard (scene, dimX, dimY, tileSize,c1,c2,tex) {
+function GameBoard (scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex) {
 
 	// board element
-	this.board = new Board(scene, dimX, dimY, tileSize,c1,c2,tex);
+	this.board = new Board(scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex);
 
 }
 

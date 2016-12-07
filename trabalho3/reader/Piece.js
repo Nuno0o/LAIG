@@ -1,11 +1,15 @@
 /*
   Element representing a board's piece.
 */
-function Piece(scene){
+function Piece(scene,prim,team){
   this.scene = scene;
 
   // The tile occupied by the piece
   this.tile = null;
+
+  this.prim = prim;
+
+  this.team = team;
 }
 
 /*
@@ -44,7 +48,7 @@ Piece.prototype.display = function(){
 
     this.scene.pushMatrix();
 
-      // displaying goes here.
+      this.scene.listPrimitives[this.prim].display();
 
     this.scene.popMatrix();
 }

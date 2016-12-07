@@ -47,7 +47,7 @@
 
         <material id="color1" >
             <emission r="0" g="0" b="0" a="1" />
-            <ambient r="1" g="0" b="0" a="1" />
+            <ambient r="0.92" g="0.88" b="0.78" a="1" />
             <diffuse r="0" g="0" b="0" a="0" />
             <specular r="0" g="0" b="0" a="0" />
             <shininess value="10" />
@@ -55,7 +55,23 @@
 
         <material id="color2" >
             <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0.51" g="0.25" b="0" a="1" />
+            <diffuse r="0" g="0" b="0" a="0" />
+            <specular r="0" g="0" b="0" a="0" />
+            <shininess value="10" />
+        </material>
+
+        <material id="pieceMat1" >
+            <emission r="0" g="0" b="0" a="1" />
             <ambient r="0" g="0" b="1" a="1" />
+            <diffuse r="0" g="0" b="0" a="0" />
+            <specular r="0" g="0" b="0" a="0" />
+            <shininess value="10" />
+        </material>
+
+        <material id="pieceMat2" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="1" g="0" b="0" a="1" />
             <diffuse r="0" g="0" b="0" a="0" />
             <specular r="0" g="0" b="0" a="0" />
             <shininess value="10" />
@@ -87,6 +103,10 @@
             <vehicle/>
         </primitive>
 
+        <primitive id="piece">
+            <piece size="2"/>
+        </primitive>
+
     </primitives>
 
     <components>
@@ -102,7 +122,7 @@
             <children>
                 <componentref id="sky"/>
                 <componentref id="plane"/>
-                <gameboard tilesize="1" tex="board1" c1="color1" c2="color2"/>
+                <gameboard tilesize="1" tex="board1" c1="color1" c2="color2" pc1="pieceMat1" pc2="pieceMat2" ptex="board1"/>
             </children>
         </component>
 

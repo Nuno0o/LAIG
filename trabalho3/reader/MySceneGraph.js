@@ -699,6 +699,10 @@ function Primitive(prim){
 			return null;
 
 	}
+	if(this.name = "piece"){
+		this.size = parseFloat(prim.children[0].attributes.getNamedItem("size").value);
+			return null;
+	}
 	return "Error parsing primitives";
 }
 
@@ -816,6 +820,10 @@ function Component(graph,comp){
 		this.gameboard_c1 = this.gameboard[0].attributes.getNamedItem("c1").value;
 		this.gameboard_c2 = this.gameboard[0].attributes.getNamedItem("c2").value;
 		this.gameboard_tex = this.gameboard[0].attributes.getNamedItem("tex").value;
+		this.gameboard_pc1 = this.gameboard[0].attributes.getNamedItem("pc1").value;
+		this.gameboard_pc2 = this.gameboard[0].attributes.getNamedItem("pc2").value;
+		this.gameboard_ptex = this.gameboard[0].attributes.getNamedItem("ptex").value;
+	
 	}
 	
 	for(var j = 0;j < primref.length;j++){

@@ -367,6 +367,9 @@ XMLscene.prototype.initPrimitives = function(){
 		if(pri.name == 'skybox'){
      		this.listPrimitives[pri.id] = new MyPrimSkybox(this,pri.size);
     	}
+		if(pri.name == 'piece'){
+			this.listPrimitives[pri.id] = new MyPrimPiece(this,pri.size);
+		}
     }
 }
 
@@ -612,6 +615,9 @@ XMLscene.prototype.calcAndDisplayGraph = function(graphNode, transformations, ma
 		this.gameboard_c1 = graphNode.gameboard_c1;
 		this.gameboard_c2 = graphNode.gameboard_c2;
 		this.gameboard_tex = graphNode.gameboard_tex;
+		this.gameboard_pc1 = graphNode.gameboard_pc1;
+		this.gameboard_pc2 = graphNode.gameboard_pc2;
+		this.gameboard_ptex = graphNode.gameboard_ptex;
 }
 
 	for (var i in graphNode.primitiverefs){
@@ -675,7 +681,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.initComponents();
 
 	if (this.hasGameboard){
-		this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize,this.gameboard_c1,this.gameboard_c2,this.gameboard_tex);
+		this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize,this.gameboard_c1,this.gameboard_c2,this.gameboard_tex,this.gameboard_pc1,this.gameboard_pc2,this.gameboard_ptex);
 	}
 
 };
