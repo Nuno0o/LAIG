@@ -609,7 +609,10 @@ XMLscene.prototype.calcAndDisplayGraph = function(graphNode, transformations, ma
 		this.hasGameboard = true;
 
 		this.gameboard_tilesize = graphNode.gameboard_tilesize;
-	}
+		this.gameboard_c1 = graphNode.gameboard_c1;
+		this.gameboard_c2 = graphNode.gameboard_c2;
+		this.gameboard_tex = graphNode.gameboard_tex;
+}
 
 	for (var i in graphNode.primitiverefs){
 		mats = this.getMats(graphNode, mats);
@@ -672,7 +675,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.initComponents();
 
 	if (this.hasGameboard){
-		this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize);
+		this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize,this.gameboard_c1,this.gameboard_c2,this.gameboard_tex);
 	}
 
 };

@@ -5,11 +5,13 @@
 /*
 	Element representing a board.
 */
-function Board(scene, dimX, dimY, tileSize){
+function Board(scene, dimX, dimY, tileSize,c1,c2,tex){
 
 	this.scene = scene;
 	this.tileSize = tileSize;
-
+	this.c1 = c1;
+	this.c2 = c2;
+	this.tex = tex;
 	// The board's dimensions.
 	this.dimX = dimX;
 	this.dimY = dimY;
@@ -45,7 +47,7 @@ Board.prototype.getTiles = function(){
 Board.prototype.initTiles = function(){
 	for (var y = 0; y < this.dimY; y++){
 		for(var x = 0; x < this.dimX; x++){
-			if (x % 2 == 0 && y % 2 == 0){
+			if (x % 2 == 0 && y % 2 == 0 || x % 2 != 0 && y % 2 != 0){
 				this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.tileSize,y*this.dimX + x);
 			}
 			else this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.tileSize,y*this.dimX + x);
@@ -73,6 +75,13 @@ Board.prototype.display = function(){
 	for (var y = 0; y < this.dimY; y++){
 		for (var x = 0; x < this.dimX; x++){
 			this.scene.pushMatrix();
+				if (x % 2 == 0 && y % 2 == 0 || x % 2 != 0 && y % 2 != 0){
+					this.scene.listAppearances[this.c1].setTexture(this.scene.listTextures[this.tex].texture);
+					this.scene.listAppearances[this.c1].apply();
+				}else{
+					this.scene.listAppearances[this.c2].setTexture(this.scene.listTextures[this.tex].texture);
+					this.scene.listAppearances[this.c2].apply();
+			}
 				this.scene.translate(this.tileSize * x, 0, this.tileSize * y);
 				this.tiles[y*this.dimX + x].display();
 			this.scene.popMatrix();
@@ -88,10 +97,10 @@ Board.prototype.display = function(){
 	Element representing a main board.
 */
 
-function GameBoard (scene, dimX, dimY, tileSize) {
+function GameBoard (scene, dimX, dimY, tileSize,c1,c2,tex) {
 
 	// board element
-	this.board = new Board(scene, dimX, dimY, tileSize);
+	this.board = new Board(scene, dimX, dimY, tileSize,c1,c2,tex);
 
 }
 

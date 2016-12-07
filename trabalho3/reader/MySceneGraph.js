@@ -811,7 +811,12 @@ function Component(graph,comp){
 	var primref = child[0].getElementsByTagName('primitiveref');
 
 	this.gameboard = child[0].getElementsByTagName('gameboard');
-	if (this.gameboard.length != 0) this.gameboard_tilesize = parseInt(this.gameboard[0].attributes.getNamedItem("tilesize").value);
+	if (this.gameboard.length != 0){ 
+		this.gameboard_tilesize = parseInt(this.gameboard[0].attributes.getNamedItem("tilesize").value);
+		this.gameboard_c1 = this.gameboard[0].attributes.getNamedItem("c1").value;
+		this.gameboard_c2 = this.gameboard[0].attributes.getNamedItem("c2").value;
+		this.gameboard_tex = this.gameboard[0].attributes.getNamedItem("tex").value;
+	}
 	
 	for(var j = 0;j < primref.length;j++){
 		var found = false;
