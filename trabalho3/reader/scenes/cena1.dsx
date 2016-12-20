@@ -9,22 +9,22 @@
     </views>
 
     <cameraAnimations>
-        <cameraAnimation id="p1" span="5" >
+        <cameraAnimation id="p1" span="1" >
             <from x="5.75" y="15" z="-29.5" />
             <to x="31" y="15" z="5.75" />
             <target x="5.75" y="0" z="5.75" />
         </cameraAnimation>
-        <cameraAnimation id="p2" span="5">
+        <cameraAnimation id="p2" span="1">
             <from x="31" y="15" z="5.75" />
             <to x="5.75" y="15" z="31" />
             <target x="5.75" y="0" z="5.75" />
         </cameraAnimation>
-        <cameraAnimation id="p3" span="5">
+        <cameraAnimation id="p3" span="1">
             <from x="5.75" y="15" z="31" />
             <to x="-29.5" y="15" z="5.75" />
             <target x="5.75" y="0" z="5.75" />
         </cameraAnimation>
-        <cameraAnimation id="p4" span="5">
+        <cameraAnimation id="p4" span="1">
             <from x="-29.5" y="15" z="5.75" />
             <to x="5.75" y="15" z="-29.5" />
             <target x="5.75" y="0" z="5.75" />
