@@ -52,10 +52,10 @@ Tile.prototype.display = function(){
         this.scene.rotate(-Math.PI/2, 1, 0, 0);
         if(this.pieces[i].team == 1){
           this.scene.listAppearances[this.pc1].setTexture(this.scene.listTextures[this.ptex].texture);
-					this.scene.listAppearances[this.pc1].apply();
+          this.scene.listAppearances[this.pc1].apply();
         }else{
           this.scene.listAppearances[this.pc2].setTexture(this.scene.listTextures[this.ptex].texture);
-					this.scene.listAppearances[this.pc2].apply();
+          this.scene.listAppearances[this.pc2].apply();
         }
         this.pieces[i].display();
       this.scene.popMatrix();

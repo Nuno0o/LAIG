@@ -26,12 +26,16 @@ MySceneInterface.prototype.processKeyDown = function(event) {
     switch (event.keyCode) 
     {
     	// V
-		case (86): this.scene.cycleCamera(); this.setActiveCamera(this.scene.camera); break;
+		case (86): //this.scene.cycleCamera(); this.setActiveCamera(this.scene.camera); break;
+		{
+			if (!this.scene.cameraAnimationsGo){
+				this.scene.cameraAnimationsGo = true;
+			}
+			if (this.scene.canChangeCamera){
+				this.scene.nextGameCamera();
+			}
+		}
 		// M	
 		case (77): this.scene.cycleMaterials(); break;
-		
-		case (81): makeRequest("quit"); break;
-		
-		case (85): makeRequest("start");break;
 	}
 }

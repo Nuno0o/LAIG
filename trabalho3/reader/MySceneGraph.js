@@ -173,6 +173,64 @@ MySceneGraph.prototype.parsePerspective = function(rootElement){
 }
 
 // --------------------------------------------------------------------------
+// ------------------------ CAMERA ANIMATION PARSING ------------------------
+// --------------------------------------------------------------------------
+
+function ParsedCameraAnimation(cameraAnimation){
+
+	this.id = cameraAnimation.id;
+
+	this.span = parseFloat(cameraAnimation.attributes.getNamedItem("span").value);
+
+	var from = cameraAnimation.getElementsByTagName('from');
+	var to = cameraAnimation.getElementsByTagName('to');
+	var target = cameraAnimation.getElementsByTagName('target');
+
+	//deteção de erros...
+	if (from == null || to == null || target == null){
+		console.log("no from or to or target found in a cameraAnimation!");
+		return null;
+	}
+
+	this.from_x = parseFloat(from[0].attributes.getNamedItem("x").value);
+	this.from_y = parseFloat(from[0].attributes.getNamedItem("y").value);
+	this.from_z = parseFloat(from[0].attributes.getNamedItem("z").value);
+
+	this.to_x = parseFloat(to[0].attributes.getNamedItem("x").value);
+	this.to_y = parseFloat(to[0].attributes.getNamedItem("y").value);
+	this.to_z = parseFloat(to[0].attributes.getNamedItem("z").value);
+
+	this.target_x = parseFloat(target[0].attributes.getNamedItem("x").value);
+	this.target_y = parseFloat(target[0].attributes.getNamedItem("y").value);
+	this.target_z = parseFloat(target[0].attributes.getNamedItem("z").value);
+}
+
+MySceneGraph.prototype.parseCameraAnimations = function(rootElement) {
+	var elems = rootElement.getElementsByTagName('cameraAnimations');
+
+	if(elems.length != 1){
+		return "too many cameraAnimation tags";
+	}
+
+	this.listCameraAnimations = [];
+
+	var nAnimations = elems[0].children.length;
+
+	for (var i = 0; i < nAnimations; i++){
+
+		//get current perspective from the list
+		var curr_anim = elems[0].children[i];
+		//process it
+		this.listCameraAnimations[i] = new ParsedCameraAnimation(curr_anim);
+
+		if(!this.addId(curr_anim.id, "cameraAnimation")){
+			return "Bad Id found: " + curr_anim.id;
+		}
+	}
+
+}
+
+// --------------------------------------------------------------------------
 // --------------------------- ILLUMINATION PARSING -------------------------
 // --------------------------------------------------------------------------
 
@@ -939,6 +997,12 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 
 	this.errMsg = "";
 	this.errMsg = this.parsePerspective(rootElement);
+	if (this.errMsg != null) return this.errMsg;
+
+	// read camera Animations
+
+	this.errMsg = "";
+	this.errMsg = this.parseCameraAnimations(rootElement);
 	if (this.errMsg != null) return this.errMsg;
 
 	// read illumination

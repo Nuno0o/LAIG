@@ -8,6 +8,29 @@
         </perspective>
     </views>
 
+    <cameraAnimations>
+        <cameraAnimation id="p1" span="5" >
+            <from x="5.75" y="15" z="-29.5" />
+            <to x="31" y="15" z="5.75" />
+            <target x="5.75" y="0" z="5.75" />
+        </cameraAnimation>
+        <cameraAnimation id="p2" span="5">
+            <from x="31" y="15" z="5.75" />
+            <to x="5.75" y="15" z="31" />
+            <target x="5.75" y="0" z="5.75" />
+        </cameraAnimation>
+        <cameraAnimation id="p3" span="5">
+            <from x="5.75" y="15" z="31" />
+            <to x="-29.5" y="15" z="5.75" />
+            <target x="5.75" y="0" z="5.75" />
+        </cameraAnimation>
+        <cameraAnimation id="p4" span="5">
+            <from x="-29.5" y="15" z="5.75" />
+            <to x="5.75" y="15" z="-29.5" />
+            <target x="5.75" y="0" z="5.75" />
+        </cameraAnimation>
+    </cameraAnimations>
+
     <illumination doublesided="0" local="0" >
         <ambient r="1" g="1" b="1" a="1" />
         <background r="0" g="0" b="0" a="1" />

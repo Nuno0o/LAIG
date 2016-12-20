@@ -143,12 +143,14 @@ insistOnCorrectPlay(Player, Play, (IvoryStackIn, CigarStackIn, BoardIn),(IvorySt
 
 %%%%%%%%%%%%%%%%%%%%% PLAY CALLING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-play(ivory, (IvoryStackIn,CigarStackIn,BoardIn), false, human, Type) :- 	clr,
+play(ivory, (IvoryStackIn,CigarStackIn,BoardIn), false, human, Type) :- 	
 														checkStack(IvoryStackIn, GameOver),	GameOver == false,
 														checkStack(CigarStackIn, GameOver),	GameOver == false,
 														\+ printFancyBoard(IvoryStackIn,CigarStackIn,BoardIn),
 														write(ivory), write(' turn!'), nl,
-														insistOnCorrectPlay(ivory, _, (IvoryStackIn, CigarStackIn, BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOverNew),
+														insistOnCorrectPlay(ivory, Play, (IvoryStackIn, CigarStackIn, BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOverNew),
+														writeBotPlay(Play),
+														get_code(_), get_code(_),
 														play(cigar, (IvoryStackOut,CigarStackOut,BoardOut), GameOverNew, Type, human).
 play(ivory, (IvoryStackIn,CigarStackIn,BoardIn), false, botDif1, Type) :- 	clr,
 														checkStack(IvoryStackIn, GameOver),	GameOver == false,
@@ -168,12 +170,14 @@ play(ivory, (IvoryStackIn,CigarStackIn,BoardIn), false, botDif2, Type) :- 	clr,
 														writeBotPlay(Play),
 														get_code(_), get_code(_),
 														play(cigar, (IvoryStackOut,CigarStackOut,BoardOut), GameOverNew, Type, botDif2).												
-play(cigar, (IvoryStackIn,CigarStackIn,BoardIn), false, human, Type) :- 	clr,
+play(cigar, (IvoryStackIn,CigarStackIn,BoardIn), false, human, Type) :- 	
 														checkStack(IvoryStackIn, GameOver), GameOver == false,
 														checkStack(CigarStackIn, GameOver),	GameOver == false,
 														\+ printFancyBoard(IvoryStackIn,CigarStackIn,BoardIn),
 														write(cigar), write(' turn!'), nl,
-														insistOnCorrectPlay(cigar, _, (IvoryStackIn, CigarStackIn, BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOverNew),
+														insistOnCorrectPlay(cigar, Play, (IvoryStackIn, CigarStackIn, BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOverNew),
+														writeBotPlay(Play),
+														get_code(_), get_code(_),
 														play(ivory, (IvoryStackOut,CigarStackOut,BoardOut), GameOverNew, Type, human).
 play(cigar, (IvoryStackIn,CigarStackIn,BoardIn), false, botDif1, Type) :- 	clr,
 														checkStack(IvoryStackIn, GameOver), GameOver == false,

@@ -111,6 +111,29 @@ XMLscene.prototype.cycleCamera = function() {
 	this.camera = this.listCameras[this.currentCamera];
 }
 
+// ----------------- CAMERA ANIMATIONS --------------------
+
+XMLscene.prototype.initCameraAnimations = function(){
+
+	this.cameraAnimations = [];
+
+	for (var i = 0; i < this.graph.listCameraAnimations.length; i++){
+		this.cameraAnimations[i] = new CameraAnimation(this.graph.listCameraAnimations[i]);
+	}
+
+}
+
+XMLscene.prototype.nextGameCamera = function(){
+	var nGameCameras = this.cameraAnimations.length;
+	if (this.currentGameCamera < 0) {
+		this.currentGameCamera = 0;
+		return;
+	}
+	this.cameraAnimations[this.currentGameCamera].reset();
+	this.currentGameCamera++;
+	if (this.currentGameCamera >= nGameCameras) this.currentGameCamera = 0;
+}
+
 // ------------------ LIGHTS ------------------------
 
 XMLscene.prototype.initGraphLights = function(){
@@ -661,7 +684,8 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.currTime = -1;
 	this.activeMat = 0;
 	this.currentCamera = 0;
-	
+
+	this.currentGameCamera = -1;
 	this.hasGameboard = false;
 
 	this.enableTextures(true);
@@ -672,6 +696,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.initGraphGlobalLighting();
 	this.initGraphAxis();
 	this.initGraphCameras();
+	this.initCameraAnimations();
 	this.initAppearances();
 	this.initTextures();
 	this.initGraphLights();
@@ -680,9 +705,18 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.initPrimitives();
 	this.initComponents();
 
+	this.cameraAnimationsGo = false;
+	this.canChangeCamera = true;
+
 	if (this.hasGameboard){
 		this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize,this.gameboard_c1,this.gameboard_c2,this.gameboard_tex,this.gameboard_pc1,this.gameboard_pc2,this.gameboard_ptex);
 		this.prologinput = new PrologInput();
+	}
+
+	// setup default camera
+	if(this.cameraAnimations.length > 0){
+		this.camera.setPosition(this.cameraAnimations[0].from);
+		this.camera.setTarget(this.cameraAnimations[0].target);
 	}
 
 };
@@ -769,6 +803,20 @@ XMLscene.prototype.updatePrimitivesTranslations = function(frameDiff){
 	}
 }
 
+XMLscene.prototype.updateGameCameras = function(frameDiff){
+	this.cameraAnimations[this.currentGameCamera].update(frameDiff);
+
+	this.camera.setPosition(this.cameraAnimations[this.currentGameCamera].getCurrentPosition());
+	this.camera.setTarget(this.cameraAnimations[this.currentGameCamera].target);
+
+	if (this.cameraAnimations[this.currentGameCamera].isDone){
+		this.canChangeCamera = true;
+	}
+	else this.canChangeCamera = false;
+
+}
+
+
 XMLscene.prototype.update = function(currTime){
 	// Update all animated objects.
 	if (this.graph.loadedOk){
@@ -776,6 +824,9 @@ XMLscene.prototype.update = function(currTime){
 		this.runAnimations(this.frameDiff);
 		this.updatePrimitivesTranslations(this.frameDiff);
 		this.updatePrimitivesRotations(this.frameDiff);
+
+		if (this.cameraAnimationsGo)
+			this.updateGameCameras(this.frameDiff);
 	}
 }
 
