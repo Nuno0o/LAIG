@@ -682,6 +682,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 
 	if (this.hasGameboard){
 		this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize,this.gameboard_c1,this.gameboard_c2,this.gameboard_tex,this.gameboard_pc1,this.gameboard_pc2,this.gameboard_ptex);
+		this.prologinput = new PrologInput();
 	}
 
 };
@@ -785,8 +786,10 @@ XMLscene.prototype.logPicking = function (){
 				var obj = this.pickResults[i][0];
 				if (obj)
 				{
-					var customId = this.pickResults[i][1];				
-					console.log("Picked object: " + obj + ", with pick id " + customId);
+					var customId = this.pickResults[i][1];	
+					console.log(customId);
+					this.gameboard.setSelected(customId);
+					this.prologinput.changeSelected(customId);
 					this.pressedId = customId;
 				}
 			}

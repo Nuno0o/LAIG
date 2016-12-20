@@ -8,6 +8,7 @@ function MyPrimSkybox(scene,size) {
 MyPrimSkybox.prototype.constructor=MyPrimSkybox;
 
 MyPrimSkybox.prototype.display = function(){
+     this.scene.registerForPick(144, this.rect);
     //front
      this.scene.pushMatrix();
         this.scene.translate(0,0,this.size/2);

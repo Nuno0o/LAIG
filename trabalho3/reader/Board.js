@@ -19,6 +19,14 @@ function Board(scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex){
 	this.dimX = dimX;
 	this.dimY = dimY;
 
+	this.selectedTile = 144;
+
+	this.team1aux = new AuxBoard(scene);
+	this.team2aux = new AuxBoard(scene);
+
+	this.currPlayer = 1;
+	this.currTurn = 1;
+
 	// The board's tile set.
 	this.tiles = [];
 	this.initTiles();
@@ -30,18 +38,10 @@ function Board(scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex){
 Board.prototype.constructor = Board;
 
 /*
-	Method to set the board's tiles.
+	Get a specific tile
 */
-Board.prototype.setTiles = function(tiles){
-	this.tiles = tiles;
-}
-
-/*
-	Method to get the board's tiles.
-*/
-
-Board.prototype.getTiles = function(){
-	return this.tiles;
+Board.prototype.getTile = function(x,y){
+	return this.tiles[y*this.dimX + x];
 }
 
 /*
@@ -55,21 +55,28 @@ Board.prototype.initTiles = function(){
 	}
 }
 
-/*
-	Method to get the board's number of columns.
-*/
+Board.prototype.nextTurn = function(){
+	if(this.currPlayer == 1){
+		this.currPlayer = 2;
+	}else this.currPlayer = 1;
 
-Board.prototype.getDimX = function(){
-	return this.dimX;
+	this.currTurn++;
 }
 
-/*
-	Method to set the board's number of lines.
-*/
-
-Board.prototype.getDimY = function(){
-	return this.dimY;
+Board.prototype.initPieces = function(){
+	var tile1 = this.getTile(5,0);
+	var tile2 = this.getTile(6,11);
+	for(var i = 0 ; i < 20;i++){
+		tile1.addPiece(new Piece(this.scene,"piece",1));
+		tile2.addPiece(new Piece(this.scene,"piece",2));
+	}
 }
+
+Board.prototype.removePiece = function(x,y){
+	var tile = this.getTile(x,y);
+	var piece = tile.pieces[tile.pieces.length-1];
+}
+
 
 Board.prototype.display = function(){
 	for (var y = 0; y < this.dimY; y++){
@@ -81,7 +88,16 @@ Board.prototype.display = function(){
 				}else{
 					this.scene.listAppearances[this.c2].setTexture(this.scene.listTextures[this.tex].texture);
 					this.scene.listAppearances[this.c2].apply();
-			}
+				}
+				if(this.selectedTile == y*this.dimY + x){
+					if(this.currPlayer == 1){
+						this.scene.listAppearances[this.pc1].setTexture(this.scene.listTextures[this.tex].texture);
+						this.scene.listAppearances[this.pc1].apply();
+					}else{
+						this.scene.listAppearances[this.pc2].setTexture(this.scene.listTextures[this.tex].texture);
+						this.scene.listAppearances[this.pc2].apply();
+					}
+				}
 				this.scene.translate(this.tileSize * x, 0, this.tileSize * y);
 				this.tiles[y*this.dimX + x].display();
 			this.scene.popMatrix();
@@ -101,60 +117,10 @@ function GameBoard (scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex) {
 
 	// board element
 	this.board = new Board(scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex);
+	this.board.initPieces();
 
 }
 
-/*
-	Method to get the game board's tiles.
-*/
-
-GameBoard.prototype.getTiles = function(){
-	return this.board.tiles;
-}
-
-/*
-	Method to get the game board's number of rows.
-*/
-
-GameBoard.prototype.getDimY = function(){
-	return this.board.dimY;
-}
-
-/*
-	Method to get the game board's number of columns.
-*/
-
-GameBoard.prototype.getDimX = function(){
-	return this.board.dimX;
-}
-
-/*
-	Method to set the game board's tiles.
-*/
-
-GameBoard.prototype.setTiles = function(tiles){
-	this.board.setTiles(tiles);
-}
-
-/*
-	Method to get a specific tile.
-*/
-
-GameBoard.prototype.getTile = function(col, row){
-	var index = this.board.dimY * row + col;
-	return this.board.tiles[index];
-}
-
-/*
-	Method to set a specific tile.
-*/
-
-GameBoard.prototype.setTile = function(col, row, tile){
-	
-	var gotTile = this.getTile(col, row);
-	
-	gotTile = tile;
-}
 
 /*
 	Method to move a piece from a position to a target.
@@ -168,6 +134,9 @@ GameBoard.prototype.move = function(oldCol, oldRow, newCol, newRow){
 	currentTile.piece.moveToTile(targetTile);
 }
 
+GameBoard.prototype.setSelected = function(ind){
+	this.board.selectedTile = ind;
+}
 /*
 	Method to display the board.
 */
@@ -184,67 +153,17 @@ GameBoard.prototype.display = function(){
 	Element representing an auxiliary board.
 */
 
-function AuxBoard (scene, dimX, dimY, tileSize) {
+function AuxBoard (scene) {
 
+	this.scene = scene;
 	// board element
-	this.board = new Board(scene, dimX, dimY);
+	this.pieces = [];
 }
 
-/*
-	Method to get an auxiliary board's tiles.
-*/
-
-AuxBoard.prototype.getTiles = function(){
-	return this.board.tiles;
+AuxBoard.prototype.addPiece = function(piece){
+	this.pieces.push(piece);
 }
 
-/*
-	Method to get an auxiliary board's number of rows.
-*/
-
-AuxBoard.prototype.getDimY = function(){
-	return this.board.dimY;
-}
-
-/*
-	Method to get an auxiliary board's number of columns.
-*/
-
-AuxBoard.prototype.getDimX = function(){
-	return this.board.dimX;
-}
-
-/*
-	Method to set an auxiliary board's tiles.
-*/
-
-AuxBoard.prototype.setTiles = function(tiles){
-	this.board.setTiles(tiles);
-}
-
-/*
-	Method to get a specific tile.
-*/
-
-AuxBoard.prototype.getTile = function(col, row){
-	var index = this.board.dimY * row + col;
-	return this.board.tiles[index];
-}
-
-/*
-	Method to set a specific tile.
-*/
-
-AuxBoard.prototype.setTile = function(col, row, tile){
-	
-	var gotTile = this.getTile(col, row);
-	
-	gotTile = tile;
-}
-
-/*
-	Method to display the board.
-*/
 
 AuxBoard.prototype.display = function(){
 	this.board.display();

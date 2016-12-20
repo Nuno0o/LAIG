@@ -11,7 +11,6 @@ function Tile(scene, board, size, id,pc1,pc2,ptex){
 
   // The piece on the tile. If there's a piece, point to it. Else null;
   this.pieces = [];
-  this.addPiece(new Piece(scene,"piece",1));
   // The physical representation of the tile
   this.size = size;
 
@@ -49,7 +48,7 @@ Tile.prototype.display = function(){
     //console.log(this.pieces.size);
     for(var i = 0;i < this.pieces.length;i++){
       this.scene.pushMatrix();
-        this.scene.translate(0,0.15*i,0);
+        this.scene.translate(0,0.16*i,0);
         this.scene.rotate(-Math.PI/2, 1, 0, 0);
         if(this.pieces[i].team == 1){
           this.scene.listAppearances[this.pc1].setTexture(this.scene.listTextures[this.ptex].texture);
