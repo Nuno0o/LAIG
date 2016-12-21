@@ -70,6 +70,8 @@ Board.prototype.initPieces = function(){
 		tile1.addPiece(new Piece(this.scene,"piece",1));
 		tile2.addPiece(new Piece(this.scene,"piece",2));
 	}
+
+	console.log(this.convertToPrologBoard());
 }
 
 Board.prototype.removePiece = function(x,y){
@@ -105,6 +107,41 @@ Board.prototype.display = function(){
 	}
 		
 }
+
+Board.prototype.convertToPrologBoard = function() {
+	var boardString = "[";
+	for (var y = 0; y < 12; y++){
+		var row = "[";
+		for (var x = 0; x < 12; x++){
+			var toAppend = "";
+			if (this.tiles[y*12 + x].pieces.length == 0){
+				toAppend = "empty";
+			}
+			else if (this.tiles[y*12 + x].pieces.length == 1){
+				if (this.tiles[y*12 + x].pieces[0].team == 1){
+					toAppend = "ivoryBaby";
+				}
+				else toAppend = "cigarBaby";
+			}
+			else {
+				if (this.tiles[y*12 + x].pieces[0].team == 1){
+					toAppend = "ivoryQueen";
+				}
+				else toAppend = "cigarQueen";
+			}
+			if (x != 11) toAppend = toAppend + ",";
+
+			row = row + toAppend;
+		}
+		row = row + "]";
+		if ( y != 11) row = row + ",";
+
+		boardString = boardString + row;
+	}
+	boardString = boardString + "]";
+	return boardString;
+}
+
 // -----------------------------------------------------------------------------
 // ------------------------------ GAME BOARD -----------------------------------
 // -----------------------------------------------------------------------------

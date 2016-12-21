@@ -40,3 +40,9 @@ PrologInput.prototype.changeSelected = function(ind){
         console.log("coords para prolog");
     }
 }
+
+PrologInput.prototype.convertTileToCoords = function(tileID){
+	var y = Math.floor(tileID / 12);
+	var x = tileID % 12;
+	return [x, y]; 
+}
