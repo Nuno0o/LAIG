@@ -158,24 +158,65 @@ function GameBoard (scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex) {
 
 
 /*
-	Method to move a piece from a position to a target.
+	Changes the currently selected tyle
 */
-
-GameBoard.prototype.move = function(oldCol, oldRow, newCol, newRow){
-	
-	var currentTile = this.getTile(oldCol, oldRow);
-	var targetTile = this.getTile(newCol, newRow);
-	
-	currentTile.piece.moveToTile(targetTile);
-}
-
 GameBoard.prototype.setSelected = function(ind){
 	this.board.selectedTile = ind;
 }
 /*
+	Move
+*/
+GameBoard.prototype.move = function(indi,indf){
+	var originTile = this.board.tiles[indi];
+	var destTile = this.board.tiles[indf];
+	if(originTile.pieces.length == 0)
+		return;
+	
+	if(destTile.pieces.length > 1){
+		removePieces(indf);
+	}
+	if(originTile.pieces.length == 1){
+		destTile.pieces = originTile.pieces;
+		originTile.pieces = [];
+	}else{
+		var piecesToMove = originTile.pieces;
+		var pieceToStay = originTile.pieces;
+		piecesToMove.splice(0,1);
+		pieceToStay.splice(1,piecesToStay.length-1);
+		destTile.pieces = piecesToMove;
+		originTile.pieces = piecesToStay;
+	}
+}
+
+GameBoard.prototype.removePieces = function(ind){
+	var tile = this.board.tiles[ind];
+	if(tile.pieces.length == 0)
+		return;
+
+	if(tile.pieces[0].team == 1){
+		this.team1aux.pieces.concat(tile.pieces);
+	}else{
+		this.team2aux.pieces.concat(tile.pieces);
+	}
+	tile.pieces = [];
+}
+
+GameBaord.prototype.reAddPieces = function(ind,npieces,team){
+	var tile = this.board.tiles[ind];
+	var aux;
+	if(team == 1){
+		aux = this.team1aux;
+	}else{
+		aux = this.team2aux;
+	}
+	var piecesToReAdd = aux.pieces.slice(npieces);
+	tile.pieces = piecesToReAdd;
+	aux.pieces.splice(-npieces);
+}
+
+/*
 	Method to display the board.
 */
-
 GameBoard.prototype.display = function(){
 	this.board.display();
 }
