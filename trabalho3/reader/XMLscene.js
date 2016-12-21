@@ -803,6 +803,17 @@ XMLscene.prototype.updatePrimitivesTranslations = function(frameDiff){
 	}
 }
 
+XMLscene.prototype.switchGameCamera = function(){
+	if (!this.cameraAnimationsGo){
+		this.cameraAnimationsGo = true;
+	}
+	if (this.canChangeCamera){
+		this.nextGameCamera();
+	}
+}
+
+
+
 XMLscene.prototype.updateGameCameras = function(frameDiff){
 	this.cameraAnimations[this.currentGameCamera].update(frameDiff);
 

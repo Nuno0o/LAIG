@@ -8,7 +8,9 @@ MySceneInterface.prototype.constructor = MySceneInterface;
 MySceneInterface.prototype.init = function(application) {
     CGFinterface.prototype.init.call(this, application);
 	
-	this.gui = new dat.GUI();
+	this.gui = new dat.GUI( {autoplace: false, width: 300 });
+
+	this.gui.add(this.scene, 'switchGameCamera');
 	
     return true;
 };
@@ -28,12 +30,7 @@ MySceneInterface.prototype.processKeyDown = function(event) {
     	// V
 		case (86): //this.scene.cycleCamera(); this.setActiveCamera(this.scene.camera); break;
 		{
-			if (!this.scene.cameraAnimationsGo){
-				this.scene.cameraAnimationsGo = true;
-			}
-			if (this.scene.canChangeCamera){
-				this.scene.nextGameCamera();
-			}
+			this.scene.switchGameCamera();
 		}
 		// M	
 		case (77): this.scene.cycleMaterials(); break;
