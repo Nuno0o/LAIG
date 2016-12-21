@@ -72,11 +72,6 @@ Board.prototype.initPieces = function(){
 	}
 }
 
-Board.prototype.removePiece = function(x,y){
-	var tile = this.getTile(x,y);
-	var piece = tile.pieces[tile.pieces.length-1];
-}
-
 
 Board.prototype.display = function(){
 	for (var y = 0; y < this.dimY; y++){
@@ -153,7 +148,6 @@ function GameBoard (scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex) {
 	// board element
 	this.board = new Board(scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex);
 	this.board.initPieces();
-
 }
 
 
@@ -173,18 +167,18 @@ GameBoard.prototype.move = function(indi,indf){
 		return;
 	
 	if(destTile.pieces.length > 1){
-		removePieces(indf);
+		this.removePieces(indf);
 	}
 	if(originTile.pieces.length == 1){
 		destTile.pieces = originTile.pieces;
 		originTile.pieces = [];
 	}else{
-		var piecesToMove = originTile.pieces;
-		var pieceToStay = originTile.pieces;
+		var piecesToMove = originTile.pieces.slice(0);
+		var pieceToStay = originTile.pieces.slice(0);
 		piecesToMove.splice(0,1);
-		pieceToStay.splice(1,piecesToStay.length-1);
+		pieceToStay.splice(1,pieceToStay.length-1);
 		destTile.pieces = piecesToMove;
-		originTile.pieces = piecesToStay;
+		originTile.pieces = pieceToStay;
 	}
 }
 
@@ -194,22 +188,22 @@ GameBoard.prototype.removePieces = function(ind){
 		return;
 
 	if(tile.pieces[0].team == 1){
-		this.team1aux.pieces.concat(tile.pieces);
+		this.board.team1aux.pieces = this.board.team1aux.pieces.concat(tile.pieces);
 	}else{
-		this.team2aux.pieces.concat(tile.pieces);
+		this.board.team2aux.pieces = this.board.team2aux.pieces.concat(tile.pieces);
 	}
 	tile.pieces = [];
 }
 
-GameBaord.prototype.reAddPieces = function(ind,npieces,team){
+GameBoard.prototype.reAddPieces = function(ind,npieces,team){
 	var tile = this.board.tiles[ind];
 	var aux;
 	if(team == 1){
-		aux = this.team1aux;
+		aux = this.board.team1aux;
 	}else{
-		aux = this.team2aux;
+		aux = this.board.team2aux;
 	}
-	var piecesToReAdd = aux.pieces.slice(npieces);
+	var piecesToReAdd = aux.pieces.slice(-npieces);
 	tile.pieces = piecesToReAdd;
 	aux.pieces.splice(-npieces);
 }
