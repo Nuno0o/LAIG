@@ -856,7 +856,7 @@ XMLscene.prototype.display = function () {
 	this.updateProjectionMatrix();
     this.loadIdentity();
 	this.applyViewMatrix();
-	this.axis.display();
+	
 	this.setDefaultAppearance();
 
 	if (this.graph.loadedOk)
