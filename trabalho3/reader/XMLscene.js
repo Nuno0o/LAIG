@@ -710,7 +710,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 
 	if (this.hasGameboard){
 		this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize,this.gameboard_c1,this.gameboard_c2,this.gameboard_tex,this.gameboard_pc1,this.gameboard_pc2,this.gameboard_ptex);
-		this.prologinput = new PrologInput();
+		this.prologinput = new PrologInput(this.gameboard);
 	}
 
 	// setup default camera

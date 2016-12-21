@@ -104,8 +104,11 @@ print_header_line(_).
 % Require your Prolog Files here
 :- ['proj_1.pl'].
 
-parse_input(makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver)) :-
-	makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOver).
+parse_input(makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success)) :-
+	makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOver),
+	Success = true.
+parse_input(makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success)) :-
+	IvoryStackOut = IvoryStack, CigarStackOut = CigarStack, GameOver = false, Success = false.
 
 parse_input(quit, goodbye).
 

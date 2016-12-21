@@ -36,12 +36,6 @@ MySceneInterface.prototype.processKeyDown = function(event) {
 		// M	
 		case (77): this.scene.cycleMaterials(); break;
 
-		case (78): {
-			var board = "[[empty,empty,empty,empty,empty,ivoryQueen,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty,empty],[empty,empty,empty,empty,empty,empty,cigarQueen,empty,empty,empty,empty,empty]]";
-			makeRequest("makePlay((ivory,5,0,4,0),(20,20,"+board+"))");
-			break;
-		}
-
 		case (81): {
 			makeRequest("quit");
 			break;

@@ -70,8 +70,6 @@ Board.prototype.initPieces = function(){
 		tile1.addPiece(new Piece(this.scene,"piece",1));
 		tile2.addPiece(new Piece(this.scene,"piece",2));
 	}
-
-	console.log(this.convertToPrologBoard());
 }
 
 Board.prototype.removePiece = function(x,y){
