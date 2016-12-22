@@ -157,6 +157,15 @@ function GameBoard (scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex) {
 GameBoard.prototype.setSelected = function(ind){
 	this.board.selectedTile = ind;
 }
+
+GameBoard.prototype.getQueenSize = function(team){
+	var size = 0;
+	for(var i = 0;i < this.board.tiles.length;i++){
+		if(this.board.tiles[i].pieces.length > 1 && this.board.tiles[i].pieces[0].team == team && this.board.tiles[i].pieces.length > size)
+			size = this.board.tiles[i].pieces.length;
+	}
+	return size;
+}
 /*
 	Move
 */

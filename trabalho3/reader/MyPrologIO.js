@@ -48,6 +48,9 @@ PrologInput.prototype.changeSelected = function(ind){
         var board = this.gameboard.board.convertToPrologBoard();
         var player = this.getCurrentPlayer(this.gameboard.board.currPlayer);
 
+        var team1queen = this.gameboard.getQueenSize(1);
+        var team2queen = this.gameboard.getQueenSize(2);
+
         // TODO: GET STACKS AND SEND THEM
 		makeRequest("makePlay(("+player+","+convertedXY[0]+","+convertedXY[1]+","+convertedTarget[0]+","+convertedTarget[1]+"),(20,20,"+board+"))");
     }
