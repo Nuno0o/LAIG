@@ -1,35 +1,9 @@
-function getPrologRequest(requestString, onSuccess, onError, port) {
-    var requestPort = port || 8081  
-    var request = new XMLHttpRequest();
-    request.open('GET', 'http://localhost:' + requestPort + '/' + requestString, true);
+// --------------------------------------------------------------------------------------
 
-    request.onload = onSuccess || function (data) { 
-        console.log("Request successful. Reply: " + data.target.response); 
-    };
-    request.onerror = onError || function () { 
-        console.log("Error waiting for response"); 
-    };
-
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-    request.send();
-}
-
-function makeRequest(requestString) {
-    // Make Request
-    console.log(requestString);
-    getPrologRequest(requestString, handleReply);
-}
-
-//Handle the Reply
-function handleReply(data) {
-	if (data.target.response == "Bad Request") return;
-    console.log(data.target.response);
-    //document.querySelector("#query_result").innerHTML = data.target.response;
-}
-
-function PrologInput(gameboard){
+function PrologInput(scene){
     this.selectedTile = [];
-    this.gameboard = gameboard;
+    this.scene = scene;
+    this.gameboard = this.scene.gameboard;
 }
 
 PrologInput.prototype.constructor = PrologInput;
@@ -48,8 +22,11 @@ PrologInput.prototype.changeSelected = function(ind){
         var board = this.gameboard.board.convertToPrologBoard();
         var player = this.getCurrentPlayer(this.gameboard.board.currPlayer);
 
-        // TODO: GET STACKS AND SEND THEM
-		makeRequest("makePlay(("+player+","+convertedXY[0]+","+convertedXY[1]+","+convertedTarget[0]+","+convertedTarget[1]+"),(20,20,"+board+"))");
+        var team1queen = this.gameboard.getQueenSize(1);
+        var team2queen = this.gameboard.getQueenSize(2);
+
+        var request = new Request(player, convertedXY[0], convertedXY[1], convertedTarget[0], convertedTarget[1], team1queen, team2queen, board);
+		this.makeRequest(request);
     }
 }
 
@@ -64,3 +41,75 @@ PrologInput.prototype.convertTileToCoords = function(tileID){
 	var x = tileID % 12;
 	return [x, y]; 
 }
+
+PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onError, port) {
+
+    var requestString = requestObject.getRequestString();
+
+    var requestPort = port || 8081  
+    var request = new XMLHttpRequest();
+
+    var prologInput = this;
+
+    request.open('GET', 'http://localhost:' + requestPort + '/' + requestString, true);
+
+    request.onload = onSuccess || function (data) { 
+        console.log("Request successful. Reply: " + data.target.response); 
+        var response = data.target.response;
+        if (getSuccessFromReply(response) == true) {
+            prologInput.scene.playStack.push(new Play(requestObject.player, requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY));
+            prologInput.gameboard.board.nextTurn();
+        }
+    };
+    request.onerror = onError || function () { 
+        console.log("Error waiting for response"); 
+    };
+
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    request.send();
+
+    return request;
+}
+
+PrologInput.prototype.makeRequest = function(request){
+    this.getPrologRequest(request);
+}
+
+PrologInput.prototype.handleReply = function(data){
+    if (data.target.response == "Bad Request") return;
+}
+
+// ------------------------------------------------------------------------------------
+
+getSuccessFromReply = function(replyString){
+    var replyArray = replyString.split(',');
+    if (replyArray[3] == "true") return true;
+    return false;
+}
+
+function Request(Player, X, Y, TargetX, TargetY, IvoryStackIn, CigarStackIn, Board){
+    this.player = Player;
+    this.x = X;
+    this.y = Y;
+    this.targetX = TargetX;
+    this.targetY = TargetY;
+    this.iIn = IvoryStackIn;
+    this.cIn = CigarStackIn;
+    this.board = Board;
+}
+
+Request.prototype.constructor = Request;
+
+Request.prototype.getRequestString = function(){
+    return "makePlay(("+this.player+","+this.x+","+this.y+","+this.targetX+","+this.targetY+"),("+this.iIn+","+this.cIn+","+this.board+"))";
+}
+
+function Play(Player,X,Y,TargetX,TargetY){
+    this.player = Player;
+    this.x = X;
+    this.y = Y;
+    this.targetX = TargetX;
+    this.targetY = TargetY;
+}
+
+Play.prototype.constructor = Play;

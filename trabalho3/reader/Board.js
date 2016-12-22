@@ -72,11 +72,6 @@ Board.prototype.initPieces = function(){
 	}
 }
 
-Board.prototype.removePiece = function(x,y){
-	var tile = this.getTile(x,y);
-	var piece = tile.pieces[tile.pieces.length-1];
-}
-
 
 Board.prototype.display = function(){
 	for (var y = 0; y < this.dimY; y++){
@@ -153,29 +148,78 @@ function GameBoard (scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex) {
 	// board element
 	this.board = new Board(scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex);
 	this.board.initPieces();
-
 }
 
 
 /*
-	Method to move a piece from a position to a target.
+	Changes the currently selected tyle
 */
-
-GameBoard.prototype.move = function(oldCol, oldRow, newCol, newRow){
-	
-	var currentTile = this.getTile(oldCol, oldRow);
-	var targetTile = this.getTile(newCol, newRow);
-	
-	currentTile.piece.moveToTile(targetTile);
-}
-
 GameBoard.prototype.setSelected = function(ind){
 	this.board.selectedTile = ind;
 }
+
+GameBoard.prototype.getQueenSize = function(team){
+	var size = 0;
+	for(var i = 0;i < this.board.tiles.length;i++){
+		if(this.board.tiles[i].pieces.length > 1 && this.board.tiles[i].pieces[0].team == team && this.board.tiles[i].pieces.length > size)
+			size = this.board.tiles[i].pieces.length;
+	}
+	return size;
+}
+/*
+	Move
+*/
+GameBoard.prototype.move = function(indi,indf){
+	var originTile = this.board.tiles[indi];
+	var destTile = this.board.tiles[indf];
+	if(originTile.pieces.length == 0)
+		return;
+	
+	if(destTile.pieces.length > 1){
+		this.removePieces(indf);
+	}
+	if(originTile.pieces.length == 1){
+		destTile.pieces = originTile.pieces;
+		originTile.pieces = [];
+	}else{
+		var piecesToMove = originTile.pieces.slice(0);
+		var pieceToStay = originTile.pieces.slice(0);
+		piecesToMove.splice(0,1);
+		pieceToStay.splice(1,pieceToStay.length-1);
+		destTile.pieces = piecesToMove;
+		originTile.pieces = pieceToStay;
+	}
+}
+
+GameBoard.prototype.removePieces = function(ind){
+	var tile = this.board.tiles[ind];
+	if(tile.pieces.length == 0)
+		return;
+
+	if(tile.pieces[0].team == 1){
+		this.board.team1aux.pieces = this.board.team1aux.pieces.concat(tile.pieces);
+	}else{
+		this.board.team2aux.pieces = this.board.team2aux.pieces.concat(tile.pieces);
+	}
+	tile.pieces = [];
+}
+
+GameBoard.prototype.reAddPieces = function(ind,npieces,team){
+	var tile = this.board.tiles[ind];
+	var aux;
+	if(team == 1){
+		aux = this.board.team1aux;
+	}else{
+		aux = this.board.team2aux;
+	}
+	var piecesToReAdd = aux.pieces.slice(-npieces);
+	tile.pieces = piecesToReAdd;
+	aux.pieces.splice(-npieces);
+}
+
 /*
 	Method to display the board.
 */
-
 GameBoard.prototype.display = function(){
 	this.board.display();
 }
