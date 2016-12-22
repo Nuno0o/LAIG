@@ -5,24 +5,24 @@
 /*
 	Element representing a board.
 */
-function Board(scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex){
+function Board(scene, dimX, dimY, tileSize){
 
 	this.scene = scene;
 	this.tileSize = tileSize;
-	this.c1 = c1;
-	this.c2 = c2;
-	this.tex = tex;
-	this.pc1 = pc1;
-	this.pc2 = pc2;
-	this.ptex = ptex;
+	this.c1 = scene.gameboard_c1;
+	this.c2 = scene.gameboard_c2;
+	this.tex = scene.gameboard_tex;
+	this.pc1 = scene.gameboard_pc1;
+	this.pc2 = scene.gameboard_pc2;
+	this.ptex = scene.gameboard_ptex;
 	// The board's dimensions.
 	this.dimX = dimX;
 	this.dimY = dimY;
 
 	this.selectedTile = 144;
 
-	this.team1aux = new AuxBoard(scene);
-	this.team2aux = new AuxBoard(scene);
+	this.team1aux = new AuxBoard(scene,1);
+	this.team2aux = new AuxBoard(scene,2);
 
 	this.currPlayer = 1;
 	this.currTurn = 1;
@@ -98,6 +98,16 @@ Board.prototype.display = function(){
 			this.scene.popMatrix();
 		}
 	}
+	this.scene.pushMatrix();
+		this.scene.translate(-2,0,0);
+		this.scene.rotate(Math.PI/2,1,0,0);
+		this.team1aux.display();
+	this.scene.popMatrix();
+	this.scene.pushMatrix();
+		this.scene.translate(2+(this.tileSize*(this.dimX-1)),0,(this.tileSize*(this.dimY-1)));
+		this.scene.rotate(Math.PI/2,1,0,0);
+		this.team2aux.display();
+	this.scene.popMatrix();
 		
 }
 
@@ -146,8 +156,9 @@ Board.prototype.convertToPrologBoard = function() {
 function GameBoard (scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex) {
 
 	// board element
-	this.board = new Board(scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex);
+	this.board = new Board(scene, dimX, dimY, tileSize);
 	this.board.initPieces();
+	this.removePieces(5);
 }
 
 
@@ -232,11 +243,27 @@ GameBoard.prototype.display = function(){
 	Element representing an auxiliary board.
 */
 
-function AuxBoard (scene) {
+function AuxBoard (scene,team) {
 
 	this.scene = scene;
+	this.team = team;
+
+	this.tex = this.scene.gameboard_tex;
+	this.ptex = this.scene.gameboard_ptex;
+
+	if(this.team == 1){
+		this.c = this.scene.gameboard_c1;
+		this.pc = this.scene.gameboard_pc1;
+	}else{
+		this.c = this.scene.gameboard_c2;
+		this.pc = this.scene.gameboard_pc2;
+	}
+
+	
 	// board element
 	this.pieces = [];
+
+	this.cup = new Cup(scene);
 }
 
 AuxBoard.prototype.addPiece = function(piece){
@@ -245,5 +272,21 @@ AuxBoard.prototype.addPiece = function(piece){
 
 
 AuxBoard.prototype.display = function(){
-	this.board.display();
+	this.scene.listAppearances[this.c].setTexture(this.scene.listTextures[this.tex].texture);
+	this.scene.listAppearances[this.c].apply();
+	this.cup.display();
+	for(var i = 0;i < this.pieces.length;i++){
+      this.scene.pushMatrix();
+        this.scene.translate(0,0,-0.16-0.16*i);
+        this.scene.rotate(-Math.PI/2, 0, 0, 1);
+        if(this.pieces[i].team == 1){
+          this.scene.listAppearances[this.pc].setTexture(this.scene.listTextures[this.ptex].texture);
+          this.scene.listAppearances[this.pc].apply();
+        }else{
+          this.scene.listAppearances[this.pc].setTexture(this.scene.listTextures[this.ptex].texture);
+          this.scene.listAppearances[this.pc].apply();
+        }
+        this.pieces[i].display();
+      this.scene.popMatrix();
+    }
 }

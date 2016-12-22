@@ -689,7 +689,7 @@ XMLscene.prototype.makePlay = function(pushPlay, play){
 XMLscene.prototype.resetGame = function(){
 
 	this.playStack = [];
-	this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize,this.gameboard_c1,this.gameboard_c2,this.gameboard_tex,this.gameboard_pc1,this.gameboard_pc2,this.gameboard_ptex);
+	this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize);
 	this.prologinput = new PrologInput(this);
 
 }
@@ -698,7 +698,7 @@ XMLscene.prototype.undo = function(){
 
 	this.playStack.pop();
 
-	this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize,this.gameboard_c1,this.gameboard_c2,this.gameboard_tex,this.gameboard_pc1,this.gameboard_pc2,this.gameboard_ptex);
+	this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize);
 	this.prologinput = new PrologInput(this);
 
 	if (this.playStack.length == 0) return;
