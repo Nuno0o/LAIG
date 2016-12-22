@@ -44,7 +44,10 @@ PrologInput.prototype.convertTileToCoords = function(tileID){
 
 PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onError, port) {
 
-    var requestString = requestObject.getRequestString();
+    if(requestObject == "quit") requestString = "quit" ; 
+    else{
+       var requestString = requestObject.getRequestString();
+    }
 
     var requestPort = port || 8081  
     var request = new XMLHttpRequest();
@@ -66,15 +69,7 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
             var isGameOver =  getGameOverFromReply(response);
 
             // save play
-            prologInput.scene.makePlay(new Play(requestObject.player, requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY, isGameOver));
-
-            // pass the turn
-            if(!isGameOver){
-                prologInput.gameboard.board.nextTurn();
-            }
-            else {
-                console.log("GAME OVER!");
-            }
+            prologInput.scene.makePlay(true, new Play(requestObject.player, requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY, isGameOver));
         }
     };
 

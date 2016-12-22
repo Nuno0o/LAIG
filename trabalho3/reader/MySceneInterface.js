@@ -12,6 +12,7 @@ MySceneInterface.prototype.init = function(application) {
 
 	this.gui.add(this.scene, 'switchGameCamera');
 	this.gui.add(this.scene, 'resetGame');
+	this.gui.add(this.scene, 'undo');
 	
     return true;
 };
@@ -38,7 +39,7 @@ MySceneInterface.prototype.processKeyDown = function(event) {
 		case (77): this.scene.cycleMaterials(); break;
 
 		case (81): {
-			makeRequest("quit");
+			this.scene.prologinput.makeRequest("quit");
 			break;
 		}
 	}

@@ -667,14 +667,23 @@ XMLscene.prototype.initComponents = function(){
 }
 
 
-XMLscene.prototype.makePlay = function(play){
+XMLscene.prototype.makePlay = function(pushPlay, play){
 
-	this.playStack.push(play);
+	if (pushPlay) this.playStack.push(play);
 
 	var indi = play.x + play.y * 12;
 	var indf = play.targetX + play.targetY * 12;
 
 	this.gameboard.move(indi, indf);
+
+
+    // pass the turn
+    if(!play.isGameOver){
+        this.gameboard.board.nextTurn();
+    }
+    else {
+        console.log("GAME OVER!");
+    }
 }
 
 XMLscene.prototype.resetGame = function(){
@@ -682,6 +691,22 @@ XMLscene.prototype.resetGame = function(){
 	this.playStack = [];
 	this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize,this.gameboard_c1,this.gameboard_c2,this.gameboard_tex,this.gameboard_pc1,this.gameboard_pc2,this.gameboard_ptex);
 	this.prologinput = new PrologInput(this);
+
+}
+
+XMLscene.prototype.undo = function(){
+
+	this.playStack.pop();
+
+	this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize,this.gameboard_c1,this.gameboard_c2,this.gameboard_tex,this.gameboard_pc1,this.gameboard_pc2,this.gameboard_ptex);
+	this.prologinput = new PrologInput(this);
+
+	if (this.playStack.length == 0) return;
+
+	for (var i = 0; i < this.playStack.length; i++){
+		console.log("Here");
+		this.makePlay(false, this.playStack[i]);
+	}
 
 }
 
