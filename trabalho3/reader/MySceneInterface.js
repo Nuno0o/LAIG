@@ -11,6 +11,7 @@ MySceneInterface.prototype.init = function(application) {
 	this.gui = new dat.GUI( {autoplace: false, width: 300 });
 
 	this.gui.add(this.scene, 'switchGameCamera');
+	this.gui.add(this.scene, 'resetGame');
 	
     return true;
 };

@@ -671,12 +671,18 @@ XMLscene.prototype.makePlay = function(play){
 
 	this.playStack.push(play);
 
-	console.log("Here");
-
 	var indi = play.x + play.y * 12;
 	var indf = play.targetX + play.targetY * 12;
 
 	this.gameboard.move(indi, indf);
+}
+
+XMLscene.prototype.resetGame = function(){
+
+	this.playStack = [];
+	this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize,this.gameboard_c1,this.gameboard_c2,this.gameboard_tex,this.gameboard_pc1,this.gameboard_pc2,this.gameboard_ptex);
+	this.prologinput = new PrologInput(this);
+
 }
 
 // -----------------------------------------------------------------------------------------------------
@@ -721,9 +727,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.canChangeCamera = true;
 
 	if (this.hasGameboard){
-		this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize,this.gameboard_c1,this.gameboard_c2,this.gameboard_tex,this.gameboard_pc1,this.gameboard_pc2,this.gameboard_ptex);
-		this.prologinput = new PrologInput(this);
-		this.playStack = [];
+		this.resetGame();
 	}
 
 	// setup default camera

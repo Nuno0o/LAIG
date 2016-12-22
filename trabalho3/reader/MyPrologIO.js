@@ -56,7 +56,7 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
 
     // Make request to SICstus. Check Response.
     request.onload = onSuccess || function (data) { 
-        console.log("Request successful. Reply: " + data.target.response); 
+
         var response = data.target.response;
 
         // Play was successful
