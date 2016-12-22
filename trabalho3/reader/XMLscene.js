@@ -667,6 +667,18 @@ XMLscene.prototype.initComponents = function(){
 }
 
 
+XMLscene.prototype.makePlay = function(play){
+
+	this.playStack.push(play);
+
+	console.log("Here");
+
+	var indi = play.x + play.y * 12;
+	var indf = play.targetX + play.targetY * 12;
+
+	this.gameboard.move(indi, indf);
+}
+
 // -----------------------------------------------------------------------------------------------------
 // -------------------------------- HANDLER CALLING AND SCENE DISPLAY ----------------------------------
 // -----------------------------------------------------------------------------------------------------

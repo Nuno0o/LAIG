@@ -53,14 +53,32 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
 
     request.open('GET', 'http://localhost:' + requestPort + '/' + requestString, true);
 
+
+    // Make request to SICstus. Check Response.
     request.onload = onSuccess || function (data) { 
         console.log("Request successful. Reply: " + data.target.response); 
         var response = data.target.response;
+
+        // Play was successful
+
         if (getSuccessFromReply(response) == true) {
-            prologInput.scene.playStack.push(new Play(requestObject.player, requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY));
-            prologInput.gameboard.board.nextTurn();
+
+            var isGameOver =  getGameOverFromReply(response);
+
+            // save play
+            prologInput.scene.makePlay(new Play(requestObject.player, requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY, isGameOver));
+
+            // pass the turn
+            if(!isGameOver){
+                prologInput.gameboard.board.nextTurn();
+            }
+            else {
+                console.log("GAME OVER!");
+            }
         }
     };
+
+
     request.onerror = onError || function () { 
         console.log("Error waiting for response"); 
     };
@@ -87,6 +105,12 @@ getSuccessFromReply = function(replyString){
     return false;
 }
 
+getGameOverFromReply = function(replyString){
+    var replyArray = replyString.split(',');
+    if (replyArray[2] == "true") return true;
+    return false;
+}
+
 function Request(Player, X, Y, TargetX, TargetY, IvoryStackIn, CigarStackIn, Board){
     this.player = Player;
     this.x = X;
@@ -104,12 +128,17 @@ Request.prototype.getRequestString = function(){
     return "makePlay(("+this.player+","+this.x+","+this.y+","+this.targetX+","+this.targetY+"),("+this.iIn+","+this.cIn+","+this.board+"))";
 }
 
-function Play(Player,X,Y,TargetX,TargetY){
+
+// -------------------------------------------------------------------------------------
+
+function Play(Player,X,Y,TargetX,TargetY,IsGameOver){
     this.player = Player;
     this.x = X;
     this.y = Y;
     this.targetX = TargetX;
     this.targetY = TargetY;
+
+    this.isGameOver = IsGameOver;
 }
 
 Play.prototype.constructor = Play;
