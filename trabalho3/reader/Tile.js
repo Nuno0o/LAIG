@@ -19,6 +19,7 @@ function Tile(scene, board, size, id,pc1,pc2,ptex){
 
   this.animation = null;
   this.piecesInAnimation = false;
+  this.holdAnimation = false;
 }
 
 /*
@@ -48,15 +49,6 @@ Tile.prototype.setInAnimation = function(inAnimation, animation){
 */
 Tile.prototype.display = function(){
 
-  if (this.piecesInAnimation){
-    if(this.animation != null){
-      if(this.animation.isDone){
-        this.piecesInAnimation = false;
-        this.animation = null;
-      }
-    }
-  }
-
     this.scene.pushMatrix();
       this.scene.rotate(-Math.PI/2, 1, 0, 0);
       this.scene.registerForPick(this.id, this.plane);
@@ -80,5 +72,17 @@ Tile.prototype.display = function(){
         }
         this.pieces[i].display();
       this.scene.popMatrix();
+
+      if (this.piecesInAnimation){
+        if(this.animation != null){
+          if(this.animation.isDone){
+            if(!this.holdAnimation){
+              this.piecesInAnimation = false;
+              this.animation = null;
+            }
+            
+          }
+        }
+      }
     }
 }

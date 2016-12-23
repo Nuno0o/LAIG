@@ -1,4 +1,4 @@
-function PieceAnimation(pieces,x,y,targetX,targetY,tileSize,play){
+function PieceAnimation(pieces,x,y,targetX,targetY,tileSize,play,tag){
 
 	this.pieces = pieces;
 
@@ -18,7 +18,7 @@ function PieceAnimation(pieces,x,y,targetX,targetY,tileSize,play){
 							(this.to[1] - this.from[1])*this.tileSize];
 
 	this.play = play;
-
+	this.tag = tag;
 };
 
 PieceAnimation.prototype.constructor = PieceAnimation;

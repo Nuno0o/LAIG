@@ -99,7 +99,7 @@ Board.prototype.display = function(){
 		}
 	}
 	this.scene.pushMatrix();
-		this.scene.translate(-2,0,0);
+		this.scene.translate(-2 * this.tileSize,0,0);
 		this.scene.rotate(Math.PI/2,1,0,0);
 		this.team1aux.display();
 	this.scene.popMatrix();

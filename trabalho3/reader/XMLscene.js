@@ -145,19 +145,54 @@ XMLscene.prototype.updateCurrentPieceAnimation = function(frameDiff){
 
 	if (this.currentPieceAnimation != null && this.currentPieceAnimation != undefined && this.animatingPiece){
 		this.currentPieceAnimation.update(frameDiff);
+		if (this.currentPieceAnimation.tag != true) console.log(this.currentPieceAnimation.to);
 		if (this.currentPieceAnimation.isDone){
-			this.makePlay(true, this.currentPieceAnimation.play);
-			this.animatingPiece = false;
-			this.currentPieceAnimation = null;
+			if (this.gameboard.board.tiles[this.currentPieceAnimation.play.targetX + this.currentPieceAnimation.play.targetY * 12].pieces.length != 0){
+				if (this.currentPieceAnimation.tag == false) {
+					this.makePlay(true, this.currentPieceAnimation.play);
+					this.gameboard.board.tiles[this.currentPieceAnimation.play.y*12 + this.currentPieceAnimation.play.x].holdAnimation = false;
+					this.currentPieceAnimation = null;
+					this.animatingPiece = false;
+					return;
+				}
+				else {
+					if (this.gameboard.board.tiles[this.currentPieceAnimation.play.targetX + this.currentPieceAnimation.play.targetY * 12].pieces[0].team == 1) {
+						targetX = -2*this.gameboard.board.tileSize;
+						targetY = 0;
+					}
+					else {
+						targetX = 2+(this.gameboard.board.tileSize*(this.gameboard.board.dimX-1));
+						targetY = this.gameboard.board.tileSize*(this.gameboard.board.dimY-1);
+					}
+					this.currentPieceAnimation = new PieceAnimation(this.gameboard.board.tiles[this.currentPieceAnimation.to[0] + this.currentPieceAnimation.to[1] * 12].pieces,
+																this.currentPieceAnimation.to[0],this.currentPieceAnimation.to[1],
+																targetX,targetY,
+																this.gameboard.board.tileSize,
+																this.currentPieceAnimation.play,
+																false);
+					this.gameboard.board.tiles[this.currentPieceAnimation.play.y*12 + this.currentPieceAnimation.play.x].holdAnimation = true;
+					this.gameboard.board.tiles[this.currentPieceAnimation.from[1]*12 + this.currentPieceAnimation.from[0]].setInAnimation(true, this.currentPieceAnimation);
+					console.log(this.currentPieceAnimation);
+					this.animatingPiece = true;
+					
+					return;
+				}
+			}
+			else {
+				this.makePlay(true, this.currentPieceAnimation.play);
+				this.animatingPiece = false;
+				this.currentPieceAnimation = null;
+				return;
+			}
 		}
-		else this.animatingPiece = true;
-		return;
+		else {
+			this.animatingPiece = true;
+			return;
+		}
 	}
 	this.animatingPiece = false;
 
 }
-
-
 // ------------------ LIGHTS ------------------------
 
 XMLscene.prototype.initGraphLights = function(){
@@ -695,6 +730,8 @@ XMLscene.prototype.makePlay = function(pushPlay, play){
 
 	if (pushPlay) this.playStack.push(play);
 
+	console.log(this.playStack);
+
 	var indi = play.x + play.y * 12;
 	var indf = play.targetX + play.targetY * 12;
 
@@ -727,7 +764,6 @@ XMLscene.prototype.undo = function(){
 	if (this.playStack.length == 0) return;
 
 	for (var i = 0; i < this.playStack.length; i++){
-		console.log("Here");
 		this.makePlay(false, this.playStack[i]);
 	}
 
@@ -946,7 +982,6 @@ XMLscene.prototype.display = function () {
 		}
 		
 		for (var i in this.listReadyToDisplay){
-			//this.displayPrim(this.listReadyToDisplay[i]);
 			this.displayPrimToAnimation(this.listReadyToDisplay[i]);
 		}
 
