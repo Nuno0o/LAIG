@@ -10,10 +10,19 @@ PrologInput.prototype.constructor = PrologInput;
 
 PrologInput.prototype.changeSelected = function(ind){
     if (this.selectedTile.length >= 2) this.selectedTile = [];
-    if (ind != 144) this.selectedTile.push(ind);
+
+    if (ind != 144) {
+
+    	if (this.selectedTile.length < 1 ){
+    		if (this.gameboard.board.tiles[ind].pieces.length != 0) 
+    			this.selectedTile.push(ind);
+    	}
+    	else this.selectedTile.push(ind);
+
+    }
+
     if(this.selectedTile[this.selectedTile.length-2] < 144 && this.selectedTile[this.selectedTile.length-1] < 144
     	&& this.selectedTile.length == 2){
-        //ENVIAR COORDS PARA PROLOG
 
         var convertedXY, convertedTarget;
         convertedXY = this.convertTileToCoords(this.selectedTile[0]);
@@ -68,8 +77,12 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
 
             var isGameOver =  getGameOverFromReply(response);
 
-            // save play
-            prologInput.scene.makePlay(true, new Play(requestObject.player, requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY, isGameOver));
+            var pieceAnimation = new PieceAnimation(prologInput.scene.gameboard.board.tiles[requestObject.y*12 + requestObject.x].pieces, 
+            										requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY,  prologInput.scene.gameboard.board.tileSize,
+            										new Play(requestObject.player, requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY, isGameOver));
+			prologInput.scene.setCurrentPieceAnimation(pieceAnimation);
+
+			prologInput.scene.gameboard.board.tiles[requestObject.y*12 + requestObject.x].setInAnimation(true, prologInput.scene.currentPieceAnimation);
         }
     };
 

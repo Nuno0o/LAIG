@@ -14,15 +14,12 @@ function Piece(scene,prim,team){
 */
 Piece.prototype.constructor = Piece;
 
-
 /*
   Piece drawing.
 */
 Piece.prototype.display = function(){
 
     this.scene.pushMatrix();
-
       this.scene.listPrimitives[this.prim].display();
-
-    this.scene.popMatrix();
+	this.scene.popMatrix();
 }

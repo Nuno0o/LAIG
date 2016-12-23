@@ -134,6 +134,30 @@ XMLscene.prototype.nextGameCamera = function(){
 	if (this.currentGameCamera >= nGameCameras) this.currentGameCamera = 0;
 }
 
+// -------------------- PIECE ANIMATION ------------------------------
+
+XMLscene.prototype.setCurrentPieceAnimation = function(pieceAnimation){
+	this.currentPieceAnimation = pieceAnimation;
+	this.animatingPiece = true;
+}
+
+XMLscene.prototype.updateCurrentPieceAnimation = function(frameDiff){
+
+	if (this.currentPieceAnimation != null && this.currentPieceAnimation != undefined && this.animatingPiece){
+		this.currentPieceAnimation.update(frameDiff);
+		if (this.currentPieceAnimation.isDone){
+			this.makePlay(true, this.currentPieceAnimation.play);
+			this.animatingPiece = false;
+			this.currentPieceAnimation = null;
+		}
+		else this.animatingPiece = true;
+		return;
+	}
+	this.animatingPiece = false;
+
+}
+
+
 // ------------------ LIGHTS ------------------------
 
 XMLscene.prototype.initGraphLights = function(){
@@ -676,7 +700,6 @@ XMLscene.prototype.makePlay = function(pushPlay, play){
 
 	this.gameboard.move(indi, indf);
 
-
     // pass the turn
     if(!play.isGameOver){
         this.gameboard.board.nextTurn();
@@ -753,6 +776,8 @@ XMLscene.prototype.onGraphLoaded = function ()
 
 	if (this.hasGameboard){
 		this.resetGame();
+		this.currentPieceAnimation = null;
+		this.animatingPiece = false;
 	}
 
 	// setup default camera
@@ -880,6 +905,7 @@ XMLscene.prototype.update = function(currTime){
 
 		if (this.cameraAnimationsGo)
 			this.updateGameCameras(this.frameDiff);
+		this.updateCurrentPieceAnimation(this.frameDiff);
 	}
 }
 

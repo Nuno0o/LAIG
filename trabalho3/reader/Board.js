@@ -158,7 +158,6 @@ function GameBoard (scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex) {
 	// board element
 	this.board = new Board(scene, dimX, dimY, tileSize);
 	this.board.initPieces();
-	this.removePieces(5);
 }
 
 

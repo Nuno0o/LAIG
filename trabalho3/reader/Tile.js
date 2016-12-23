@@ -16,6 +16,9 @@ function Tile(scene, board, size, id,pc1,pc2,ptex){
 
   this.id = id;
   this.plane = new Plane(this.scene, size, size, 2, 2);
+
+  this.animation = null;
+  this.piecesInAnimation = false;
 }
 
 /*
@@ -34,11 +37,25 @@ Tile.prototype.removePiece = function(){
   this.pieces.pop(piece);
 }
 
+Tile.prototype.setInAnimation = function(inAnimation, animation){
+  this.piecesInAnimation = inAnimation;
+  this.animation = animation;
+}
+
 
 /*
   Tile drawing.
 */
 Tile.prototype.display = function(){
+
+  if (this.piecesInAnimation){
+    if(this.animation != null){
+      if(this.animation.isDone){
+        this.piecesInAnimation = false;
+        this.animation = null;
+      }
+    }
+  }
 
     this.scene.pushMatrix();
       this.scene.rotate(-Math.PI/2, 1, 0, 0);
@@ -48,6 +65,10 @@ Tile.prototype.display = function(){
     //console.log(this.pieces.size);
     for(var i = 0;i < this.pieces.length;i++){
       this.scene.pushMatrix();
+        if (this.piecesInAnimation){
+          var translate = this.animation.getCurrentPosition();
+          this.scene.translate(translate[0],translate[1],translate[2]);
+        }
         this.scene.translate(0,0.16*i,0);
         this.scene.rotate(-Math.PI/2, 1, 0, 0);
         if(this.pieces[i].team == 1){
