@@ -153,7 +153,7 @@ Board.prototype.convertToPrologBoard = function() {
 	Element representing a main board.
 */
 
-function GameBoard (scene, dimX, dimY, tileSize,c1,c2,tex,pc1,pc2,ptex) {
+function GameBoard (scene, dimX, dimY, tileSize) {
 
 	// board element
 	this.board = new Board(scene, dimX, dimY, tileSize);
