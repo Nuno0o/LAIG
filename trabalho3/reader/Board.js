@@ -184,8 +184,10 @@ GameBoard.prototype.move = function(indi,indf){
 	var destTile = this.board.tiles[indf];
 	if(originTile.pieces.length == 0)
 		return;
-	
+	var ateOne = 0;
 	if(destTile.pieces.length >= 1){
+		ateOne = 1;
+		console.log('COMEUUUU');
 		this.removePieces(indf);
 	}
 	if(originTile.pieces.length == 1){
@@ -194,8 +196,8 @@ GameBoard.prototype.move = function(indi,indf){
 	}else{
 		var piecesToMove = originTile.pieces.slice(0);
 		var pieceToStay = originTile.pieces.slice(0);
-		piecesToMove.splice(0,1);
-		pieceToStay.splice(1,pieceToStay.length-1);
+		piecesToMove.splice(0,1-ateOne);
+		pieceToStay.splice(1-ateOne,pieceToStay.length);
 		destTile.pieces = piecesToMove;
 		originTile.pieces = pieceToStay;
 	}
