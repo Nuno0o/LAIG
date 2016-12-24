@@ -145,7 +145,6 @@ XMLscene.prototype.updateCurrentPieceAnimation = function(frameDiff){
 
 	if (this.currentPieceAnimation != null && this.currentPieceAnimation != undefined && this.animatingPiece){
 		this.currentPieceAnimation.update(frameDiff);
-		if (this.currentPieceAnimation.tag != true) console.log(this.currentPieceAnimation.to);
 		if (this.currentPieceAnimation.isDone){
 			if (this.gameboard.board.tiles[this.currentPieceAnimation.play.targetX + this.currentPieceAnimation.play.targetY * 12].pieces.length != 0){
 				if (this.currentPieceAnimation.tag == false) {
@@ -172,7 +171,6 @@ XMLscene.prototype.updateCurrentPieceAnimation = function(frameDiff){
 																false);
 					this.gameboard.board.tiles[this.currentPieceAnimation.play.y*12 + this.currentPieceAnimation.play.x].holdAnimation = true;
 					this.gameboard.board.tiles[this.currentPieceAnimation.from[1]*12 + this.currentPieceAnimation.from[0]].setInAnimation(true, this.currentPieceAnimation);
-					console.log(this.currentPieceAnimation);
 					this.animatingPiece = true;
 					
 					return;
@@ -730,8 +728,6 @@ XMLscene.prototype.makePlay = function(pushPlay, play){
 
 	if (pushPlay) this.playStack.push(play);
 
-	console.log(this.playStack);
-
 	var indi = play.x + play.y * 12;
 	var indf = play.targetX + play.targetY * 12;
 
@@ -752,6 +748,9 @@ XMLscene.prototype.resetGame = function(){
 	this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize);
 	this.prologinput = new PrologInput(this);
 
+	this.runningGameFilm = false;
+	this.currentFilmFrame = -1;
+
 }
 
 XMLscene.prototype.undo = function(){
@@ -766,6 +765,52 @@ XMLscene.prototype.undo = function(){
 	for (var i = 0; i < this.playStack.length; i++){
 		this.makePlay(false, this.playStack[i]);
 	}
+
+}
+
+XMLscene.prototype.runGameFilm = function(){
+
+	this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize);
+	this.prologinput = null;
+
+	this.animatingPiece = false;
+	this.currentPieceAnimation = null;
+
+	this.runningGameFilm = true;
+	this.currentFilmFrame = -1;
+
+	this.filmStack = this.playStack;
+	this.playStack = [];
+
+}
+
+XMLscene.prototype.nextFrame = function(){
+
+	if (this.currentFilmFrame >= this.filmStack.length){
+		this.runningGameFilm = false;
+		this.prologinput = new PrologInput(this);
+		return;
+	}
+
+	this.currentFilmFrame++;
+
+	if (this.currentFilmFrame >= this.filmStack.length){
+		this.runningGameFilm = false;
+		this.prologinput = new PrologInput(this);
+		return;
+	}
+
+	var currentPlay = this.filmStack[this.currentFilmFrame];
+
+	this.animatingPiece = true;
+	this.currentPieceAnimation = new PieceAnimation(this.gameboard.board.tiles[currentPlay.x + currentPlay.y * 12].pieces,
+													currentPlay.x, currentPlay.y,
+													currentPlay.targetX,currentPlay.targetY,
+													this.gameboard.board.tileSize,
+													currentPlay,
+													true);
+	this.currentPieceAnimation.span = 1000;
+	this.gameboard.board.tiles[this.currentPieceAnimation.from[1]*12 + this.currentPieceAnimation.from[0]].setInAnimation(true, this.currentPieceAnimation);
 
 }
 
@@ -814,6 +859,8 @@ XMLscene.prototype.onGraphLoaded = function ()
 		this.resetGame();
 		this.currentPieceAnimation = null;
 		this.animatingPiece = false;
+		this.runningGameFilm = false;
+		this.filmStack = [];
 	}
 
 	// setup default camera
@@ -942,6 +989,12 @@ XMLscene.prototype.update = function(currTime){
 		if (this.cameraAnimationsGo)
 			this.updateGameCameras(this.frameDiff);
 		this.updateCurrentPieceAnimation(this.frameDiff);
+
+		if (this.runningGameFilm){
+			if (!this.animatingPiece){
+				this.nextFrame();
+			}
+		}
 	}
 }
 

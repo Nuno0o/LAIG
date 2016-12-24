@@ -54,7 +54,6 @@ Tile.prototype.display = function(){
       this.scene.registerForPick(this.id, this.plane);
       this.plane.display(); 
     this.scene.popMatrix();
-    //console.log(this.pieces.size);
     for(var i = 0;i < this.pieces.length;i++){
       this.scene.pushMatrix();
         if (this.piecesInAnimation){

@@ -13,7 +13,7 @@ MySceneInterface.prototype.init = function(application) {
 	this.gui.add(this.scene, 'switchGameCamera');
 	this.gui.add(this.scene, 'resetGame');
 	this.gui.add(this.scene, 'undo');
-	
+	this.gui.add(this.scene, 'runGameFilm');
     return true;
 };
 

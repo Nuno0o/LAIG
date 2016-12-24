@@ -185,7 +185,7 @@ GameBoard.prototype.move = function(indi,indf){
 	if(originTile.pieces.length == 0)
 		return;
 	
-	if(destTile.pieces.length > 1){
+	if(destTile.pieces.length >= 1){
 		this.removePieces(indf);
 	}
 	if(originTile.pieces.length == 1){
