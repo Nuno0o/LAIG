@@ -9,16 +9,29 @@ MySceneInterface.prototype.init = function(application) {
     CGFinterface.prototype.init.call(this, application);
 	
 	this.gui = new dat.GUI( {autoplace: false, width: 300 });
-
-	this.gui.add(this.scene, 'switchGameCamera');
-	this.gui.add(this.scene, 'resetGame');
-	this.gui.add(this.scene, 'undo');
-	this.gui.add(this.scene, 'runGameFilm');
+	
     return true;
 };
 
+MySceneInterface.prototype.addGameControls = function(){
+	var group = this.gui.addFolder("Game Controls");
+	group.open();
+	group.add(this.scene, 'switchGameCamera');
+	group.add(this.scene, 'resetGame');
+	group.add(this.scene, 'undo');
+	group.add(this.scene, 'runGameFilm');
+}
+
+MySceneInterface.prototype.addGameVars = function(){
+	var group = this.gui.addFolder("Game Config");
+	group.open();
+	group.add(this.scene, "p1IsHuman", {Human: 0, Bot: 1});
+	group.add(this.scene, "p2IsHuman", {Human: 0, Bot: 1});
+	group.add(this.scene, "botDifficulty", { Random: 0, Smart: 1 });
+}
+
 MySceneInterface.prototype.addLights = function(){
-	var group = this.gui.addFolder("Luzes");
+	var group = this.gui.addFolder("Lights");
 	group.open();
 	for (var i = 0; i < this.scene.nlights; i++){
 		var name = 'light' + i;

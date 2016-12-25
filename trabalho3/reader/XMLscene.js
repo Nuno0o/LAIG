@@ -704,7 +704,8 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.currentGameCamera = -1;
 	this.hasGameboard = false;
 	this.game = null;
-
+	
+	
 	this.enableTextures(true);
 	
 	this.listReadyToDisplay = [];
@@ -726,6 +727,11 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.canChangeCamera = true;
 
 	if (this.hasGameboard){
+		this.p1IsHuman = 0;
+		this.p2IsHuman = 0;
+		this.botDifficulty = 1;
+		this.sceneInterface.addGameVars();
+		this.sceneInterface.addGameControls();
 		this.game = new Game(this,
 							new GameBoard(this, 12, 12, this.gameboard_tilesize));
 	}
