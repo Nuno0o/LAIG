@@ -903,9 +903,11 @@ XMLscene.prototype.logPicking = function (){
 				if (obj)
 				{
 					var customId = this.pickResults[i][1];	
-					this.game.gameboard.setSelected(customId);
-					this.game.prologinput.changeSelected(customId);
-					this.pressedId = customId;
+					if(this.hasGameboard){
+						this.game.gameboard.setSelected(customId);
+						this.game.prologinput.changeSelected(customId);
+						this.pressedId = customId;
+					}
 				}
 			}
 			this.pickResults.splice(0,this.pickResults.length);

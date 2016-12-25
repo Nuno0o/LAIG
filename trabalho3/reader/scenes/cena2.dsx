@@ -88,11 +88,21 @@
 		<texture id="plastic" file="./resources/images/plastic.jpg" length_s="1" length_t="1" />
 		<texture id="camo" file="./resources/images/camo.jpg" length_s="1" length_t="1" />
 		<texture id="papeltex" file="./resources/images/paper.jpg" length_s="1" length_t="1" />
-    <texture id="board" file="./resources/images/boardtex.jpg" length_s="1" length_t="1" />
-    <texture id="board2" file="./resources/images/boardtex2.jpg" length_s="1" length_t="1" />
+    	<texture id="board" file="./resources/images/boardtex.jpg" length_s="1" length_t="1" />
+    	<texture id="board2" file="./resources/images/boardtex2.jpg" length_s="1" length_t="1" />
+		<texture id="board1" file="./resources/images/board1.jpg" length_s="1" length_t="1" />
+		<texture id="sky" file="./resources/images/skybox1.png" length_s="1" length_t="1" />
 	</textures>
 
 	<materials>
+		<material id="skyboxMat" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="1" g="1" b="1" a="1" />
+            <diffuse r="0" g="0" b="0" a="0" />
+            <specular r="0" g="0" b="0" a="0" />
+            <shininess value="10" />
+        </material>
+
         <material id="matDefault" >
             <emission r="0" g="0" b="0" a="1" />
             <ambient r="0" g="0" b="0" a="1" />
@@ -187,6 +197,37 @@
             <specular r="0" g="0" b="0" a="1" />
             <shininess value="10" />
         </material>
+		<material id="color1" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0.92" g="0.88" b="0.78" a="1" />
+            <diffuse r="0" g="0" b="0" a="0" />
+            <specular r="0" g="0" b="0" a="0" />
+            <shininess value="10" />
+        </material>
+
+        <material id="color2" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0.51" g="0.25" b="0" a="1" />
+            <diffuse r="0" g="0" b="0" a="0" />
+            <specular r="0" g="0" b="0" a="0" />
+            <shininess value="10" />
+        </material>
+
+        <material id="pieceMat1" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="0" g="0" b="1" a="1" />
+            <diffuse r="0" g="0" b="0" a="0" />
+            <specular r="0" g="0" b="0" a="0" />
+            <shininess value="10" />
+        </material>
+
+        <material id="pieceMat2" >
+            <emission r="0" g="0" b="0" a="1" />
+            <ambient r="1" g="0" b="0" a="1" />
+            <diffuse r="0" g="0" b="0" a="0" />
+            <specular r="0" g="0" b="0" a="0" />
+            <shininess value="10" />
+        </material>
     </materials>
 
 	<transformations>
@@ -278,6 +319,9 @@
 		<primitive id="plane1">
 			<plane dimX="2" dimY="2" partsX="3" partsY="3"/>
 		</primitive>
+		<primitive id="skybox">
+            <skybox size="300" />
+        </primitive>
 		<primitive id="testPatch">
 			<patch orderU="3" orderV="1" partsU="10" partsV="10" >		
 				<controlpoint x="-1.5" y="-1.5" z="0" />
@@ -296,12 +340,17 @@
 		</primitive>
 
 		<primitive id="chess">
-      <chessboard du="8" dv="8" textureref="board" su="1" sv="0">
+      	<chessboard du="8" dv="8" textureref="board" su="1" sv="0">
            <c1 r="1" g="0.5" b="0" a="1" />
            <c2 r="0.5" g="1" b="1" a="1" />
            <cs r="0" g="0" b="1" a="1" />
-      </chessboard>
+      	</chessboard>
+		
 		</primitive>
+
+		<primitive id="piece">
+            <piece size="2"/>
+        </primitive>
 
     <primitive id="chess2">
       <chessboard du="14" dv="14" textureref="board2" su="5" sv="5">
@@ -340,6 +389,20 @@
             	<componentref id= "DiscoBall" />
 				<componentref id= "Earth" />
 				<componentref id= "Papel" />
+				<componentref id= "sky" />
+            </children>
+        </component>
+
+		<component id="sky" >
+            <transformation>
+                <translate x="0" y="0" z="0" />
+            </transformation>
+            <materials>
+                <material id="skyboxMat" />
+            </materials>
+            <texture id="sky" />
+            <children>
+                <primitiveref id="skybox"/>
             </children>
         </component>
 		
