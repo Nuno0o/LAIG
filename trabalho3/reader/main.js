@@ -11,7 +11,7 @@ function getUrlVars() {
     return vars;
 }
 
-serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MySceneInterface.js', 'MyPrimRect.js','MyPrimTriang.js','MyPrimCylinder.js', 'MyPrimSphere.js','MyPrimTorus.js','MyAnimation.js','Plane.js','Patch.js','Vehicle.js','Chessboard.js','MyPrimSkybox.js','MyPrologIO.js','Tile.js','Piece.js','Board.js','MyPrimPiece.js','CameraAnimation.js','Cup.js','PieceAnimation.js',
+serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MySceneInterface.js', 'MyPrimRect.js','MyPrimTriang.js','MyPrimCylinder.js', 'MyPrimSphere.js','MyPrimTorus.js','MyAnimation.js','Plane.js','Patch.js','Vehicle.js','Chessboard.js','MyPrimSkybox.js','MyPrologIO.js','Tile.js','Piece.js','Board.js','MyPrimPiece.js','CameraAnimation.js','Cup.js','PieceAnimation.js','Game.js',
 
 main=function()
 {

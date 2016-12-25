@@ -134,63 +134,7 @@ XMLscene.prototype.nextGameCamera = function(){
 	if (this.currentGameCamera >= nGameCameras) this.currentGameCamera = 0;
 }
 
-// -------------------- PIECE ANIMATION ------------------------------
 
-XMLscene.prototype.setCurrentPieceAnimation = function(pieceAnimation){
-	this.currentPieceAnimation = pieceAnimation;
-	this.animatingPiece = true;
-}
-
-XMLscene.prototype.updateCurrentPieceAnimation = function(frameDiff){
-
-	if (this.currentPieceAnimation != null && this.currentPieceAnimation != undefined && this.animatingPiece){
-		this.currentPieceAnimation.update(frameDiff);
-		if (this.currentPieceAnimation.isDone){
-			if (this.gameboard.board.tiles[this.currentPieceAnimation.play.targetX + this.currentPieceAnimation.play.targetY * 12].pieces.length != 0){
-				if (this.currentPieceAnimation.tag == false) {
-					this.makePlay(true, this.currentPieceAnimation.play);
-					this.gameboard.board.tiles[this.currentPieceAnimation.play.y*12 + this.currentPieceAnimation.play.x].holdAnimation = false;
-					this.currentPieceAnimation = null;
-					this.animatingPiece = false;
-					return;
-				}
-				else {
-					if (this.gameboard.board.tiles[this.currentPieceAnimation.play.targetX + this.currentPieceAnimation.play.targetY * 12].pieces[0].team == 1) {
-						targetX = -2*this.gameboard.board.tileSize;
-						targetY = 0;
-					}
-					else {
-						targetX = 2+(this.gameboard.board.tileSize*(this.gameboard.board.dimX-1));
-						targetY = this.gameboard.board.tileSize*(this.gameboard.board.dimY-1);
-					}
-					this.currentPieceAnimation = new PieceAnimation(this.gameboard.board.tiles[this.currentPieceAnimation.to[0] + this.currentPieceAnimation.to[1] * 12].pieces,
-																this.currentPieceAnimation.to[0],this.currentPieceAnimation.to[1],
-																targetX,targetY,
-																this.gameboard.board.tileSize,
-																this.currentPieceAnimation.play,
-																false);
-					this.gameboard.board.tiles[this.currentPieceAnimation.play.y*12 + this.currentPieceAnimation.play.x].holdAnimation = true;
-					this.gameboard.board.tiles[this.currentPieceAnimation.from[1]*12 + this.currentPieceAnimation.from[0]].setInAnimation(true, this.currentPieceAnimation);
-					this.animatingPiece = true;
-					
-					return;
-				}
-			}
-			else {
-				this.makePlay(true, this.currentPieceAnimation.play);
-				this.animatingPiece = false;
-				this.currentPieceAnimation = null;
-				return;
-			}
-		}
-		else {
-			this.animatingPiece = true;
-			return;
-		}
-	}
-	this.animatingPiece = false;
-
-}
 // ------------------ LIGHTS ------------------------
 
 XMLscene.prototype.initGraphLights = function(){
@@ -723,95 +667,20 @@ XMLscene.prototype.initComponents = function(){
 	this.calcAndDisplayGraph(this.root, [], this.defMats, this.defTex, []);
 }
 
-
-XMLscene.prototype.makePlay = function(pushPlay, play){
-
-	if (pushPlay) this.playStack.push(play);
-
-	var indi = play.x + play.y * 12;
-	var indf = play.targetX + play.targetY * 12;
-
-	this.gameboard.move(indi, indf);
-
-    // pass the turn
-    if(!play.isGameOver){
-        this.gameboard.board.nextTurn();
-    }
-    else {
-        console.log("GAME OVER!");
-    }
-}
-
 XMLscene.prototype.resetGame = function(){
-
-	this.playStack = [];
-	this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize);
-	this.prologinput = new PrologInput(this);
-
-	this.runningGameFilm = false;
-	this.currentFilmFrame = -1;
-
+	this.game.resetGame();
 }
 
 XMLscene.prototype.undo = function(){
-
-	this.playStack.pop();
-
-	this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize);
-	this.prologinput = new PrologInput(this);
-
-	if (this.playStack.length == 0) return;
-
-	for (var i = 0; i < this.playStack.length; i++){
-		this.makePlay(false, this.playStack[i]);
-	}
-
+	this.game.undo();
 }
 
 XMLscene.prototype.runGameFilm = function(){
-
-	this.gameboard = new GameBoard(this, 12, 12, this.gameboard_tilesize);
-	this.prologinput = null;
-
-	this.animatingPiece = false;
-	this.currentPieceAnimation = null;
-
-	this.runningGameFilm = true;
-	this.currentFilmFrame = -1;
-
-	this.filmStack = this.playStack;
-	this.playStack = [];
-
+	this.game.runGameFilm();
 }
 
 XMLscene.prototype.nextFrame = function(){
-
-	if (this.currentFilmFrame >= this.filmStack.length){
-		this.runningGameFilm = false;
-		this.prologinput = new PrologInput(this);
-		return;
-	}
-
-	this.currentFilmFrame++;
-
-	if (this.currentFilmFrame >= this.filmStack.length){
-		this.runningGameFilm = false;
-		this.prologinput = new PrologInput(this);
-		return;
-	}
-
-	var currentPlay = this.filmStack[this.currentFilmFrame];
-
-	this.animatingPiece = true;
-	this.currentPieceAnimation = new PieceAnimation(this.gameboard.board.tiles[currentPlay.x + currentPlay.y * 12].pieces,
-													currentPlay.x, currentPlay.y,
-													currentPlay.targetX,currentPlay.targetY,
-													this.gameboard.board.tileSize,
-													currentPlay,
-													true);
-	this.currentPieceAnimation.span = 1000;
-	this.gameboard.board.tiles[this.currentPieceAnimation.from[1]*12 + this.currentPieceAnimation.from[0]].setInAnimation(true, this.currentPieceAnimation);
-
+	this.game.nextFrame();
 }
 
 // -----------------------------------------------------------------------------------------------------
@@ -834,6 +703,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 
 	this.currentGameCamera = -1;
 	this.hasGameboard = false;
+	this.game = null;
 
 	this.enableTextures(true);
 	
@@ -856,11 +726,8 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.canChangeCamera = true;
 
 	if (this.hasGameboard){
-		this.resetGame();
-		this.currentPieceAnimation = null;
-		this.animatingPiece = false;
-		this.runningGameFilm = false;
-		this.filmStack = [];
+		this.game = new Game(this,
+							new GameBoard(this, 12, 12, this.gameboard_tilesize));
 	}
 
 	// setup default camera
@@ -988,11 +855,15 @@ XMLscene.prototype.update = function(currTime){
 
 		if (this.cameraAnimationsGo)
 			this.updateGameCameras(this.frameDiff);
-		this.updateCurrentPieceAnimation(this.frameDiff);
 
-		if (this.runningGameFilm){
-			if (!this.animatingPiece){
-				this.nextFrame();
+		if (this.game != null){
+
+			this.game.updateCurrentPieceAnimation(this.frameDiff);
+
+			if (this.game.runningGameFilm){
+				if (!this.game.animatingPiece){
+					this.nextFrame();
+				}
 			}
 		}
 	}
@@ -1006,8 +877,8 @@ XMLscene.prototype.logPicking = function (){
 				if (obj)
 				{
 					var customId = this.pickResults[i][1];	
-					this.gameboard.setSelected(customId);
-					this.prologinput.changeSelected(customId);
+					this.game.gameboard.setSelected(customId);
+					this.game.prologinput.changeSelected(customId);
 					this.pressedId = customId;
 				}
 			}
@@ -1038,8 +909,8 @@ XMLscene.prototype.display = function () {
 			this.displayPrimToAnimation(this.listReadyToDisplay[i]);
 		}
 
-		if (this.gameboard != null){
-			this.gameboard.display();
+		if (this.game != null){
+			this.game.gameboard.display();
 		}
 	}	
 

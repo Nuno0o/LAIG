@@ -1,9 +1,11 @@
 // --------------------------------------------------------------------------------------
 
-function PrologInput(scene){
+function PrologInput(game){
     this.selectedTile = [];
-    this.scene = scene;
-    this.gameboard = this.scene.gameboard;
+    this.game = game;
+    this.gameboard = this.game.gameboard;
+
+    console.log(this);
 }
 
 PrologInput.prototype.constructor = PrologInput;
@@ -77,13 +79,14 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
 
             var isGameOver =  getGameOverFromReply(response);
 
-            var pieceAnimation = new PieceAnimation(prologInput.scene.gameboard.board.tiles[requestObject.y*12 + requestObject.x].pieces, 
-            										requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY,  prologInput.scene.gameboard.board.tileSize,
+            var pieceAnimation = new PieceAnimation(prologInput.gameboard.board.tiles[requestObject.y*12 + requestObject.x].pieces, 
+            										requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY,  prologInput.gameboard.board.tileSize,
             										new Play(requestObject.player, requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY, isGameOver),
             										true);
-			prologInput.scene.setCurrentPieceAnimation(pieceAnimation);
 
-			prologInput.scene.gameboard.board.tiles[requestObject.y*12 + requestObject.x].setInAnimation(true, prologInput.scene.currentPieceAnimation);
+			prologInput.game.setCurrentPieceAnimation(pieceAnimation);
+
+			prologInput.gameboard.board.tiles[requestObject.y*12 + requestObject.x].setInAnimation(true, prologInput.game.currentPieceAnimation);
         }
     };
 
