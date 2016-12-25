@@ -50,6 +50,29 @@
         </spot>
     </lights>
 
+	<cameraAnimations>
+        <cameraAnimation id="p1" span="1" >
+            <from x="5.75" y="15" z="-25.5" />
+            <to x="36.5" y="15" z="5.75" />
+            <target x="5.75" y="0" z="5.75" />
+        </cameraAnimation>
+        <cameraAnimation id="p2" span="1">
+            <from x="36.5" y="15" z="5.75" />
+            <to x="5.75" y="15" z="36.5" />
+            <target x="5.75" y="0" z="5.75" />
+        </cameraAnimation>
+        <cameraAnimation id="p3" span="1">
+            <from x="5.75" y="15" z="36.5" />
+            <to x="-25.5" y="15" z="5.75" />
+            <target x="5.75" y="0" z="5.75" />
+        </cameraAnimation>
+        <cameraAnimation id="p4" span="1">
+            <from x="-25.5" y="15" z="5.75" />
+            <to x="5.75" y="15" z="-25.5" />
+            <target x="5.75" y="0" z="5.75" />
+        </cameraAnimation>
+    </cameraAnimations>
+
     <textures>
     	<texture id="wood" file="./resources/images/floor.png" length_s="0.2" length_t="0.2" />
 		<texture id="sofaCushionTex" file="./resources/images/cushion.jpg" length_s="1" length_t="1" />
