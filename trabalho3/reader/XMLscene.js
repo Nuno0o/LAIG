@@ -683,6 +683,26 @@ XMLscene.prototype.nextFrame = function(){
 	this.game.nextFrame();
 }
 
+XMLscene.prototype.applyConfig = function(){
+
+	var botDifficulty = parseInt(this.botDifficulty);
+	var player1 = parseInt(this.player1);
+	var player2 = parseInt(this.player2);
+
+	this.game.resetGame();
+
+	if (player1) {
+		this.game.gameboard.board.setPlayerType(1, player1 + botDifficulty);
+	}
+	else this.game.gameboard.board.setPlayerType(1, player1);
+
+	if (player2) {
+		this.game.gameboard.board.setPlayerType(2, player2 + botDifficulty);
+	}
+	else this.game.gameboard.board.setPlayerType(2, player2);
+
+}
+
 // -----------------------------------------------------------------------------------------------------
 // -------------------------------- HANDLER CALLING AND SCENE DISPLAY ----------------------------------
 // -----------------------------------------------------------------------------------------------------
@@ -727,8 +747,8 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.canChangeCamera = true;
 
 	if (this.hasGameboard){
-		this.p1IsHuman = 0;
-		this.p2IsHuman = 0;
+		this.player1 = 0;
+		this.player2 = 0;
 		this.botDifficulty = 1;
 		this.sceneInterface.addGameVars();
 		this.sceneInterface.addGameControls();

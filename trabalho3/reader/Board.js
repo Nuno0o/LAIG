@@ -9,12 +9,14 @@ function Board(scene, dimX, dimY, tileSize){
 
 	this.scene = scene;
 	this.tileSize = tileSize;
+
 	this.c1 = scene.gameboard_c1;
 	this.c2 = scene.gameboard_c2;
 	this.tex = scene.gameboard_tex;
 	this.pc1 = scene.gameboard_pc1;
 	this.pc2 = scene.gameboard_pc2;
 	this.ptex = scene.gameboard_ptex;
+
 	// The board's dimensions.
 	this.dimX = dimX;
 	this.dimY = dimY;
@@ -25,6 +27,12 @@ function Board(scene, dimX, dimY, tileSize){
 	this.team2aux = new AuxBoard(scene,2);
 
 	this.currPlayer = 1;
+
+	// 0 Human 1 Random 2 Smart
+
+	this.player1Type = 0;
+	this.player2Type = 0;
+
 	this.currTurn = 1;
 
 	// The board's tile set.
@@ -70,6 +78,13 @@ Board.prototype.initPieces = function(){
 		tile1.addPiece(new Piece(this.scene,"piece",1));
 		tile2.addPiece(new Piece(this.scene,"piece",2));
 	}
+}
+
+Board.prototype.setPlayerType = function(player, type){
+	if (player == 1){
+		this.player1Type = type;
+	}
+	else this.player2Type = type;
 }
 
 

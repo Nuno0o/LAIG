@@ -17,7 +17,6 @@ MySceneInterface.prototype.addGameControls = function(){
 	var group = this.gui.addFolder("Game Controls");
 	group.open();
 	group.add(this.scene, 'switchGameCamera');
-	group.add(this.scene, 'resetGame');
 	group.add(this.scene, 'undo');
 	group.add(this.scene, 'runGameFilm');
 }
@@ -25,9 +24,10 @@ MySceneInterface.prototype.addGameControls = function(){
 MySceneInterface.prototype.addGameVars = function(){
 	var group = this.gui.addFolder("Game Config");
 	group.open();
-	group.add(this.scene, "p1IsHuman", {Human: 0, Bot: 1});
-	group.add(this.scene, "p2IsHuman", {Human: 0, Bot: 1});
+	group.add(this.scene, "player1", {Human: 0, Bot: 1});
+	group.add(this.scene, "player2", {Human: 0, Bot: 1});
 	group.add(this.scene, "botDifficulty", { Random: 0, Smart: 1 });
+	group.add(this.scene, "applyConfig");
 }
 
 MySceneInterface.prototype.addLights = function(){

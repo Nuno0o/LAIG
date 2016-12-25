@@ -4,8 +4,6 @@ function PrologInput(game){
     this.selectedTile = [];
     this.game = game;
     this.gameboard = this.game.gameboard;
-
-    console.log(this);
 }
 
 PrologInput.prototype.constructor = PrologInput;
