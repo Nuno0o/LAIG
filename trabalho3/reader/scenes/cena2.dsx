@@ -321,7 +321,7 @@
 			<plane dimX="2" dimY="2" partsX="3" partsY="3"/>
 		</primitive>
 		<primitive id="skybox">
-            <skybox size="300" />
+            <skybox size="30" />
         </primitive>
 		<primitive id="testPatch">
 			<patch orderU="3" orderV="1" partsU="10" partsV="10" >		
@@ -376,6 +376,7 @@
             </materials>
             <texture id="none" />
             <children>
+				<componentref id= "sky" />
             	<componentref id= "WallX" />
             	<componentref id= "WallZ" />
             	<componentref id= "Table" />
@@ -391,7 +392,6 @@
 				<componentref id= "Beer" />
             	<componentref id= "DiscoBall" />
 				<componentref id= "Earth" />
-				<componentref id= "sky" />
 				<gameboard tilesize="1" tex="board1" c1="color1" c2="color2" pc1="pieceMat1" pc2="pieceMat2" ptex="board1"/>
             </children>
         </component>
