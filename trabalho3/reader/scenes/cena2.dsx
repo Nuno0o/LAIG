@@ -21,29 +21,6 @@
         <background r="0" g="0" b="0" a="1" />
     </illumination>
 
-	<cameraAnimations>
-        <cameraAnimation id="p1" span="1" >
-            <from x="5.75" y="15" z="-25.5" />
-            <to x="36.5" y="15" z="5.75" />
-            <target x="5.75" y="0" z="5.75" />
-        </cameraAnimation>
-        <cameraAnimation id="p2" span="1">
-            <from x="36.5" y="15" z="5.75" />
-            <to x="5.75" y="15" z="36.5" />
-            <target x="5.75" y="0" z="5.75" />
-        </cameraAnimation>
-        <cameraAnimation id="p3" span="1">
-            <from x="5.75" y="15" z="36.5" />
-            <to x="-25.5" y="15" z="5.75" />
-            <target x="5.75" y="0" z="5.75" />
-        </cameraAnimation>
-        <cameraAnimation id="p4" span="1">
-            <from x="-25.5" y="15" z="5.75" />
-            <to x="5.75" y="15" z="-25.5" />
-            <target x="5.75" y="0" z="5.75" />
-        </cameraAnimation>
-    </cameraAnimations>
-
 	<lights>
         <omni id="light_omni" enabled="1" >
             <location x="9" y="6" z="9" w="1" />
@@ -88,9 +65,8 @@
 		<texture id="plastic" file="./resources/images/plastic.jpg" length_s="1" length_t="1" />
 		<texture id="camo" file="./resources/images/camo.jpg" length_s="1" length_t="1" />
 		<texture id="papeltex" file="./resources/images/paper.jpg" length_s="1" length_t="1" />
-    	<texture id="board" file="./resources/images/boardtex.jpg" length_s="1" length_t="1" />
-    	<texture id="board2" file="./resources/images/boardtex2.jpg" length_s="1" length_t="1" />
-		<texture id="board1" file="./resources/images/board1.jpg" length_s="1" length_t="1" />
+    <texture id="board" file="./resources/images/boardtex.jpg" length_s="1" length_t="1" />
+    <texture id="board2" file="./resources/images/boardtex2.jpg" length_s="1" length_t="1" />
 	</textures>
 
 	<materials>
@@ -186,38 +162,6 @@
             <ambient r="0" g="0" b="0" a="1" />
             <diffuse r="1" g="1" b="1" a="1" />
             <specular r="0" g="0" b="0" a="1" />
-            <shininess value="10" />
-        </material>
-
-		<material id="color1" >
-            <emission r="0" g="0" b="0" a="1" />
-            <ambient r="0.92" g="0.88" b="0.78" a="1" />
-            <diffuse r="0" g="0" b="0" a="0" />
-            <specular r="0" g="0" b="0" a="0" />
-            <shininess value="10" />
-        </material>
-
-        <material id="color2" >
-            <emission r="0" g="0" b="0" a="1" />
-            <ambient r="0.51" g="0.25" b="0" a="1" />
-            <diffuse r="0" g="0" b="0" a="0" />
-            <specular r="0" g="0" b="0" a="0" />
-            <shininess value="10" />
-        </material>
-
-        <material id="pieceMat1" >
-            <emission r="0" g="0" b="0" a="1" />
-            <ambient r="0" g="0" b="1" a="1" />
-            <diffuse r="0" g="0" b="0" a="0" />
-            <specular r="0" g="0" b="0" a="0" />
-            <shininess value="10" />
-        </material>
-
-        <material id="pieceMat2" >
-            <emission r="0" g="0" b="0" a="1" />
-            <ambient r="1" g="0" b="0" a="1" />
-            <diffuse r="0" g="0" b="0" a="0" />
-            <specular r="0" g="0" b="0" a="0" />
             <shininess value="10" />
         </material>
     </materials>
@@ -328,10 +272,6 @@
 			<vehicle/>
 		</primitive>
 
-		<primitive id="piece">
-            <piece size="2"/>
-        </primitive>
-
 		<primitive id="chess">
       <chessboard du="8" dv="8" textureref="board" su="1" sv="0">
            <c1 r="1" g="0.5" b="0" a="1" />
@@ -377,7 +317,6 @@
             	<componentref id= "DiscoBall" />
 				<componentref id= "Earth" />
 				<componentref id= "Papel" />
-				<gameboard tilesize="1" tex="board1" c1="color1" c2="color2" pc1="pieceMat1" pc2="pieceMat2" ptex="board1"/>
             </children>
         </component>
 		
