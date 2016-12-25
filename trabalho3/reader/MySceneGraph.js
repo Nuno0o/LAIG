@@ -871,18 +871,6 @@ function Component(graph,comp){
 	}
 	var compref = child[0].getElementsByTagName('componentref');
 	var primref = child[0].getElementsByTagName('primitiveref');
-
-	this.gameboard = child[0].getElementsByTagName('gameboard');
-	if (this.gameboard.length != 0){ 
-		this.gameboard_tilesize = parseInt(this.gameboard[0].attributes.getNamedItem("tilesize").value);
-		this.gameboard_c1 = this.gameboard[0].attributes.getNamedItem("c1").value;
-		this.gameboard_c2 = this.gameboard[0].attributes.getNamedItem("c2").value;
-		this.gameboard_tex = this.gameboard[0].attributes.getNamedItem("tex").value;
-		this.gameboard_pc1 = this.gameboard[0].attributes.getNamedItem("pc1").value;
-		this.gameboard_pc2 = this.gameboard[0].attributes.getNamedItem("pc2").value;
-		this.gameboard_ptex = this.gameboard[0].attributes.getNamedItem("ptex").value;
-	
-	}
 	
 	for(var j = 0;j < primref.length;j++){
 		var found = false;
@@ -967,6 +955,26 @@ MySceneGraph.prototype.parseComponents = function(rootElement){
     }
 }
 
+MySceneGraph.prototype.parseGameboard = function(rootElement){
+	var elem = rootElement.getElementsByTagName('gameboard');
+
+	if(elem[0] == null){
+		this.gameboard = null;
+		return null;
+	}
+
+	this.gameboard = new Object();
+
+    this.gameboard.tilesize = parseInt(elem[0].attributes.getNamedItem("tilesize").value);
+	this.gameboard.c1 = elem[0].attributes.getNamedItem("c1").value;
+	this.gameboard.c2 = elem[0].attributes.getNamedItem("c2").value;
+	this.gameboard.tex = elem[0].attributes.getNamedItem("tex").value;
+	this.gameboard.pc1 = elem[0].attributes.getNamedItem("pc1").value;
+	this.gameboard.pc2 = elem[0].attributes.getNamedItem("pc2").value;
+	this.gameboard.ptex = elem[0].attributes.getNamedItem("ptex").value;
+
+}
+
 
 MySceneGraph.prototype.verifyComponents = function(){
 	for(var i = 0;i < this.components.length;i++){
@@ -1048,6 +1056,11 @@ MySceneGraph.prototype.dsxParser=function (rootElement) {
 	//verify if components exist
 
 	this.errMsg = this.verifyComponents(rootElement);
+	if (this.errMsg != null) return this.errMsg;
+
+	//verify if gameboard exists
+
+	this.errMsg = this.parseGameboard(rootElement);
 	if (this.errMsg != null) return this.errMsg;
 
 }

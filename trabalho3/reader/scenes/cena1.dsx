@@ -126,6 +126,8 @@
 
     </primitives>
 
+    <gameboard tilesize="1" tex="board1" c1="color1" c2="color2" pc1="pieceMat1" pc2="pieceMat2" ptex="board1"/>
+
     <components>
 
         <component id="root" >
@@ -139,7 +141,6 @@
             <children>
                 <componentref id="sky"/>
                 <componentref id="plane"/>
-                <gameboard tilesize="1" tex="board1" c1="color1" c2="color2" pc1="pieceMat1" pc2="pieceMat2" ptex="board1"/>
             </children>
         </component>
 
