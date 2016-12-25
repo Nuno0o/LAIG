@@ -36,6 +36,7 @@ Game.prototype.makePlay = function(pushPlay, play){
     // pass the turn
     if(!play.isGameOver){
         this.gameboard.board.nextTurn();
+        this.scene.inBotPlay = false;
     }
     else {
         console.log("GAME OVER!");

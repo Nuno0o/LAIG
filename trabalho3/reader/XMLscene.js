@@ -701,6 +701,8 @@ XMLscene.prototype.applyConfig = function(){
 	}
 	else this.game.gameboard.board.setPlayerType(2, player2);
 
+	this.inBotPlay = false;
+
 }
 
 // -----------------------------------------------------------------------------------------------------
@@ -897,15 +899,30 @@ XMLscene.prototype.update = function(currTime){
 
 XMLscene.prototype.logPicking = function (){
 	if (this.pickMode == false) {
+
+		if (this.inBotPlay){
+			return;
+		}
+
+		if (this.currentPlayerIsBot()){
+			this.inBotPlay = true;
+			this.requestPlay(-1);
+			return;
+		} else this.inBotPlay = false;
+
 		if (this.pickResults != null && this.pickResults.length > 0) {
 			for (var i=0; i< this.pickResults.length; i++) {
 				var obj = this.pickResults[i][0];
 				if (obj)
 				{
 					var customId = this.pickResults[i][1];	
-					this.game.gameboard.setSelected(customId);
-					this.game.prologinput.changeSelected(customId);
-					this.pressedId = customId;
+
+					if (this.game.runningGameFilm){
+						return;
+					} 
+
+					this.requestPlay(customId);
+
 				}
 			}
 			this.pickResults.splice(0,this.pickResults.length);
@@ -913,8 +930,66 @@ XMLscene.prototype.logPicking = function (){
 	}
 }
 
+XMLscene.prototype.currentPlayerIsBot = function(){
+	if (this.game.gameboard.board.currPlayer == 1){
+		if (this.game.gameboard.board.player1Type == 1 || this.game.gameboard.board.player1Type == 2){
+			return true;
+		}
+		return false;
+	}
+	else {
+		if (this.game.gameboard.board.player2Type == 1 || this.game.gameboard.board.player2Type == 2){
+			return true;
+		}
+		return false;
+	}
+	return false;
+}
+
+XMLscene.prototype.requestPlay = function(customId){
+	if (this.game.gameboard.board.currPlayer == 1){
+		switch(this.game.gameboard.board.player1Type){
+			case 0: {
+				this.game.gameboard.setSelected(customId);
+				this.game.prologinput.changeSelected(customId);
+				this.pressedId = customId;
+				break;
+			}
+			case 1: {
+				if (!this.game.animatingPiece) this.game.prologinput.getBotPlay(0);
+				break;
+			}
+			case 2: {
+				if (!this.game.animatingPiece) this.game.prologinput.getBotPlay(1);
+				break;
+			}
+			default: break;
+		}
+	}
+	else {
+		switch(this.game.gameboard.board.player2Type){
+			case 0: {
+				this.game.gameboard.setSelected(customId);
+				this.game.prologinput.changeSelected(customId);
+				this.pressedId = customId;
+				break;
+			}
+			case 1: {
+				if (!this.game.animatingPiece) this.game.prologinput.getBotPlay(0);
+				break;
+			}
+			case 2: {
+				if (!this.game.animatingPiece) this.game.prologinput.getBotPlay(1);
+				break;
+			}
+			default: break;
+		}
+	}
+}
+
+
 XMLscene.prototype.display = function () {
-	this.logPicking();
+
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 	this.updateProjectionMatrix();
@@ -935,8 +1010,11 @@ XMLscene.prototype.display = function () {
 			this.displayPrimToAnimation(this.listReadyToDisplay[i]);
 		}
 
-		if (this.game != null){
+		if (this.game != null) {
+			this.logPicking();
+
 			this.game.gameboard.display();
+
 		}
 	}	
 

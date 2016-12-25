@@ -52,7 +52,7 @@ MySceneInterface.prototype.processKeyDown = function(event) {
 		case (77): this.scene.cycleMaterials(); break;
 
 		case (81): {
-			this.scene.prologinput.makeRequest("quit");
+			this.scene.game.prologinput.makeRequest("quit");
 			break;
 		}
 	}
