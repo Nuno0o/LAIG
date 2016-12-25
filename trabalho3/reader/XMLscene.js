@@ -397,6 +397,20 @@ XMLscene.prototype.initPrimitives = function(){
     }
 }
 
+
+XMLscene.prototype.initGameboard = function(){
+	if (this.graph.gameboard != null){
+		this.hasGameboard = true;
+
+		this.gameboard_tilesize = this.graph.gameboard.tilesize;
+		this.gameboard_c1 = this.graph.gameboard.c1;
+		this.gameboard_c2 = this.graph.gameboard.c2;
+		this.gameboard_tex = this.graph.gameboard.tex;
+		this.gameboard_pc1 = this.graph.gameboard.pc1;
+		this.gameboard_pc2 = this.graph.gameboard.pc2;
+		this.gameboard_ptex = this.graph.gameboard.ptex;
+	}
+}
 // ----------------- COMPONENTS ----------------------
 
 function ToDisplay(primitive, transformations, mats, tex, anims){
@@ -632,17 +646,6 @@ XMLscene.prototype.calcAndDisplayGraph = function(graphNode, transformations, ma
 	var newAnims = this.getAnims_(this.graph.components[graphNode.id], anims);
 	this.injectAnimationTransformations(transformations, newAnims[newAnims.length - 1].length);
 
-	if (graphNode.gameboard.length != 0){
-		this.hasGameboard = true;
-
-		this.gameboard_tilesize = graphNode.gameboard_tilesize;
-		this.gameboard_c1 = graphNode.gameboard_c1;
-		this.gameboard_c2 = graphNode.gameboard_c2;
-		this.gameboard_tex = graphNode.gameboard_tex;
-		this.gameboard_pc1 = graphNode.gameboard_pc1;
-		this.gameboard_pc2 = graphNode.gameboard_pc2;
-		this.gameboard_ptex = graphNode.gameboard_ptex;
-}
 
 	for (var i in graphNode.primitiverefs){
 		mats = this.getMats(graphNode, mats);
@@ -744,6 +747,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.getTransformations();
 	this.initPrimitives();
 	this.initComponents();
+	this.initGameboard();
 
 	this.cameraAnimationsGo = false;
 	this.canChangeCamera = true;
