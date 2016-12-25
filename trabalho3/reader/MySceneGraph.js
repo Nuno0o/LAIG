@@ -757,7 +757,7 @@ function Primitive(prim){
 			return null;
 
 	}
-	if(this.name = "piece"){
+	if(this.name == "piece"){
 		this.size = parseFloat(prim.children[0].attributes.getNamedItem("size").value);
 			return null;
 	}
