@@ -110,6 +110,20 @@ parse_input(makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn
 parse_input(makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success)) :-
 	IvoryStackOut = IvoryStack, CigarStackOut = CigarStack, GameOver = false, Success = false.
 
+parse_input(insistOnCorrectBotRandomPlay(Player,(IvoryStackIn,CigarStackIn,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success, Play)) :-
+	insistOnCorrectBotRandomPlay(Player, Play, (IvoryStackIn, CigarStackIn, BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOver),
+	Success = true.
+
+parse_input(insistOnCorrectBotRandomPlay(Player,(IvoryStackIn,CigarStackIn,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success, Play)) :-
+	IvoryStackOut = IvoryStack, CigarStackOut = CigarStack, GameOver = false, Success = false.
+
+parse_input(playBestBot(Player,(IvoryStackIn,CigarStackIn,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success, Play)) :-
+	playBestBot(Player, Play, (IvoryStackIn, CigarStackIn, BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOver),
+	Success = true.
+
+parse_input(playBestBot(Player,(IvoryStackIn,CigarStackIn,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success, Play)) :-
+	IvoryStackOut = IvoryStack, CigarStackOut = CigarStack, GameOver = false, Success = false.
+
 parse_input(quit, goodbye).
 
 %parse_input(+InputFunction, %OutputString) :- ...
