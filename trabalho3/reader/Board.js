@@ -8,7 +8,6 @@
 function Board(scene, dimX, dimY, tileSize){
 
 	this.scene = scene;
-	this.tileSize = tileSize;
 
 	this.c1 = scene.gameboard_c1;
 	this.c2 = scene.gameboard_c2;
@@ -40,6 +39,8 @@ function Board(scene, dimX, dimY, tileSize){
 	this.initTiles();
 
 	this.turnTimer = new TurnTimer(scene, 15);
+
+	this.scoreboard = new Scoreboard(scene);
 }
 
 /*
@@ -60,7 +61,7 @@ Board.prototype.getTile = function(x,y){
 Board.prototype.initTiles = function(){
 	for (var y = 0; y < this.dimY; y++){
 		for(var x = 0; x < this.dimX; x++){
-			this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.tileSize,y*this.dimX + x,this.pc1,this.pc2,this.ptex);
+			this.tiles[y*this.dimX + x] = new Tile(this.scene, this, this.scene.gameboard_tilesize,y*this.dimX + x,this.pc1,this.pc2,this.ptex);
 		}
 	}
 }
@@ -115,18 +116,18 @@ Board.prototype.display = function(){
 						this.scene.listAppearances[this.pc2].apply();
 					}
 				}
-				this.scene.translate(this.tileSize * x, 0, this.tileSize * y);
+				this.scene.translate(this.scene.gameboard_tilesize * x, 0, this.scene.gameboard_tilesize * y);
 				this.tiles[y*this.dimX + x].display();
 			this.scene.popMatrix();
 		}
 	}
 	this.scene.pushMatrix();
-		this.scene.translate(-2 * this.tileSize,0,0);
+		this.scene.translate(-2 * this.scene.gameboard_tilesize,0,0);
 		this.scene.rotate(Math.PI/2,1,0,0);
 		this.team1aux.display();
 	this.scene.popMatrix();
 	this.scene.pushMatrix();
-		this.scene.translate(2+(this.tileSize*(this.dimX-1)),0,(this.tileSize*(this.dimY-1)));
+		this.scene.translate(2+(this.scene.gameboard_tilesize*(this.dimX-1)),0,(this.scene.gameboard_tilesize*(this.dimY-1)));
 		this.scene.rotate(Math.PI/2,1,0,0);
 		this.team2aux.display();
 	this.scene.popMatrix();
@@ -138,8 +139,11 @@ Board.prototype.display = function(){
 			this.scene.listAppearances[this.c1].apply();
 
 			this.scene.rotate(Math.PI/2, 0, 1, 0);
-			this.scene.translate(-((this.tileSize)*(this.dimX -1) / 2), 1, - this.tileSize / 2  - this.tileSize/4);
+			this.scene.translate(-((this.scene.gameboard_tilesize)*(this.dimX -1) / 2), 1, - this.scene.gameboard_tilesize / 2  - this.scene.gameboard_tilesize/4);
 			this.turnTimer.display(this.scene.listAppearances[this.pc1]);
+			this.scene.translate(0,2,0);
+			this.scene.listAppearances[this.c1].apply();
+			this.scoreboard.display();
 		this.scene.popMatrix();
 		this.scene.pushMatrix();
 
@@ -147,8 +151,11 @@ Board.prototype.display = function(){
 			this.scene.listAppearances[this.c2].apply();
 
 			this.scene.rotate(-Math.PI/2, 0, 1, 0);
-			this.scene.translate(((this.tileSize)*(this.dimX -1) / 2),1, -(this.tileSize / 2 + this.tileSize /4 + this.dimY - 1));
+			this.scene.translate(((this.scene.gameboard_tilesize)*(this.dimX -1) / 2),1, -(this.scene.gameboard_tilesize / 2 + this.scene.gameboard_tilesize /4 + this.dimY - 1));
 			this.turnTimer.display(this.scene.listAppearances[this.pc2]);
+			this.scene.translate(0,2,0);
+			this.scene.listAppearances[this.c2].apply();
+			this.scoreboard.display();
 		this.scene.popMatrix();	
 	this.scene.popMatrix();
 		
