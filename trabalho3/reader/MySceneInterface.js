@@ -14,28 +14,41 @@ MySceneInterface.prototype.init = function(application) {
 };
 
 MySceneInterface.prototype.addGameControls = function(){
-	var group = this.gui.addFolder("Game Controls");
-	group.open();
-	group.add(this.scene, 'switchGameCamera');
-	group.add(this.scene, 'undo');
-	group.add(this.scene, 'runGameFilm');
+	if(this.addedGameControls == null){
+		var group = this.gui.addFolder("Game Controls");
+		group.open();
+		group.add(this.scene, 'switchGameCamera');
+		group.add(this.scene, 'undo');
+		group.add(this.scene, 'runGameFilm');
+		this.addedGameControls = true;
+	}
 }
 
 MySceneInterface.prototype.addGameVars = function(){
-	var group = this.gui.addFolder("Game Config");
-	group.open();
-	group.add(this.scene, "player1", {Human: 0, Bot: 1});
-	group.add(this.scene, "player2", {Human: 0, Bot: 1});
-	group.add(this.scene, "botDifficulty", { Random: 0, Smart: 1 });
-	group.add(this.scene, "applyConfig");
+	if(this.addedGameVars == null){
+		var group = this.gui.addFolder("Game Config");
+		group.open();
+		group.add(this.scene, "player1", {Human: 0, Bot: 1});
+		group.add(this.scene, "player2", {Human: 0, Bot: 1});
+		group.add(this.scene, "botDifficulty", { Random: 0, Smart: 1 });
+		group.add(this.scene, "applyConfig");
+	}
+	this.addedGameVars = true;
 }
 
 MySceneInterface.prototype.addLights = function(){
-	var group = this.gui.addFolder("Lights");
-	group.open();
+	if(this.groupLights != null){
+		for(var i = 0; i < this.listLights.length;i++){
+			this.groupLights.remove(this.listLights[i]);
+		}
+	}else{
+		this.groupLights = this.gui.addFolder("Lights");
+	}
+	this.groupLights.open();
+	this.listLights = [];
 	for (var i = 0; i < this.scene.nlights; i++){
 		var name = 'light' + i;
-		group.add(this.scene, name);
+		this.listLights[i] = this.groupLights.add(this.scene, name);
 	}
 }
 

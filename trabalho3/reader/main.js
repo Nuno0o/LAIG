@@ -31,6 +31,7 @@ main=function()
 
 	var filename=getUrlVars()['file'] || "cena2.dsx";
 
+
 	// create and load graph, and associate it to scene.
 	// Check console for loading errors
 	var myGraph = new MySceneGraph(filename, myScene);
