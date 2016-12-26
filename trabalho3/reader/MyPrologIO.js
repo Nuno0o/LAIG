@@ -37,6 +37,7 @@ PrologInput.prototype.changeSelected = function(ind){
 
         var request = new Request(player, convertedXY[0], convertedXY[1], convertedTarget[0], convertedTarget[1], team1queen, team2queen, board, false, 0);
 		this.makeRequest(request);
+
     }
 }
 
@@ -104,7 +105,8 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
     			prologInput.game.setCurrentPieceAnimation(pieceAnimation);
 
     			prologInput.gameboard.board.tiles[requestObject.y*12 + requestObject.x].setInAnimation(true, prologInput.game.currentPieceAnimation);
-            }
+
+           }
         }
         else {
             var play = getPlayFromReply(response);

@@ -26,6 +26,9 @@ Game.prototype.setBoard = function(newboard){
 }
 
 Game.prototype.makePlay = function(pushPlay, play){
+
+	this.gameboard.board.selectedTile = 144;
+
 	if (pushPlay) this.playStack.push(play);
 
 	var indi = play.x + play.y * 12;
