@@ -38,7 +38,8 @@ function Board(scene, dimX, dimY, tileSize){
 	this.tiles = [];
 	this.initTiles();
 
-	this.turnTimer = new TurnTimer(scene, 15);
+	this.turnTimer1 = new TurnTimer(scene, 15);
+	this.turnTimer2 = new TurnTimer(scene, 15);
 
 	this.scoreboard = new Scoreboard(scene);
 }
@@ -66,17 +67,44 @@ Board.prototype.initTiles = function(){
 	}
 }
 
-Board.prototype.setTurnTime = function(turnTime){
-	this.turnTimer.elapsed = 0;
-	this.turnTimer.maxTurnTime = turnTime * 1000;
+Board.prototype.setTurnTime = function(turnTime, timer){
+
+	if (timer == 1){
+		this.turnTimer1.elapsed = 0;
+		this.turnTimer1.maxTurnTime = turnTime * 1000;
+	}else {
+		this.turnTimer2.elapsed = 0;
+		this.turnTimer2.maxTurnTime = turnTime * 1000;
+	}
+	
 }
 
 Board.prototype.nextTurn = function(){
 	if(this.currPlayer == 1){
 		this.currPlayer = 2;
-	}else this.currPlayer = 1;
+		this.turnTimer2.resetTime();
+	}else{
+		this.currPlayer = 1;
+		this.turnTimer1.resetTime();
+	}
 	
 	this.currTurn++;
+}
+
+Board.prototype.updateTimer = function(frameDiff){
+	if (this.currPlayer == 1){
+		this.turnTimer1.update(frameDiff);
+	}else {
+		this.turnTimer2.update(frameDiff);
+	}
+}
+
+Board.prototype.timeUp =function(){
+	if (this.currPlayer == 1){
+		return this.turnTimer1.timeUp;
+	}else {
+		return this.turnTimer2.timeUp;
+	}
 }
 
 Board.prototype.initPieces = function(){
@@ -140,7 +168,7 @@ Board.prototype.display = function(){
 			this.scene.rotate(Math.PI/2, 0, 1, 0);
 			this.scene.translate(-((this.scene.gameboard_tilesize)*(this.dimX -1) / 2), this.scene.gameboard_tilesize, - 3*this.scene.gameboard_tilesize/4);
 			this.scene.scale(this.scene.gameboard_tilesize,this.scene.gameboard_tilesize,this.scene.gameboard_tilesize);
-			this.turnTimer.display(this.scene.listAppearances[this.pc1]);
+			this.turnTimer1.display(this.scene.listAppearances[this.pc1]);
 			this.scene.translate(0,2,0);
 			this.scene.listAppearances[this.c1].apply();
 			this.scoreboard.display();
@@ -153,7 +181,7 @@ Board.prototype.display = function(){
 			this.scene.rotate(-Math.PI/2, 0, 1, 0);
 			this.scene.translate(((this.scene.gameboard_tilesize)*(this.dimX -1) / 2), this.scene.gameboard_tilesize, - (this.scene.gameboard_tilesize * (this.dimX)) + this.scene.gameboard_tilesize/4);
 			this.scene.scale(this.scene.gameboard_tilesize,this.scene.gameboard_tilesize,this.scene.gameboard_tilesize);
-			this.turnTimer.display(this.scene.listAppearances[this.pc2]);
+			this.turnTimer2.display(this.scene.listAppearances[this.pc2]);
 			this.scene.translate(0,2,0);
 			this.scene.listAppearances[this.c2].apply();
 			this.scoreboard.display();

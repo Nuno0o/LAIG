@@ -706,7 +706,8 @@ XMLscene.prototype.applyConfig = function(){
 
 	this.game.resetGame();
 
-	this.game.gameboard.board.setTurnTime(turnTime);
+	this.game.gameboard.board.setTurnTime(turnTime, 1);
+	this.game.gameboard.board.setTurnTime(turnTime, 2);
 
 	if (player1) {
 		this.game.gameboard.board.setPlayerType(1, player1 + botDifficulty);
@@ -922,7 +923,7 @@ XMLscene.prototype.update = function(currTime){
 				}
 			}
 
-			this.game.gameboard.board.turnTimer.update(this.frameDiff);
+			this.game.gameboard.board.updateTimer(this.frameDiff);
 
 		}
 	}
@@ -930,10 +931,9 @@ XMLscene.prototype.update = function(currTime){
 
 XMLscene.prototype.logPicking = function (){
 
-	if (this.game.gameboard.board.turnTimer.timeUp){
+	if (this.game.gameboard.board.timeUp()){
 		this.game.gameboard.board.nextTurn();
         this.inBotPlay = false;
-        this.game.gameboard.board.turnTimer.resetTime();
         return;
 	}
 
