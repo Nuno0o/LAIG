@@ -55,6 +55,16 @@ Board.prototype.getTile = function(x,y){
 	return this.tiles[y*this.dimX + x];
 }
 
+Board.prototype.getQueenSize = function(team){
+
+	var size = 0;
+	for(var i = 0;i < this.tiles.length;i++){
+		if(this.tiles[i].pieces.length > 1 && this.tiles[i].pieces[0].team == team && this.tiles[i].pieces.length > size)
+			size = this.tiles[i].pieces.length;
+	}
+	return size;
+}
+
 /*
 	Lay out the board.
 */
@@ -143,7 +153,7 @@ Board.prototype.display = function(){
 			this.turnTimer.display(this.scene.listAppearances[this.pc1]);
 			this.scene.translate(0,2,0);
 			this.scene.listAppearances[this.c1].apply();
-			this.scoreboard.display();
+			this.scoreboard.display(this.getQueenSize(1));
 		this.scene.popMatrix();
 		this.scene.pushMatrix();
 
@@ -155,7 +165,7 @@ Board.prototype.display = function(){
 			this.turnTimer.display(this.scene.listAppearances[this.pc2]);
 			this.scene.translate(0,2,0);
 			this.scene.listAppearances[this.c2].apply();
-			this.scoreboard.display();
+			this.scoreboard.display(this.getQueenSize(2));
 		this.scene.popMatrix();	
 	this.scene.popMatrix();
 		
@@ -219,12 +229,7 @@ GameBoard.prototype.setSelected = function(ind){
 }
 
 GameBoard.prototype.getQueenSize = function(team){
-	var size = 0;
-	for(var i = 0;i < this.board.tiles.length;i++){
-		if(this.board.tiles[i].pieces.length > 1 && this.board.tiles[i].pieces[0].team == team && this.board.tiles[i].pieces.length > size)
-			size = this.board.tiles[i].pieces.length;
-	}
-	return size;
+	return this.board.getQueenSize(team);
 }
 /*
 	Move
