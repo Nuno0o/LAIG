@@ -35,7 +35,18 @@ XMLscene.prototype.init = function (application) {
 	this.lightCheckBoxesUpdate();
 
 	this.setPickEnabled(true);
+
+	this.startListScenes();
 };
+
+XMLscene.prototype.startListScenes = function(){
+	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml
+	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor)
+	this.listScenes = [];
+	this.listScenesSelected = 0;
+	this.listScenes[0] = getUrlVars()['file'] || "cena1.dsx";
+	this.listScenes[1] = getUrlVars()['file'] || "cena2.dsx";
+}
 
 XMLscene.prototype.initLights = function () {
 
@@ -708,6 +719,14 @@ XMLscene.prototype.applyConfig = function(){
 
 }
 
+XMLscene.prototype.switchScene = function(){
+	this.listScenesSelected++;
+	if(this.listScenesSelected>(this.listScenes.length-1))
+		this.listScenesSelected = 0;
+	var myGraph = new MySceneGraph(this.listScenes[this.listScenesSelected], this);
+
+}
+
 // -----------------------------------------------------------------------------------------------------
 // -------------------------------- HANDLER CALLING AND SCENE DISPLAY ----------------------------------
 // -----------------------------------------------------------------------------------------------------
@@ -728,7 +747,6 @@ XMLscene.prototype.onGraphLoaded = function ()
 
 	this.currentGameCamera = -1;
 	this.hasGameboard = false;
-	this.game = null;
 	
 	
 	this.enableTextures(true);
@@ -751,8 +769,9 @@ XMLscene.prototype.onGraphLoaded = function ()
 
 	this.cameraAnimationsGo = false;
 	this.canChangeCamera = true;
-
-	if (this.hasGameboard){
+	//this.gameStarted serve para nao ser inicializado um novo jogo quando a cena muda
+	if (this.hasGameboard && this.gameStarted == null){
+		this.gameStarted = true;
 		this.player1 = 0;
 		this.player2 = 0;
 		this.botDifficulty = 1;
@@ -1016,7 +1035,6 @@ XMLscene.prototype.display = function () {
 
 		if (this.game != null) {
 			this.logPicking();
-
 			this.game.gameboard.display();
 
 		}

@@ -14,26 +14,21 @@ MySceneInterface.prototype.init = function(application) {
 };
 
 MySceneInterface.prototype.addGameControls = function(){
-	if(this.addedGameControls == null){
 		var group = this.gui.addFolder("Game Controls");
 		group.open();
 		group.add(this.scene, 'switchGameCamera');
 		group.add(this.scene, 'undo');
 		group.add(this.scene, 'runGameFilm');
-		this.addedGameControls = true;
-	}
+		group.add(this.scene, "switchScene");
 }
 
 MySceneInterface.prototype.addGameVars = function(){
-	if(this.addedGameVars == null){
 		var group = this.gui.addFolder("Game Config");
 		group.open();
 		group.add(this.scene, "player1", {Human: 0, Bot: 1});
 		group.add(this.scene, "player2", {Human: 0, Bot: 1});
 		group.add(this.scene, "botDifficulty", { Random: 0, Smart: 1 });
 		group.add(this.scene, "applyConfig");
-	}
-	this.addedGameVars = true;
 }
 
 MySceneInterface.prototype.addLights = function(){
