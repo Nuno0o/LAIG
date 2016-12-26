@@ -137,9 +137,9 @@ Board.prototype.display = function(){
 
 			this.scene.listAppearances[this.c1].setTexture(this.scene.listTextures[this.tex].texture);
 			this.scene.listAppearances[this.c1].apply();
-
 			this.scene.rotate(Math.PI/2, 0, 1, 0);
-			this.scene.translate(-((this.scene.gameboard_tilesize)*(this.dimX -1) / 2), 1, - this.scene.gameboard_tilesize / 2  - this.scene.gameboard_tilesize/4);
+			this.scene.translate(-((this.scene.gameboard_tilesize)*(this.dimX -1) / 2), this.scene.gameboard_tilesize, - 3*this.scene.gameboard_tilesize/4);
+			this.scene.scale(this.scene.gameboard_tilesize,this.scene.gameboard_tilesize,this.scene.gameboard_tilesize);
 			this.turnTimer.display(this.scene.listAppearances[this.pc1]);
 			this.scene.translate(0,2,0);
 			this.scene.listAppearances[this.c1].apply();
@@ -151,7 +151,8 @@ Board.prototype.display = function(){
 			this.scene.listAppearances[this.c2].apply();
 
 			this.scene.rotate(-Math.PI/2, 0, 1, 0);
-			this.scene.translate(((this.scene.gameboard_tilesize)*(this.dimX -1) / 2),1, -(this.scene.gameboard_tilesize / 2 + this.scene.gameboard_tilesize /4 + this.dimY - 1));
+			this.scene.translate(((this.scene.gameboard_tilesize)*(this.dimX -1) / 2), this.scene.gameboard_tilesize, - (this.scene.gameboard_tilesize * (this.dimX)) + this.scene.gameboard_tilesize/4);
+			this.scene.scale(this.scene.gameboard_tilesize,this.scene.gameboard_tilesize,this.scene.gameboard_tilesize);
 			this.turnTimer.display(this.scene.listAppearances[this.pc2]);
 			this.scene.translate(0,2,0);
 			this.scene.listAppearances[this.c2].apply();
