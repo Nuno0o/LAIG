@@ -37,6 +37,7 @@ Game.prototype.makePlay = function(pushPlay, play){
     if(!play.isGameOver){
         this.gameboard.board.nextTurn();
         this.scene.inBotPlay = false;
+        this.gameboard.board.turnTimer.resetTime();
     }
     else {
         console.log("GAME OVER!");

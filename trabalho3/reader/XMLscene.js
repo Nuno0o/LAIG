@@ -702,8 +702,11 @@ XMLscene.prototype.applyConfig = function(){
 	var botDifficulty = parseInt(this.botDifficulty);
 	var player1 = parseInt(this.player1);
 	var player2 = parseInt(this.player2);
+	var turnTime = parseInt(this.turnTime);
 
 	this.game.resetGame();
+
+	this.game.gameboard.board.setTurnTime(turnTime);
 
 	if (player1) {
 		this.game.gameboard.board.setPlayerType(1, player1 + botDifficulty);
@@ -775,6 +778,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 		this.player1 = 0;
 		this.player2 = 0;
 		this.botDifficulty = 1;
+		this.turnTime = 15;
 		this.sceneInterface.addGameVars();
 		this.sceneInterface.addGameControls();
 		this.game = new Game(this,
@@ -914,13 +918,25 @@ XMLscene.prototype.update = function(currTime){
 			if (this.game.runningGameFilm){
 				if (!this.game.animatingPiece){
 					this.nextFrame();
+					return;
 				}
 			}
+
+			this.game.gameboard.board.turnTimer.update(this.frameDiff);
+
 		}
 	}
 }
 
 XMLscene.prototype.logPicking = function (){
+
+	if (this.game.gameboard.board.turnTimer.timeUp){
+		this.game.gameboard.board.nextTurn();
+        this.inBotPlay = false;
+        this.game.gameboard.board.turnTimer.resetTime();
+        return;
+	}
+
 	if (this.pickMode == false) {
 
 		if (this.inBotPlay){

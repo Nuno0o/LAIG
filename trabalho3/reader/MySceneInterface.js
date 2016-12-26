@@ -28,6 +28,7 @@ MySceneInterface.prototype.addGameVars = function(){
 		group.add(this.scene, "player1", {Human: 0, Bot: 1});
 		group.add(this.scene, "player2", {Human: 0, Bot: 1});
 		group.add(this.scene, "botDifficulty", { Random: 0, Smart: 1 });
+		group.add(this.scene, "turnTime", 5, 60);
 		group.add(this.scene, "applyConfig");
 }
 

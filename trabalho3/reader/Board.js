@@ -38,6 +38,8 @@ function Board(scene, dimX, dimY, tileSize){
 	// The board's tile set.
 	this.tiles = [];
 	this.initTiles();
+
+	this.turnTimer = new TurnTimer(scene, 15);
 }
 
 /*
@@ -63,11 +65,16 @@ Board.prototype.initTiles = function(){
 	}
 }
 
+Board.prototype.setTurnTime = function(turnTime){
+	this.turnTimer.elapsed = 0;
+	this.turnTimer.maxTurnTime = turnTime * 1000;
+}
+
 Board.prototype.nextTurn = function(){
 	if(this.currPlayer == 1){
 		this.currPlayer = 2;
 	}else this.currPlayer = 1;
-
+	
 	this.currTurn++;
 }
 
@@ -122,6 +129,27 @@ Board.prototype.display = function(){
 		this.scene.translate(2+(this.tileSize*(this.dimX-1)),0,(this.tileSize*(this.dimY-1)));
 		this.scene.rotate(Math.PI/2,1,0,0);
 		this.team2aux.display();
+	this.scene.popMatrix();
+
+	this.scene.pushMatrix();
+		this.scene.pushMatrix();
+
+			this.scene.listAppearances[this.c1].setTexture(this.scene.listTextures[this.tex].texture);
+			this.scene.listAppearances[this.c1].apply();
+
+			this.scene.rotate(Math.PI/2, 0, 1, 0);
+			this.scene.translate(-((this.tileSize)*(this.dimX -1) / 2), 1, - this.tileSize / 2  - this.tileSize/4);
+			this.turnTimer.display(this.scene.listAppearances[this.pc1]);
+		this.scene.popMatrix();
+		this.scene.pushMatrix();
+
+			this.scene.listAppearances[this.c2].setTexture(this.scene.listTextures[this.tex].texture);
+			this.scene.listAppearances[this.c2].apply();
+
+			this.scene.rotate(-Math.PI/2, 0, 1, 0);
+			this.scene.translate(((this.tileSize)*(this.dimX -1) / 2),1, -(this.tileSize / 2 + this.tileSize /4 + this.dimY - 1));
+			this.turnTimer.display(this.scene.listAppearances[this.pc2]);
+		this.scene.popMatrix();	
 	this.scene.popMatrix();
 		
 }
