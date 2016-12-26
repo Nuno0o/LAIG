@@ -237,7 +237,6 @@ GameBoard.prototype.move = function(indi,indf){
 	var ateOne = 0;
 	if(destTile.pieces.length >= 1){
 		ateOne = 1;
-		console.log('COMEUUUU');
 		this.removePieces(indf);
 	}
 	if(originTile.pieces.length == 1){

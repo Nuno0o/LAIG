@@ -130,17 +130,17 @@ Game.prototype.updateCurrentPieceAnimation = function(frameDiff){
 				}
 				else {
 					if (this.gameboard.board.tiles[this.currentPieceAnimation.play.targetX + this.currentPieceAnimation.play.targetY * 12].pieces[0].team == 1) {
-						targetX = -2*this.gameboard.board.tileSize;
+						targetX = -2*this.scene.gameboard_tilesize;
 						targetY = 0;
 					}
 					else {
-						targetX = 2+(this.gameboard.board.tileSize*(this.gameboard.board.dimX-1));
-						targetY = this.gameboard.board.tileSize*(this.gameboard.board.dimY-1);
+						targetX = 2+(this.scene.gameboard_tilesize*(this.gameboard.board.dimX-1));
+						targetY = this.scene.gameboard_tilesize*(this.gameboard.board.dimY-1);
 					}
 					this.currentPieceAnimation = new PieceAnimation(this.gameboard.board.tiles[this.currentPieceAnimation.to[0] + this.currentPieceAnimation.to[1] * 12].pieces,
 																this.currentPieceAnimation.to[0],this.currentPieceAnimation.to[1],
 																targetX,targetY,
-																this.gameboard.board.tileSize,
+																this.scene.gameboard_tilesize,
 																this.currentPieceAnimation.play,
 																false);
 					this.gameboard.board.tiles[this.currentPieceAnimation.play.y*12 + this.currentPieceAnimation.play.x].holdAnimation = true;

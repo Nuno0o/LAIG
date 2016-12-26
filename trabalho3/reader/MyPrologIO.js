@@ -94,11 +94,10 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
 
         if (!requestObject.isBotPlay){
             if (getSuccessFromReply(response) == true) {
-
                 var isGameOver =  getGameOverFromReply(response);
 
                 var pieceAnimation = new PieceAnimation(prologInput.gameboard.board.tiles[requestObject.y*12 + requestObject.x].pieces, 
-                										requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY,  prologInput.gameboard.board.tileSize,
+                										requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY,  prologInput.game.scene.gameboard_tilesize,
                 										new Play(requestObject.player, requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY, isGameOver),
                 										true);
 
@@ -110,7 +109,7 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
         else {
             var play = getPlayFromReply(response);
             var pieceAnimation = new PieceAnimation(prologInput.gameboard.board.tiles[play.y*12 + play.x].pieces, 
-                                                    play.x, play.y, play.targetX, play.targetY,  prologInput.gameboard.board.tileSize,
+                                                    play.x, play.y, play.targetX, play.targetY,  prologInput.game.scene.gameboard_tilesize,
                                                     play,
                                                     true);
             prologInput.game.setCurrentPieceAnimation(pieceAnimation);

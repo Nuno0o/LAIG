@@ -6,7 +6,6 @@ function PieceAnimation(pieces,x,y,targetX,targetY,tileSize,play,tag){
 	this.archHeight = 5;
 
 	this.tileSize = tileSize;
-
 	this.from = [x,y];
 	this.to = [targetX,targetY];
 
