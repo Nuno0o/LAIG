@@ -2,9 +2,9 @@ function Game(scene, gameboard){
 
 	this.gameboard = gameboard;
 	this.scene = scene;
-	
+
 	this.playStack = [];
-	
+
 	this.runningGameFilm = false;
 	this.currentFilmFrame = -1;
 	this.filmStack = [];
@@ -48,8 +48,8 @@ Game.prototype.makePlay = function(pushPlay, play){
 
 Game.prototype.resetGame = function(){
 	this.playStack = [];
-	this.gameboard = new GameBoard(this.scene, 12, 12, this.scene.gameboard_tilesize);
-	
+	this.gameboard = new GameBoard(this.scene,this);
+
 	this.prologinput = new PrologInput(this);
 
 	this.runningGameFilm = false;
@@ -59,8 +59,8 @@ Game.prototype.resetGame = function(){
 Game.prototype.undo = function(){
 	this.playStack.pop();
 
-	this.gameboard = new GameBoard(this.scene, 12, 12, this.scene.gameboard_tilesize);
-	
+	this.gameboard = new GameBoard(this.scene,this);
+
 	this.prologinput = new PrologInput(this);
 
 	if (this.playStack.length == 0) return;
@@ -71,7 +71,7 @@ Game.prototype.undo = function(){
 }
 
 Game.prototype.runGameFilm = function(){
-	this.gameboard = new GameBoard(this.scene, 12, 12, this.scene.gameboard_tilesize);
+	this.gameboard = new GameBoard(this.scene,this);
 	this.prologinput = null;
 
 	this.animatingPiece = false;
@@ -98,7 +98,7 @@ Game.prototype.nextFrame = function(){
 		this.prologinput = new PrologInput(this);
 		return;
 	}
-	
+
 	var currentPlay = this.filmStack[this.currentFilmFrame];
 
 	this.animatingPiece = true;
@@ -148,7 +148,7 @@ Game.prototype.updateCurrentPieceAnimation = function(frameDiff){
 					this.gameboard.board.tiles[this.currentPieceAnimation.play.y*12 + this.currentPieceAnimation.play.x].holdAnimation = true;
 					this.gameboard.board.tiles[this.currentPieceAnimation.from[1]*12 + this.currentPieceAnimation.from[0]].setInAnimation(true, this.currentPieceAnimation);
 					this.animatingPiece = true;
-					
+
 					return;
 				}
 			}

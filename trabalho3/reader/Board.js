@@ -5,9 +5,10 @@
 /*
 	Element representing a board.
 */
-function Board(scene, dimX, dimY, tileSize){
+function Board(scene,game){
 
 	this.scene = scene;
+	this.game = game;
 
 	this.c1 = scene.gameboard_c1;
 	this.c2 = scene.gameboard_c2;
@@ -17,8 +18,8 @@ function Board(scene, dimX, dimY, tileSize){
 	this.ptex = scene.gameboard_ptex;
 
 	// The board's dimensions.
-	this.dimX = dimX;
-	this.dimY = dimY;
+	this.dimX = 12;
+	this.dimY = 12;
 
 	this.selectedTile = 144;
 
@@ -86,7 +87,7 @@ Board.prototype.setTurnTime = function(turnTime, timer){
 		this.turnTimer2.elapsed = 0;
 		this.turnTimer2.maxTurnTime = turnTime * 1000;
 	}
-	
+
 }
 
 Board.prototype.nextTurn = function(){
@@ -97,7 +98,7 @@ Board.prototype.nextTurn = function(){
 		this.currPlayer = 1;
 		this.turnTimer1.resetTime();
 	}
-	
+
 	this.currTurn++;
 }
 
@@ -195,9 +196,9 @@ Board.prototype.display = function(){
 			this.scene.translate(0,2,0);
 			this.scene.listAppearances[this.c2].apply();
 			this.scoreboard.display(this.getQueenSize(2));
-		this.scene.popMatrix();	
+		this.scene.popMatrix();
 	this.scene.popMatrix();
-		
+
 }
 
 Board.prototype.convertToPrologBoard = function() {
@@ -242,10 +243,11 @@ Board.prototype.convertToPrologBoard = function() {
 	Element representing a main board.
 */
 
-function GameBoard (scene, dimX, dimY, tileSize) {
-
+function GameBoard (scene,game) {
+	this.scene = scene;
+	this.game = game;
 	// board element
-	this.board = new Board(scene, dimX, dimY, tileSize);
+	this.board = new Board(scene, game);
 	this.board.initPieces();
 }
 
@@ -343,7 +345,7 @@ function AuxBoard (scene,team) {
 		this.pc = this.scene.gameboard_pc2;
 	}
 
-	
+
 	// board element
 	this.pieces = [];
 
