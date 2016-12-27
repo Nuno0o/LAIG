@@ -11,6 +11,7 @@ function Game(scene, gameboard){
 
 	this.animatingPiece = false;
 	this.currentPieceAnimation = null;
+	this.gameOver = false;
 
 	this.prologinput = new PrologInput(this);
 }
@@ -43,10 +44,12 @@ Game.prototype.makePlay = function(pushPlay, play){
     }
     else {
         console.log("GAME OVER!");
+				this.gameOver = true;
     }
 }
 
 Game.prototype.resetGame = function(){
+	this.gameover = false;
 	this.playStack = [];
 	this.gameboard = new GameBoard(this.scene,this);
 
@@ -57,6 +60,7 @@ Game.prototype.resetGame = function(){
 }
 
 Game.prototype.undo = function(){
+	this.gameOver = false;
 	this.playStack.pop();
 
 	this.gameboard = new GameBoard(this.scene,this);
@@ -71,6 +75,7 @@ Game.prototype.undo = function(){
 }
 
 Game.prototype.runGameFilm = function(){
+	this.gameOver = false;
 	this.gameboard = new GameBoard(this.scene,this);
 	this.prologinput = null;
 

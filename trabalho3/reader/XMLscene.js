@@ -25,13 +25,13 @@ XMLscene.prototype.init = function (application) {
     this.gl.depthFunc(this.gl.LEQUAL);
 
 	this.axis=new CGFaxis(this);
-	
+
 	this.lightValues = [];
-	
+
 	for (var i = 0; i < this.lights.length; i++){
 		this.lightValues[i] = false;
 	}
-	
+
 	this.lightCheckBoxesUpdate();
 
 	this.setPickEnabled(true);
@@ -63,7 +63,7 @@ XMLscene.prototype.setDefaultAppearance = function () {
     this.setAmbient(0.2, 0.4, 0.8, 1.0);
     this.setDiffuse(0.2, 0.4, 0.8, 1.0);
     this.setSpecular(0.2, 0.4, 0.8, 1.0);
-    this.setShininess(10.0);	
+    this.setShininess(10.0);
 };
 
 // -----------------------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ XMLscene.prototype.setDefaultAppearance = function () {
 // ------------------------ AXIS -----------------------------
 
 XMLscene.prototype.initGraphAxis = function() {
-	this.axis = new CGFaxis(this, this.graph.axis_length);	
+	this.axis = new CGFaxis(this, this.graph.axis_length);
 }
 
 // ----------------------- LIGHTING --------------------------
@@ -167,7 +167,7 @@ XMLscene.prototype.initGraphLights = function(){
 									this.graph.listOmni[i].specular_g,
 									this.graph.listOmni[i].specular_b,
 									this.graph.listOmni[i].specular_a);
-		
+
 		if (this.graph.listOmni[i].enabled){
 			this.lights[i].enable();
 			this.lightValues[i] = true;
@@ -180,7 +180,7 @@ XMLscene.prototype.initGraphLights = function(){
 	}
 	for (var i = 0; i < this.graph.listSpot.length ; i++){
 		var j = i + this.graph.listOmni.length;
-		
+
 		this.lights[j].setPosition(	this.graph.listSpot[i].location_x,
 									this.graph.listSpot[i].location_y,
 									this.graph.listSpot[i].location_z, 1);
@@ -199,17 +199,17 @@ XMLscene.prototype.initGraphLights = function(){
 		this.lights[j].setSpotDirection(this.graph.listSpot[i].target_x-this.graph.listSpot[i].location_x,
 										this.graph.listSpot[i].target_y-this.graph.listSpot[i].location_y,
 										this.graph.listSpot[i].target_z-this.graph.listSpot[i].location_z);
-		
+
 		this.lights[j].setSpotExponent(this.graph.listSpot[i].exponent);
 
 		this.lights[j].setSpotCutOff(Math.PI * this.graph.listSpot[i].angle / 180);
-		
-		if (this.graph.listSpot[i].enabled){ 
+
+		if (this.graph.listSpot[i].enabled){
 			this.lights[j].enable();
 			this.lightValues[j] = true;
 		}
 		else this.lights[j].disable();
-		
+
 		this.lights[j].setVisible(true);
 		this.lights[i].update();
 	}
@@ -449,7 +449,7 @@ ToDisplay.prototype.incrementActiveMat = function(){
 
 ToDisplay.prototype.incrementCurrentAnimation = function(layer){
 	this.currentAnimations[layer]++;
-}	
+}
 
 XMLscene.prototype.computeTransformationList = function(transformations){
 
@@ -577,7 +577,7 @@ XMLscene.prototype.getAnims_ = function(graphNode, anims){
 	for (var i in graphNode.animationrefs){
 		currAnims.push(this.cloneAnim(graphNode.animationrefs[i]));
 	}
-	//if(currAnims.length > 0) 
+	//if(currAnims.length > 0)
 	newAnims.push(currAnims);
 	return newAnims;
 }
@@ -697,7 +697,7 @@ XMLscene.prototype.nextFrame = function(){
 	this.game.nextFrame();
 }
 
-XMLscene.prototype.applyConfig = function(){
+XMLscene.prototype.restartGame = function(){
 
 	var botDifficulty = parseInt(this.botDifficulty);
 	var player1 = parseInt(this.player1);
@@ -741,7 +741,7 @@ XMLscene.prototype.cycleMaterials = function(){
 	}
 }
 
-XMLscene.prototype.onGraphLoaded = function () 
+XMLscene.prototype.onGraphLoaded = function ()
 {
 	this.setUpdatePeriod(10);
 	this.frameDiff = 0;
@@ -751,13 +751,13 @@ XMLscene.prototype.onGraphLoaded = function ()
 
 	this.currentGameCamera = -1;
 	this.hasGameboard = false;
-	
-	
+
+
 	this.enableTextures(true);
-	
+
 	this.listReadyToDisplay = [];
 	this.activeAnimations = [];
-	
+
 	this.initGraphGlobalLighting();
 	this.initGraphAxis();
 	this.initGraphCameras();
@@ -803,8 +803,8 @@ XMLscene.prototype.getFrameDiff = function(currTime){
 }
 
 XMLscene.prototype.runAnimations = function(frameDiff){
-	
-	for (var i in this.listReadyToDisplay){	
+
+	for (var i in this.listReadyToDisplay){
 
 		// Primitive has no animations
 		if (this.listReadyToDisplay[i].animations.length == 0) continue;
@@ -954,18 +954,18 @@ XMLscene.prototype.logPicking = function (){
 				var obj = this.pickResults[i][0];
 				if (obj)
 				{
-					var customId = this.pickResults[i][1];	
+					var customId = this.pickResults[i][1];
 
 					if (this.game.runningGameFilm){
 						return;
-					} 
+					}
 
 					this.requestPlay(customId);
 
 				}
 			}
 			this.pickResults.splice(0,this.pickResults.length);
-		}		
+		}
 	}
 }
 
@@ -1034,17 +1034,17 @@ XMLscene.prototype.display = function () {
 	this.updateProjectionMatrix();
     this.loadIdentity();
 	this.applyViewMatrix();
-	
+
 	this.setDefaultAppearance();
 
 	if (this.graph.loadedOk)
-	{	
+	{
 
 		this.updateLights();
 		for (var i = 0; i < this.lights.length; i++){
 			this.lights[i].update();
 		}
-		
+
 		for (var i in this.listReadyToDisplay){
 			this.displayPrimToAnimation(this.listReadyToDisplay[i]);
 		}
@@ -1054,6 +1054,6 @@ XMLscene.prototype.display = function () {
 			this.game.gameboard.display();
 
 		}
-	}	
+	}
 
 };

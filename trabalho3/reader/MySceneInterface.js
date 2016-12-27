@@ -7,9 +7,9 @@ MySceneInterface.prototype.constructor = MySceneInterface;
 
 MySceneInterface.prototype.init = function(application) {
     CGFinterface.prototype.init.call(this, application);
-	
+
 	this.gui = new dat.GUI( {autoplace: false, width: 300 });
-	
+
     return true;
 };
 
@@ -29,7 +29,7 @@ MySceneInterface.prototype.addGameVars = function(){
 		group.add(this.scene, "player2", {Human: 0, Bot: 1});
 		group.add(this.scene, "botDifficulty", { Random: 0, Smart: 1 });
 		group.add(this.scene, "turnTime", 5, 60);
-		group.add(this.scene, "applyConfig");
+		group.add(this.scene, "restartGame");
 }
 
 MySceneInterface.prototype.addLights = function(){
@@ -49,7 +49,7 @@ MySceneInterface.prototype.addLights = function(){
 }
 
 MySceneInterface.prototype.processKeyDown = function(event) {
-    switch (event.keyCode) 
+    switch (event.keyCode)
     {
     	// V
 		case (86): //this.scene.cycleCamera(); this.setActiveCamera(this.scene.camera); break;
@@ -57,7 +57,7 @@ MySceneInterface.prototype.processKeyDown = function(event) {
 			this.scene.switchGameCamera();
 			break;
 		}
-		// M	
+		// M
 		case (77): this.scene.cycleMaterials(); break;
 
 		case (81): {
