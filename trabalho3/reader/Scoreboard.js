@@ -4,13 +4,8 @@ function Scoreboard(scene,board){
     this.base = new MyUnitCubeQuad(this.scene);
     this.plane = new MyPrimRect(this.scene,-0.9,-0.9,0.9,0.9);
 
+    //this.numbers = new CGFtexture(scene,"./resources/images/numbers.png");
     this.initNumbers();
-    this.initShaders();
-}
-
-Scoreboard.prototype.initShaders = function(){
-    this.shader = new CGFshader(this.scene.gl,"resources/shaders/score.vert","resources/shaders/score.frag");
-    this.shader.setUniformsValues({uSampler2: 1});
 }
 
 Scoreboard.prototype.initNumbers = function(){
@@ -18,13 +13,11 @@ Scoreboard.prototype.initNumbers = function(){
     this.numbers.loadTexture("./resources/images/numbers.png");
 }
 
-
 Scoreboard.prototype.setNumber = function(n){
     var smin = (n*0.2) % 1;
     var tmin = Math.floor(n/6)/2;
     this.plane.setTex2(smin,smin+0.2,tmin,tmin+0.5);
 }
-
 Scoreboard.prototype.constructor = Scoreboard;
 
 Scoreboard.prototype.display = function(score){
@@ -35,9 +28,7 @@ Scoreboard.prototype.display = function(score){
 	    this.base.display();
     this.scene.popMatrix();
     this.numbers.apply();
-    this.numbers.texture.bind(1);
     this.setNumber(n1);
-    this.scene.setActiveShader(this.shader);
     this.scene.pushMatrix();
         this.scene.translate(-1.1,0,0.22);
         this.plane.display();
@@ -47,5 +38,4 @@ Scoreboard.prototype.display = function(score){
         this.scene.translate(1.1,0,0.22);
         this.plane.display();
     this.scene.popMatrix();
-    this.scene.setActiveShader(this.scene.defaultShader);
 }
