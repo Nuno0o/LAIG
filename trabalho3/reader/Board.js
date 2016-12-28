@@ -39,8 +39,8 @@ function Board(scene,game){
 	this.tiles = [];
 	this.initTiles();
 
-	this.turnTimer1 = new TurnTimer(scene, 15);
-	this.turnTimer2 = new TurnTimer(scene, 15);
+	this.turnTimer1 = new TurnTimer(scene, 30);
+	this.turnTimer2 = new TurnTimer(scene, 30);
 
 	this.scoreboard = new Scoreboard(scene);
 }
