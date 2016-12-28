@@ -955,11 +955,9 @@ XMLscene.prototype.logPicking = function (){
 				{
 					var customId = this.pickResults[i][1];
 
-					if (this.game.runningGameFilm){
-						return;
-					}
-
-					this.requestPlay(customId);
+					if (!this.game.runningGameFilm && !this.game.gameOver){
+					       this.requestPlay(customId);
+          }
 
 				}
 			}

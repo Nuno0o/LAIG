@@ -157,10 +157,10 @@ Board.prototype.display = function(){
 					}
 				}
 				if(this.game.gameOver){
-					if(this.getQueenSize(1) == 0){
+					if(this.getQueenSize(1) < this.getQueenSize(2)){
 						this.scene.listAppearances[this.pc2].setTexture(this.scene.listTextures[this.tex].texture);
 						this.scene.listAppearances[this.pc2].apply();
-					}else if(this.getQueenSize(2) == 0){
+					}else if(this.getQueenSize(2) < this.getQueenSize(1)){
 						this.scene.listAppearances[this.pc1].setTexture(this.scene.listTextures[this.tex].texture);
 						this.scene.listAppearances[this.pc1].apply();
 					}
