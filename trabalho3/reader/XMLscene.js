@@ -875,6 +875,9 @@ XMLscene.prototype.updatePrimitivesTranslations = function(frameDiff){
 	}
 }
 
+/*
+	If not playing a camera animation, switch to the next
+*/
 XMLscene.prototype.switchGameCamera = function(){
 	if (!this.cameraAnimationsGo){
 		this.cameraAnimationsGo = true;
@@ -884,14 +887,19 @@ XMLscene.prototype.switchGameCamera = function(){
 	}
 }
 
-
-
+/*
+	Update the scene's camera (position, etc)
+*/
 XMLscene.prototype.updateGameCameras = function(frameDiff){
+
+	// Get curent animation; update it
 	this.cameraAnimations[this.currentGameCamera].update(frameDiff);
 
+	// Apply updates
 	this.camera.setPosition(this.cameraAnimations[this.currentGameCamera].getCurrentPosition());
 	this.camera.setTarget(this.cameraAnimations[this.currentGameCamera].target);
 
+	// Animation done? Can change again. If not, lock input until it ends
 	if (this.cameraAnimations[this.currentGameCamera].isDone){
 		this.canChangeCamera = true;
 	}
@@ -908,13 +916,17 @@ XMLscene.prototype.update = function(currTime){
 		this.updatePrimitivesTranslations(this.frameDiff);
 		this.updatePrimitivesRotations(this.frameDiff);
 
+		// Scene ready to play camera animation
 		if (this.cameraAnimationsGo)
 			this.updateGameCameras(this.frameDiff);
 
+		// Scene has game
 		if (this.game != null){
 
+			// Update any piece animations
 			this.game.updateCurrentPieceAnimation(this.frameDiff);
 
+			// Running the game's film? If so, update it.
 			if (this.game.runningGameFilm){
 				if (!this.game.animatingPiece){
 					this.nextFrame();
@@ -922,32 +934,39 @@ XMLscene.prototype.update = function(currTime){
 				}
 			}
 
+			// Update game's timers
 			this.game.gameboard.board.updateTimer(this.frameDiff);
 
 		}
 	}
 }
 
+/*
+	Get clicked tiles, only for humans
+*/
 XMLscene.prototype.logPicking = function (){
 
+	// Round time's up, reset.
 	if (this.game.gameboard.board.timeUp()){
 		this.game.gameboard.board.nextTurn();
         this.inBotPlay = false;
         return;
 	}
-
 	if (this.pickMode == false) {
 
+		// Bot making a play?
 		if (this.inBotPlay){
 			return;
 		}
 
+		// Bot hasn't made a play or requested one. Request one and lock any clicking input.
 		if (this.currentPlayerIsBot()){
 			this.inBotPlay = true;
 			this.requestPlay(-1);
 			return;
 		} else this.inBotPlay = false;
 
+		// Human can click
 		if (this.pickResults != null && this.pickResults.length > 0) {
 			for (var i=0; i< this.pickResults.length; i++) {
 				var obj = this.pickResults[i][0];
@@ -955,6 +974,7 @@ XMLscene.prototype.logPicking = function (){
 				{
 					var customId = this.pickResults[i][1];
 
+					// Request human play based on clicked tiles
 					if (!this.game.runningGameFilm && !this.game.gameOver){
 					       this.requestPlay(customId);
           }
@@ -966,6 +986,9 @@ XMLscene.prototype.logPicking = function (){
 	}
 }
 
+/*
+	A function to check if the player to make the play is a bot
+*/
 XMLscene.prototype.currentPlayerIsBot = function(){
 	if (this.game.gameboard.board.currPlayer == 1){
 		if (this.game.gameboard.board.player1Type == 1 || this.game.gameboard.board.player1Type == 2){
@@ -982,42 +1005,65 @@ XMLscene.prototype.currentPlayerIsBot = function(){
 	return false;
 }
 
+
+/*
+	Request any play.
+*/
 XMLscene.prototype.requestPlay = function(customId){
+
+	// Ivory
 	if (this.game.gameboard.board.currPlayer == 1){
 		switch(this.game.gameboard.board.player1Type){
+			// Human play
 			case 0: {
 				this.game.gameboard.setSelected(customId);
 				this.game.prologinput.changeSelected(customId);
 				this.pressedId = customId;
 				break;
 			}
+
+			// Random bot play
 			case 1: {
 				if (!this.game.animatingPiece) this.game.prologinput.getBotPlay(0);
 				break;
 			}
+
+			// Smart bot play
 			case 2: {
 				if (!this.game.animatingPiece) this.game.prologinput.getBotPlay(1);
 				break;
 			}
+
+			// ??
 			default: break;
 		}
 	}
 	else {
+
+		// cigar
 		switch(this.game.gameboard.board.player2Type){
+
+			// Human play
 			case 0: {
 				this.game.gameboard.setSelected(customId);
 				this.game.prologinput.changeSelected(customId);
 				this.pressedId = customId;
 				break;
 			}
+
+			// Random bot play
 			case 1: {
 				if (!this.game.animatingPiece) this.game.prologinput.getBotPlay(0);
 				break;
 			}
+
+			// Smart bot play
 			case 2: {
 				if (!this.game.animatingPiece) this.game.prologinput.getBotPlay(1);
 				break;
 			}
+
+			//?
 			default: break;
 		}
 	}
@@ -1037,17 +1083,26 @@ XMLscene.prototype.display = function () {
 	if (this.graph.loadedOk)
 	{
 
+		// Update scene lights
 		this.updateLights();
+
+		// Update lights
 		for (var i = 0; i < this.lights.length; i++){
 			this.lights[i].update();
 		}
 
+		// Display animated primitives
 		for (var i in this.listReadyToDisplay){
 			this.displayPrimToAnimation(this.listReadyToDisplay[i]);
 		}
 
+		// Game is playing
 		if (this.game != null) {
+
+			// Log clicked and make plays
 			this.logPicking();
+
+			// Display board
 			this.game.gameboard.display();
 
 		}
