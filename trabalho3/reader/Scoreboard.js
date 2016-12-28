@@ -1,18 +1,26 @@
+/*
+    Object representing a player's scoreboard
+*/
 function Scoreboard(scene,board){
     this.scene = scene;
 
     this.base = new MyUnitCubeQuad(this.scene);
     this.plane = new MyPrimRect(this.scene,-0.9,-0.9,0.9,0.9);
 
-    //this.numbers = new CGFtexture(scene,"./resources/images/numbers.png");
     this.initNumbers();
 }
 
+/*
+    Load an appearance of the score based on a texture
+*/
 Scoreboard.prototype.initNumbers = function(){
     this.numbers = new CGFappearance(this.scene);
     this.numbers.loadTexture("./resources/images/numbers.png");
 }
 
+/*
+    Get the current texture to apply based on actual score
+*/
 Scoreboard.prototype.setNumber = function(n){
     var smin = (n % 5) * 0.2;
 	var tmin;
@@ -23,6 +31,9 @@ Scoreboard.prototype.setNumber = function(n){
 }
 Scoreboard.prototype.constructor = Scoreboard;
 
+/*
+    Display the scoreboard
+*/
 Scoreboard.prototype.display = function(score){
     var n1 = Math.floor(score/10);
     var n2 = score%10;

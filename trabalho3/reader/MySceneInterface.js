@@ -57,16 +57,19 @@ MySceneInterface.prototype.addLights = function(){
 MySceneInterface.prototype.processKeyDown = function(event) {
     switch (event.keyCode)
     {
-    	// V
-		case (86): //this.scene.cycleCamera(); this.setActiveCamera(this.scene.camera); break;
+    	// V - Switch the game's active camera
+		case (86):
 		{
 			this.scene.switchGameCamera();
 			break;
 		}
-		// M
-		case (77): this.scene.cycleMaterials(); break;
-
-		case (81): {
+		// M - cycle toggleable materials
+		case (77):{
+			this.scene.cycleMaterials(); break;
+		}
+		// Q - quit the server. FOR DEBUG PURPOSES
+		case (81):
+		{
 			this.scene.game.prologinput.makeRequest("quit");
 			break;
 		}
