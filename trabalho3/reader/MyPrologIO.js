@@ -10,20 +10,14 @@ PrologInput.prototype.constructor = PrologInput;
 
 PrologInput.prototype.changeSelected = function(ind){
 
-    if (this.selectedTile.length >= 2) this.selectedTile = [];
-
-    if (ind != 144) {
-
-    	if (this.selectedTile.length < 1 ){
-    		if (this.gameboard.board.tiles[ind].pieces.length != 0) 
-    			this.selectedTile.push(ind);
-    	}
-    	else this.selectedTile.push(ind);
-
+    if(this.selectedTile.length >= 2){
+      this.selectedTile[0] = this.selectedTile[1];
+      this.selectedTile.splice(1,10);
     }
 
-    if(this.selectedTile[this.selectedTile.length-2] < 144 && this.selectedTile[this.selectedTile.length-1] < 144
-    	&& this.selectedTile.length == 2){
+    this.selectedTile.push(ind);
+
+    if( this.selectedTile.length == 2 && this.selectedTile[0] < 144 && this.selectedTile[1] < 144){
 
         var convertedXY, convertedTarget;
         convertedXY = this.convertTileToCoords(this.selectedTile[0]);
@@ -59,12 +53,12 @@ PrologInput.prototype.getCurrentPlayer = function(currPlayer){
 PrologInput.prototype.convertTileToCoords = function(tileID){
 	var y = Math.floor(tileID / 12);
 	var x = tileID % 12;
-	return [x, y]; 
+	return [x, y];
 }
 
 PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onError, port) {
 
-    if(requestObject == "quit") requestString = "quit" ; 
+    if(requestObject == "quit") requestString = "quit" ;
     else if (!requestObject.isBotPlay){
        var requestString = requestObject.getHumanPlay();
     }else{
@@ -72,11 +66,11 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
             var requestString = requestObject.getRandomPlay();
         }
         else {
-            var requestString = requestObject.getSmartPlay();  
+            var requestString = requestObject.getSmartPlay();
         }
     }
 
-    var requestPort = port || 8081  
+    var requestPort = port || 8081
     var request = new XMLHttpRequest();
 
     var prologInput = this;
@@ -85,7 +79,7 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
 
 
     // Make request to SICstus. Check Response.
-    request.onload = onSuccess || function (data) { 
+    request.onload = onSuccess || function (data) {
 
         if (prologInput.game.currentPieceAnimation != null) return;
 
@@ -97,7 +91,7 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
             if (getSuccessFromReply(response) == true) {
                 var isGameOver =  getGameOverFromReply(response);
 
-                var pieceAnimation = new PieceAnimation(prologInput.gameboard.board.tiles[requestObject.y*12 + requestObject.x].pieces, 
+                var pieceAnimation = new PieceAnimation(prologInput.gameboard.board.tiles[requestObject.y*12 + requestObject.x].pieces,
                 										requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY,  prologInput.game.scene.gameboard_tilesize,
                 										new Play(requestObject.player, requestObject.x, requestObject.y, requestObject.targetX, requestObject.targetY, isGameOver),
                 										true);
@@ -110,7 +104,7 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
         }
         else {
             var play = getPlayFromReply(response);
-            var pieceAnimation = new PieceAnimation(prologInput.gameboard.board.tiles[play.y*12 + play.x].pieces, 
+            var pieceAnimation = new PieceAnimation(prologInput.gameboard.board.tiles[play.y*12 + play.x].pieces,
                                                     play.x, play.y, play.targetX, play.targetY,  prologInput.game.scene.gameboard_tilesize,
                                                     play,
                                                     true);
@@ -120,8 +114,8 @@ PrologInput.prototype.getPrologRequest = function(requestObject, onSuccess, onEr
     };
 
 
-    request.onerror = onError || function () { 
-        console.log("Error waiting for response"); 
+    request.onerror = onError || function () {
+        console.log("Error waiting for response");
     };
 
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
