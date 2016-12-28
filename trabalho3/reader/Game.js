@@ -44,7 +44,7 @@ Game.prototype.makePlay = function(pushPlay, play){
     }
     else {
         console.log("GAME OVER!");
-				this.gameOver = true;
+		this.gameOver = true;
     }
 }
 

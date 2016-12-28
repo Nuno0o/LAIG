@@ -53,7 +53,14 @@ makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn),(IvoryStac
 			 isQueen(TargetX,TargetY,BoardIn) ->
 					executeMoveBabyQueen(Player, X, Y, TargetX, TargetY, (IvoryStack, CigarStack, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver), !), !
 ).
-		
+
+executeMoveQueenFree(ivory, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
+        setPiece(TargetX, TargetY,ivoryQueen, BoardIn, BoardIn1),
+        setPiece(X, Y,ivoryBaby, BoardIn1, BoardOut),
+        IvoryStackOut is IvoryStackIn - 1, 
+        CigarStackOut is CigarStackIn, 
+        IvoryStackOut =< 2,
+        GameOver = true.
 executeMoveQueenFree(ivory, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
         setPiece(TargetX, TargetY,ivoryQueen, BoardIn, BoardIn1),
         setPiece(X, Y,ivoryBaby, BoardIn1, BoardOut),
@@ -61,6 +68,13 @@ executeMoveQueenFree(ivory, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn,
         CigarStackOut is CigarStackIn, 
         GameOver = false.
 
+executeMoveQueenFree(cigar, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
+        setPiece(TargetX, TargetY,cigarQueen, BoardIn, BoardIn1),
+        setPiece(X, Y,cigarBaby, BoardIn1, BoardOut),
+        IvoryStackOut is IvoryStackIn, 
+        CigarStackOut is CigarStackIn - 1,
+        CigarStackOut =< 2,
+        GameOver = true.
 executeMoveQueenFree(cigar, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
         setPiece(TargetX, TargetY,cigarQueen, BoardIn, BoardIn1),
         setPiece(X, Y,cigarBaby, BoardIn1, BoardOut),
