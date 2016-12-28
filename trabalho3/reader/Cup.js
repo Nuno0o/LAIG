@@ -1,3 +1,4 @@
+//Cup used as auxiliary board
 function Cup(scene){
   this.scene = scene;
 
@@ -5,7 +6,9 @@ function Cup(scene){
   this.torus = new MyPrimTorus(scene,1.05,1.25,20,20)
 }
 Cup.prototype.constructor = Cup;
-
+/*
+	Display cup
+*/
 Cup.prototype.display = function(){
     this.scene.pushMatrix();
     this.base.display();

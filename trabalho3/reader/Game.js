@@ -1,3 +1,6 @@
+/*
+	Object representing a game
+*/
 function Game(scene){
 
 	this.gameboard = new GameBoard(scene,this);
@@ -17,15 +20,21 @@ function Game(scene){
 }
 
 Game.prototype.constructor = Game;
-
+/*
+	Change the scene of the game
+*/
 Game.prototype.setScene = function(scene) {
 	this.scene = scene;
 }
-
+/*
+	Change the board of the game
+*/
 Game.prototype.setBoard = function(newboard){
 	this.gameboard = newboard;
 }
-
+/*
+	Make a play
+*/
 Game.prototype.makePlay = function(pushPlay, play){
 
 	this.gameboard.board.selectedTile = 144;
@@ -47,7 +56,9 @@ Game.prototype.makePlay = function(pushPlay, play){
 		this.gameOver = true;
     }
 }
-
+/*
+	Restart the game
+*/
 Game.prototype.resetGame = function(){
 	this.gameover = false;
 	this.playStack = [];
@@ -58,7 +69,9 @@ Game.prototype.resetGame = function(){
 	this.runningGameFilm = false;
 	this.currentFilmFrame = -1;
 }
-
+/*
+	Undo last play(does all plays from the beginning)
+*/
 Game.prototype.undo = function(){
 	this.gameOver = false;
 	this.playStack.pop();
@@ -73,7 +86,9 @@ Game.prototype.undo = function(){
 		this.makePlay(false, this.playStack[i]);
 	}
 }
-
+/*
+	Run game film
+*/
 Game.prototype.runGameFilm = function(){
 	this.gameOver = false;
 	this.gameboard = new GameBoard(this.scene,this);
