@@ -101,29 +101,32 @@ print_header_line(_).
 %%%%                                       Commands                                                  %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Require your Prolog Files here
+% Game logic here included
 :- ['proj_1.pl'].
 
+% Human play successful
 parse_input(makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success)) :-
 	makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOver),
 	Success = true.
+% Human play unsuccessful
 parse_input(makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success)) :-
 	IvoryStackOut = IvoryStack, CigarStackOut = CigarStack, GameOver = false, Success = false.
 
+% Random bot play successful
 parse_input(insistOnCorrectBotRandomPlay(Player,(IvoryStackIn,CigarStackIn,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success, Play)) :-
 	insistOnCorrectBotRandomPlay(Player, Play, (IvoryStackIn, CigarStackIn, BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOver),
 	Success = true.
-
+%Random bot play unsuccessful
 parse_input(insistOnCorrectBotRandomPlay(Player,(IvoryStackIn,CigarStackIn,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success, Play)) :-
 	IvoryStackOut = IvoryStack, CigarStackOut = CigarStack, GameOver = false, Success = false.
 
+% Smart bot play successful
 parse_input(playBestBot(Player,(IvoryStackIn,CigarStackIn,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success, Play)) :-
 	playBestBot(Player, Play, (IvoryStackIn, CigarStackIn, BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOver),
 	Success = true.
-
+% Smart bot play unsuccessful
 parse_input(playBestBot(Player,(IvoryStackIn,CigarStackIn,BoardIn)), (IvoryStackOut, CigarStackOut, GameOver, Success, Play)) :-
 	IvoryStackOut = IvoryStack, CigarStackOut = CigarStack, GameOver = false, Success = false.
 
+% Quit server
 parse_input(quit, goodbye).
-
-%parse_input(+InputFunction, %OutputString) :- ...

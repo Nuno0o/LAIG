@@ -2,6 +2,7 @@
 % --------------------------- PLAY MAKING ---------------------------------
 % -------------------------------------------------------------------------
 
+% Match a letter to a number - used to read numbers from input letters
 matchInput(a, 0).	matchInput(0, a).
 matchInput(b, 1).	matchInput(1, b).
 matchInput(c, 2).	matchInput(2, c).
@@ -15,6 +16,7 @@ matchInput(j, 9).	matchInput(9, j).
 matchInput(k, 10).	matchInput(10,k).
 matchInput(l, 11).	matchInput(11,l).
 
+% Get a human play
 getPlay(Player, Play, (IvoryStack, CigarStack, Board),(IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
 				write('x= '), read(X),
 				write('y= '), read(Y), nl,
@@ -27,15 +29,18 @@ getPlay(Player, Play, (IvoryStack, CigarStack, Board),(IvoryStackOut, CigarStack
 				Play = (Player, Z, W, TargetZ, TargetW),
 				BoardOut ^ (makePlay(Play,(IvoryStack,CigarStack,Board), (IvoryStackOut, CigarStackOut, BoardOut), GameOver)).
 	
-%makePlay(+(Player,X,Y,TargetX,TargetY), +(IvoryStack, CigarStack, Board), -(IvoryStackOut, CigarStackOut, BoardOut),-GameOver)
+% Make a play. Check if valid. Check if Game Over. Get resulting stack and target
 makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
+		% valid player
 		validatePlayer(Player),
 		
+		% valid coordinates
 		validateCurrentCoords(Player,X, Y, BoardIn),
 		validateTargetCoords(Player,X,Y,TargetX,TargetY,BoardIn),
 		piecesBetween(X, Y, TargetX, TargetY, BoardIn, Pieces),
 		Pieces =:= 0,
 		
+		% Make the plays...
 		(isQueen(X,Y,BoardIn) ->
             (isFree(TargetX,TargetY,BoardIn) ->
                 executeMoveQueenFree(Player, X, Y, TargetX, TargetY, (IvoryStack, CigarStack, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver), !;
@@ -54,6 +59,7 @@ makePlay((Player,X,Y,TargetX,TargetY),(IvoryStack,CigarStack,BoardIn),(IvoryStac
 					executeMoveBabyQueen(Player, X, Y, TargetX, TargetY, (IvoryStack, CigarStack, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver), !), !
 ).
 
+% Queen moves to free space, game over = yes
 executeMoveQueenFree(ivory, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
         setPiece(TargetX, TargetY,ivoryQueen, BoardIn, BoardIn1),
         setPiece(X, Y,ivoryBaby, BoardIn1, BoardOut),
@@ -61,6 +67,7 @@ executeMoveQueenFree(ivory, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn,
         CigarStackOut is CigarStackIn, 
         IvoryStackOut =< 2,
         GameOver = true.
+% Queen moves to free space, game over = no
 executeMoveQueenFree(ivory, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
         setPiece(TargetX, TargetY,ivoryQueen, BoardIn, BoardIn1),
         setPiece(X, Y,ivoryBaby, BoardIn1, BoardOut),
@@ -68,6 +75,7 @@ executeMoveQueenFree(ivory, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn,
         CigarStackOut is CigarStackIn, 
         GameOver = false.
 
+% Queen moves to free space
 executeMoveQueenFree(cigar, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
         setPiece(TargetX, TargetY,cigarQueen, BoardIn, BoardIn1),
         setPiece(X, Y,cigarBaby, BoardIn1, BoardOut),
@@ -75,6 +83,7 @@ executeMoveQueenFree(cigar, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn,
         CigarStackOut is CigarStackIn - 1,
         CigarStackOut =< 2,
         GameOver = true.
+% Queen moves to free space
 executeMoveQueenFree(cigar, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
         setPiece(TargetX, TargetY,cigarQueen, BoardIn, BoardIn1),
         setPiece(X, Y,cigarBaby, BoardIn1, BoardOut),
@@ -82,69 +91,70 @@ executeMoveQueenFree(cigar, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn,
         CigarStackOut is CigarStackIn - 1,
         GameOver = false.
 
+% Queen captures baby
 executeMoveQueenBaby(ivory, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
 		setPiece(TargetX, TargetY,ivoryQueen, BoardIn, BoardIn1),
         setPiece(X, Y,empty, BoardIn1, BoardOut),
         IvoryStackOut is IvoryStackIn,
         CigarStackOut is CigarStackIn, 
         GameOver = false.
-
+% Queen captures baby
 executeMoveQueenBaby(cigar, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
 		setPiece(TargetX, TargetY,cigarQueen, BoardIn, BoardIn1),
         setPiece(X, Y,empty, BoardIn1, BoardOut),
         IvoryStackOut is IvoryStackIn,
         CigarStackOut is CigarStackIn, 
         GameOver = false.
-
+% Queen captures queen
 executeMoveQueenQueen(ivory, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
 		setPiece(TargetX, TargetY,ivoryQueen, BoardIn, BoardIn1),
         setPiece(X, Y,empty, BoardIn1, BoardOut),
         IvoryStackOut is IvoryStackIn,
         CigarStackOut is CigarStackIn,
 		GameOver = true.
-
+% Queen captures queen
 executeMoveQueenQueen(cigar, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
 		setPiece(TargetX, TargetY,cigarQueen, BoardIn, BoardIn1),
         setPiece(X, Y,empty, BoardIn1, BoardOut),
         IvoryStackOut is IvoryStackIn,
         CigarStackOut is CigarStackIn,
 		GameOver = true.
-
+% Baby moves to free cell
 executeMoveBabyFree(ivory, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
 		setPiece(TargetX, TargetY, ivoryBaby, BoardIn, BoardIn1),
 		setPiece(X, Y, empty, BoardIn1, BoardOut), 
 		IvoryStackOut is IvoryStackIn, 
 		CigarStackOut is CigarStackIn, 
 		GameOver = false.
-
+% Baby moves to free cell
 executeMoveBabyFree(cigar, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
 		setPiece(TargetX, TargetY, cigarBaby, BoardIn, BoardIn1),
 		setPiece(X, Y, empty, BoardIn1, BoardOut), 
 		IvoryStackOut is IvoryStackIn, 
 		CigarStackOut is CigarStackIn, 
 		GameOver = false.
-
+% Baby captures baby
 executeMoveBabyBaby(ivory, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
 		setPiece(TargetX, TargetY, ivoryBaby, BoardIn, BoardIn1),
 		setPiece(X, Y, empty, BoardIn1, BoardOut), 
 		IvoryStackOut is IvoryStackIn, 
 		CigarStackOut is CigarStackIn, 
 		GameOver = false.
-
+% Baby captures baby
 executeMoveBabyBaby(cigar, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver) :-
 		setPiece(TargetX, TargetY, cigarBaby, BoardIn, BoardIn1),
 		setPiece(X, Y, empty, BoardIn1, BoardOut), 
 		IvoryStackOut is IvoryStackIn, 
 		CigarStackOut is CigarStackIn, 
 		GameOver = false.
-
+% Baby captures queen
 executeMoveBabyQueen(ivory, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver):-
 		setPiece(TargetX, TargetY, ivoryBaby, BoardIn, BoardIn1),
 		setPiece(X, Y, empty, BoardIn1, BoardOut), 
 		IvoryStackOut is IvoryStackIn, 
 		CigarStackOut is CigarStackIn,
 		GameOver = true.
-
+% Baby captures queen
 executeMoveBabyQueen(cigar, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn, BoardIn), (IvoryStackOut, CigarStackOut, BoardOut), GameOver):-
 		setPiece(TargetX, TargetY, cigarBaby, BoardIn, BoardIn1),
 		setPiece(X, Y, empty, BoardIn1, BoardOut), 
@@ -152,11 +162,13 @@ executeMoveBabyQueen(cigar, X, Y, TargetX, TargetY, (IvoryStackIn, CigarStackIn,
 		CigarStackOut is CigarStackIn,
 		GameOver = true.
 
+% get valid play
 insistOnCorrectPlay(Player, Play, (IvoryStackIn, CigarStackIn, BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOver):- repeat,
 					  getPlay(Player, Play, (IvoryStackIn, CigarStackIn, BoardIn),(IvoryStackOut, CigarStackOut, BoardOut), GameOver).
 
 %%%%%%%%%%%%%%%%%%%%% PLAY CALLING %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% play, continue playing
 play(ivory, (IvoryStackIn,CigarStackIn,BoardIn), false, human, Type) :- 	
 														checkStack(IvoryStackIn, GameOver),	GameOver == false,
 														checkStack(CigarStackIn, GameOver),	GameOver == false,
@@ -214,6 +226,7 @@ play(cigar, (IvoryStackIn,CigarStackIn,BoardIn), false, botDif2, Type) :- 	clr,
 
 %%%%%%%%%%%%%%%%%%%% DEFEAT CLAUSES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% play, and got defeat
 play(ivory, (IvoryStackIn,CigarStackIn,BoardIn), false, Type1, Type2) :- 	clr,
 														checkStack(IvoryStackIn, GameOver),	GameOver == true,
 														play(cigar, (IvoryStackIn,CigarStackIn,BoardIn), true, Type2, Type1).
