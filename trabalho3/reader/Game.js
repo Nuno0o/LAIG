@@ -1,6 +1,6 @@
-function Game(scene, gameboard){
+function Game(scene){
 
-	this.gameboard = gameboard;
+	this.gameboard = new GameBoard(scene,this);
 	this.scene = scene;
 
 	this.playStack = [];

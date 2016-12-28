@@ -136,6 +136,7 @@ Board.prototype.setPlayerType = function(player, type){
 
 
 Board.prototype.display = function(){
+	//Display tiles
 	for (var y = 0; y < this.dimY; y++){
 		for (var x = 0; x < this.dimX; x++){
 			this.scene.pushMatrix();
@@ -155,11 +156,21 @@ Board.prototype.display = function(){
 						this.scene.listAppearances[this.pc2].apply();
 					}
 				}
+				if(this.game.gameOver){
+					if(this.getQueenSize(1) == 0){
+						this.scene.listAppearances[this.pc2].setTexture(this.scene.listTextures[this.tex].texture);
+						this.scene.listAppearances[this.pc2].apply();
+					}else if(this.getQueenSize(2) == 0){
+						this.scene.listAppearances[this.pc1].setTexture(this.scene.listTextures[this.tex].texture);
+						this.scene.listAppearances[this.pc1].apply();
+					}
+				}
 				this.scene.translate(this.scene.gameboard_tilesize * x, 0, this.scene.gameboard_tilesize * y);
 				this.tiles[y*this.dimX + x].display();
 			this.scene.popMatrix();
 		}
 	}
+	//Display auxiliary boards
 	this.scene.pushMatrix();
 		this.scene.translate(-2 * this.scene.gameboard_tilesize,0,0);
 		this.scene.rotate(Math.PI/2,1,0,0);
@@ -170,7 +181,7 @@ Board.prototype.display = function(){
 		this.scene.rotate(Math.PI/2,1,0,0);
 		this.team2aux.display();
 	this.scene.popMatrix();
-
+	//Display scores and timer
 	this.scene.pushMatrix();
 		this.scene.pushMatrix();
 
@@ -247,7 +258,7 @@ function GameBoard (scene,game) {
 	this.scene = scene;
 	this.game = game;
 	// board element
-	this.board = new Board(scene, game);
+	this.board = new Board(scene, this.game);
 	this.board.initPieces();
 }
 

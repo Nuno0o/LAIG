@@ -782,8 +782,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 		this.turnTime = 15;
 		this.sceneInterface.addGameVars();
 		this.sceneInterface.addGameControls();
-		this.game = new Game(this,
-							new GameBoard(this, 12, 12, this.gameboard_tilesize));
+		this.game = new Game(this);
 	}
 
 	// setup default camera
