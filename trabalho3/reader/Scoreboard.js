@@ -14,8 +14,11 @@ Scoreboard.prototype.initNumbers = function(){
 }
 
 Scoreboard.prototype.setNumber = function(n){
-    var smin = (n*0.2) % 1;
-    var tmin = Math.floor(n/6)/2;
+    var smin = (n % 5) * 0.2;
+	var tmin;
+    if(n < 5)
+		tmin = 0;
+	else tmin = 0.5;
     this.plane.setTex2(smin,smin+0.2,tmin,tmin+0.5);
 }
 Scoreboard.prototype.constructor = Scoreboard;
