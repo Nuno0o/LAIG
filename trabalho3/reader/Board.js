@@ -56,7 +56,9 @@ Board.prototype.constructor = Board;
 Board.prototype.getTile = function(x,y){
 	return this.tiles[y*this.dimX + x];
 }
-
+/*
+	Get the size of the queen of team 1 or 2
+*/
 Board.prototype.getQueenSize = function(team){
 
 	var size = 0;
@@ -77,7 +79,9 @@ Board.prototype.initTiles = function(){
 		}
 	}
 }
-
+/*
+	Set timer
+*/
 Board.prototype.setTurnTime = function(turnTime, timer){
 
 	if (timer == 1){
@@ -89,7 +93,9 @@ Board.prototype.setTurnTime = function(turnTime, timer){
 	}
 
 }
-
+/*
+	Switch players and reset timer
+*/
 Board.prototype.nextTurn = function(){
 	if(this.currPlayer == 1){
 		this.currPlayer = 2;
@@ -101,7 +107,9 @@ Board.prototype.nextTurn = function(){
 
 	this.currTurn++;
 }
-
+/*
+	Update timer
+*/
 Board.prototype.updateTimer = function(frameDiff){
 	if (this.currPlayer == 1){
 		this.turnTimer1.update(frameDiff);
@@ -109,7 +117,9 @@ Board.prototype.updateTimer = function(frameDiff){
 		this.turnTimer2.update(frameDiff);
 	}
 }
-
+/*
+	Check if time is up
+*/
 Board.prototype.timeUp =function(){
 	if (this.currPlayer == 1){
 		return this.turnTimer1.timeUp;
@@ -117,7 +127,9 @@ Board.prototype.timeUp =function(){
 		return this.turnTimer2.timeUp;
 	}
 }
-
+/*
+	Place pieces on board
+*/
 Board.prototype.initPieces = function(){
 	var tile1 = this.getTile(5,0);
 	var tile2 = this.getTile(6,11);
@@ -126,7 +138,9 @@ Board.prototype.initPieces = function(){
 		tile2.addPiece(new Piece(this.scene,"piece",2));
 	}
 }
-
+/*
+	Set player type
+*/
 Board.prototype.setPlayerType = function(player, type){
 	if (player == 1){
 		this.player1Type = type;
@@ -134,7 +148,9 @@ Board.prototype.setPlayerType = function(player, type){
 	else this.player2Type = type;
 }
 
-
+/*
+	Display board, timer and scoreboard
+*/
 Board.prototype.display = function(){
 	//Display tiles
 	for (var y = 0; y < this.dimY; y++){
@@ -211,7 +227,9 @@ Board.prototype.display = function(){
 	this.scene.popMatrix();
 
 }
-
+/*
+	Convert board to prolog string
+*/
 Board.prototype.convertToPrologBoard = function() {
 	var boardString = "[";
 	for (var y = 0; y < 12; y++){
@@ -251,9 +269,8 @@ Board.prototype.convertToPrologBoard = function() {
 // -----------------------------------------------------------------------------
 
 /*
-	Element representing a main board.
+	Element representing a game board
 */
-
 function GameBoard (scene,game) {
 	this.scene = scene;
 	this.game = game;
@@ -269,12 +286,14 @@ function GameBoard (scene,game) {
 GameBoard.prototype.setSelected = function(ind){
 	this.board.selectedTile = ind;
 }
-
+/*
+	Get size of the queen of a certain team
+*/	
 GameBoard.prototype.getQueenSize = function(team){
 	return this.board.getQueenSize(team);
 }
 /*
-	Move
+	Move a piece from indi to indf
 */
 GameBoard.prototype.move = function(indi,indf){
 	var originTile = this.board.tiles[indi];
@@ -298,7 +317,9 @@ GameBoard.prototype.move = function(indi,indf){
 		originTile.pieces = pieceToStay;
 	}
 }
-
+/*
+	Remove a piece to it's respective auxiliary board
+*/
 GameBoard.prototype.removePieces = function(ind){
 	var tile = this.board.tiles[ind];
 	if(tile.pieces.length == 0)
@@ -311,7 +332,9 @@ GameBoard.prototype.removePieces = function(ind){
 	}
 	tile.pieces = [];
 }
-
+/*
+	Remove n pieces from auxiliary board back to board
+*/
 GameBoard.prototype.reAddPieces = function(ind,npieces,team){
 	var tile = this.board.tiles[ind];
 	var aux;
@@ -362,12 +385,16 @@ function AuxBoard (scene,team) {
 
 	this.cup = new Cup(scene);
 }
-
+/*
+	Add a new piece
+*/
 AuxBoard.prototype.addPiece = function(piece){
 	this.pieces.push(piece);
 }
 
-
+/*
+	Display auxiliary board
+*/
 AuxBoard.prototype.display = function(){
 	this.scene.listAppearances[this.c].setTexture(this.scene.listTextures[this.tex].texture);
 	this.scene.listAppearances[this.c].apply();
