@@ -28,16 +28,20 @@ function Tile(scene, board, size, id,pc1,pc2,ptex){
 Tile.prototype.constructor = Tile;
 
 /*
-  Method to set the tile's state.
+	Method to add a piece
 */
 Tile.prototype.addPiece = function(piece){
   this.pieces.push(piece);
 }
-
+/*
+	Method to remove a piece
+*/
 Tile.prototype.removePiece = function(){
   this.pieces.pop(piece);
 }
-
+/*
+	Set animation
+*/
 Tile.prototype.setInAnimation = function(inAnimation, animation){
   this.piecesInAnimation = inAnimation;
   this.animation = animation;

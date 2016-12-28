@@ -12,7 +12,9 @@ MySceneInterface.prototype.init = function(application) {
 
     return true;
 };
-
+/*
+	Add game controls folder to interface
+*/
 MySceneInterface.prototype.addGameControls = function(){
 		var group = this.gui.addFolder("Game Controls");
 		group.open();
@@ -21,7 +23,9 @@ MySceneInterface.prototype.addGameControls = function(){
 		group.add(this.scene, 'runGameFilm');
 		group.add(this.scene, "switchScene");
 }
-
+/*
+	Add game variables folder to interface,along with restart button
+*/
 MySceneInterface.prototype.addGameVars = function(){
 		var group = this.gui.addFolder("Game Config");
 		group.open();
@@ -31,7 +35,9 @@ MySceneInterface.prototype.addGameVars = function(){
 		group.add(this.scene, "turnTime", 5, 60);
 		group.add(this.scene, "restartGame");
 }
-
+/*
+	Add lights to interface
+*/
 MySceneInterface.prototype.addLights = function(){
 	if(this.groupLights != null){
 		for(var i = 0; i < this.listLights.length;i++){
