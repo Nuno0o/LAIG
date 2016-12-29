@@ -70,7 +70,7 @@ Game.prototype.makePlay = function(pushPlay, play){
 	Restart the game
 */
 Game.prototype.resetGame = function(){
-	this.gameover = false;
+	this.gameOver = false;
 	this.playStack = [];
 	this.gameboard = new GameBoard(this.scene,this);
 
