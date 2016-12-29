@@ -145,7 +145,7 @@ Game.prototype.nextFrame = function(){
 	this.currentPieceAnimation = new PieceAnimation(this.gameboard.board.tiles[currentPlay.x + currentPlay.y * 12].pieces,
 													currentPlay.x, currentPlay.y,
 													currentPlay.targetX,currentPlay.targetY,
-													this.gameboard.board.tileSize,
+													this.scene.gameboard_tilesize,
 													currentPlay,
 													true);
 	this.currentPieceAnimation.span = 1000;
