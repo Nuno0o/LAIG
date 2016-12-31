@@ -58,11 +58,11 @@
         </cameraAnimation>
         <cameraAnimation id="p2" span="1">
             <from x="36.5" y="15" z="5.75" />
-            <to x="5.75" y="15" z="36.5" />
+            <to x="5.75" y="20" z="20.5" />
             <target x="5.75" y="0" z="5.75" />
         </cameraAnimation>
         <cameraAnimation id="p3" span="1">
-            <from x="5.75" y="15" z="36.5" />
+            <from x="5.75" y="20" z="20.5" />
             <to x="-25.5" y="15" z="5.75" />
             <target x="5.75" y="0" z="5.75" />
         </cameraAnimation>
